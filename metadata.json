@@ -1,0 +1,6 @@
+{
+  "name": "Cacao",
+  "description": "Hệ thống Quản lý Học tập & Giảng dạy (TLMS) tối giản và ấm áp với triết lý Mastery Learning và phản hồi chẩn đoán AI chuyên sâu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
