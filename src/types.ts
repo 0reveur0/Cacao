@@ -3,6 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN';
+
+export interface Profile {
+  id: string;
+  name: string;
+  role: UserRole;
+  avatar_url?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Question {
   id: string;
   text: string;
