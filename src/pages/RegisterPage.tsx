@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { UserRole } from '../types';
-import { Mail, Lock, Eye, EyeOff, User, Coffee, ArrowRight, GraduationCap, BookOpen, Shield } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, GraduationCap, BookOpen, Shield } from 'lucide-react';
 
 interface RegisterPageProps {
   onNavigateToLogin: () => void;
@@ -63,21 +63,21 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: '#FDFBF7' }}>
-        <div className="w-full max-w-md text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg" style={{ backgroundColor: '#C5A880' }}>
-            <Coffee className="w-8 h-8" style={{ color: '#1C120F' }} />
+      <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ backgroundColor: '#FAFAFA' }}>
+        <div className="w-full max-w-sm text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-4" style={{ backgroundColor: '#F5EBE0' }}>
+            <span className="text-2xl">☕</span>
           </div>
-          <h1 className="text-2xl font-serif font-semibold mb-4" style={{ color: '#1C120F' }}>
+          <h1 className="text-xl font-semibold mb-2" style={{ color: '#2F2F2F' }}>
             Dang ky thanh cong!
           </h1>
-          <p className="mb-6" style={{ color: '#8E7F73' }}>
-            Vui long kiem tra email de xac thuc tai khoan cua ban.
+          <p className="mb-5 text-sm" style={{ color: '#6B6B6B' }}>
+            Vui long kiem tra email de xac thuc tai khoan.
           </p>
           <button
             onClick={onNavigateToLogin}
-            className="px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:opacity-90"
-            style={{ backgroundColor: '#C5A880', color: '#1C120F' }}
+            className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-150 hover:opacity-90"
+            style={{ backgroundColor: '#2F2F2F', color: '#FFFFFF' }}
           >
             Quay lai Dang nhap
           </button>
@@ -87,191 +87,178 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8" style={{ backgroundColor: '#FDFBF7' }}>
-      {/* Decorative Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full opacity-20" style={{ backgroundColor: '#C5A880' }} />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full opacity-10" style={{ backgroundColor: '#2B1B17' }} />
-      </div>
-
-      {/* Register Card */}
-      <div className="relative w-full max-w-md">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8" style={{ backgroundColor: '#FAFAFA' }}>
+      <div className="w-full max-w-sm">
         {/* Logo Section */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-3 shadow-lg" style={{ backgroundColor: '#C5A880' }}>
-            <Coffee className="w-7 h-7" style={{ color: '#1C120F' }} />
+        <div className="text-center mb-5">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3" style={{ backgroundColor: '#F5EBE0' }}>
+            <span className="text-xl">☕</span>
           </div>
-          <h1 className="text-2xl font-serif font-semibold" style={{ color: '#1C120F' }}>
+          <h1 className="text-xl font-semibold" style={{ color: '#2F2F2F' }}>
             Cacao
           </h1>
-          <p className="mt-1 text-sm" style={{ color: '#8E7F73' }}>
+          <p className="mt-0.5 text-sm" style={{ color: '#6B6B6B' }}>
             Tao tai khoan moi
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="rounded-3xl p-6 shadow-sm" style={{ backgroundColor: '#FFFFFF' }}>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="rounded-lg border p-5" style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E5E5' }}>
+          <form onSubmit={handleSubmit} className="space-y-3">
             {error && (
-              <div className="px-4 py-3 rounded-xl text-sm" style={{ backgroundColor: '#FEE2E2', color: '#991B1B' }}>
+              <div className="px-3 py-2 rounded-md text-sm" style={{ backgroundColor: '#FEF2F2', color: '#DC2626' }}>
                 {error}
               </div>
             )}
 
             {/* Name Input */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium" style={{ color: '#1C120F' }}>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
                 Ho ten
               </label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#8E7F73' }} />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Nguyen Van A"
                   required
-                  className="w-full pl-12 pr-4 py-3 rounded-xl outline-none transition-all focus:ring-2"
+                  className="w-full pl-10 pr-3 py-2 rounded-md text-sm outline-none transition-all"
                   style={{
-                    backgroundColor: '#FDFBF7',
-                    borderColor: 'transparent',
-                    color: '#1C120F'
+                    backgroundColor: '#FAFAFA',
+                    border: '1px solid #E5E5E5',
+                    color: '#2F2F2F'
                   }}
                 />
               </div>
             </div>
 
             {/* Email Input */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium" style={{ color: '#1C120F' }}>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#8E7F73' }} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="email@example.com"
                   required
-                  className="w-full pl-12 pr-4 py-3 rounded-xl outline-none transition-all focus:ring-2"
+                  className="w-full pl-10 pr-3 py-2 rounded-md text-sm outline-none transition-all"
                   style={{
-                    backgroundColor: '#FDFBF7',
-                    borderColor: 'transparent',
-                    color: '#1C120F'
+                    backgroundColor: '#FAFAFA',
+                    border: '1px solid #E5E5E5',
+                    color: '#2F2F2F'
                   }}
                 />
               </div>
             </div>
 
             {/* Password Input */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium" style={{ color: '#1C120F' }}>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
                 Mat khau
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#8E7F73' }} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-12 pr-12 py-3 rounded-xl outline-none transition-all focus:ring-2"
+                  className="w-full pl-10 pr-10 py-2 rounded-md text-sm outline-none transition-all"
                   style={{
-                    backgroundColor: '#FDFBF7',
-                    borderColor: 'transparent',
-                    color: '#1C120F'
+                    backgroundColor: '#FAFAFA',
+                    border: '1px solid #E5E5E5',
+                    color: '#2F2F2F'
                   }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                  className="absolute right-3 top-1/2 -translate-y-1/2"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5" style={{ color: '#8E7F73' }} />
+                    <EyeOff className="w-4 h-4" style={{ color: '#9B9B9B' }} />
                   ) : (
-                    <Eye className="w-5 h-5" style={{ color: '#8E7F73' }} />
+                    <Eye className="w-4 h-4" style={{ color: '#9B9B9B' }} />
                   )}
                 </button>
               </div>
             </div>
 
             {/* Confirm Password Input */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium" style={{ color: '#1C120F' }}>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
                 Xac nhan mat khau
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style={{ color: '#8E7F73' }} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-12 pr-4 py-3 rounded-xl outline-none transition-all focus:ring-2"
+                  className="w-full pl-10 pr-3 py-2 rounded-md text-sm outline-none transition-all"
                   style={{
-                    backgroundColor: '#FDFBF7',
-                    borderColor: 'transparent',
-                    color: '#1C120F'
+                    backgroundColor: '#FAFAFA',
+                    border: '1px solid #E5E5E5',
+                    color: '#2F2F2F'
                   }}
                 />
               </div>
             </div>
 
             {/* Role Selection */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium" style={{ color: '#1C120F' }}>
+            <div className="space-y-1">
+              <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
                 Vai tro
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => setRole('STUDENT')}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
-                    role === 'STUDENT' ? 'border-[#C5A880] bg-[#C5A880]/10' : 'border-transparent bg-[#FDFBF7]'
-                  }`}
+                  className="flex flex-col items-center gap-1.5 p-2.5 rounded-md border transition-all duration-100"
                   style={{
-                    borderWidth: 2,
-                    borderColor: role === 'STUDENT' ? '#C5A880' : '#E5DEDB'
+                    borderColor: role === 'STUDENT' ? '#F5EBE0' : '#E5E5E5',
+                    backgroundColor: role === 'STUDENT' ? '#F5EBE0' : '#FFFFFF'
                   }}
                 >
-                  <GraduationCap className="w-6 h-6" style={{ color: role === 'STUDENT' ? '#C5A880' : '#8E7F73' }} />
-                  <span className="text-xs font-medium" style={{ color: role === 'STUDENT' ? '#1C120F' : '#8E7F73' }}>
+                  <GraduationCap className="w-5 h-5" style={{ color: role === 'STUDENT' ? '#C5A880' : '#9B9B9B' }} />
+                  <span className="text-xs font-medium" style={{ color: role === 'STUDENT' ? '#2F2F2F' : '#6B6B6B' }}>
                     Hoc sinh
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole('TEACHER')}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
-                    role === 'TEACHER' ? 'border-[#C5A880] bg-[#C5A880]/10' : 'border-transparent bg-[#FDFBF7]'
-                  }`}
+                  className="flex flex-col items-center gap-1.5 p-2.5 rounded-md border transition-all duration-100"
                   style={{
-                    borderWidth: 2,
-                    borderColor: role === 'TEACHER' ? '#C5A880' : '#E5DEDB'
+                    borderColor: role === 'TEACHER' ? '#F5EBE0' : '#E5E5E5',
+                    backgroundColor: role === 'TEACHER' ? '#F5EBE0' : '#FFFFFF'
                   }}
                 >
-                  <BookOpen className="w-6 h-6" style={{ color: role === 'TEACHER' ? '#C5A880' : '#8E7F73' }} />
-                  <span className="text-xs font-medium" style={{ color: role === 'TEACHER' ? '#1C120F' : '#8E7F73' }}>
+                  <BookOpen className="w-5 h-5" style={{ color: role === 'TEACHER' ? '#C5A880' : '#9B9B9B' }} />
+                  <span className="text-xs font-medium" style={{ color: role === 'TEACHER' ? '#2F2F2F' : '#6B6B6B' }}>
                     Giang vien
                   </span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setRole('ADMIN')}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-200 ${
-                    role === 'ADMIN' ? 'border-[#C5A880] bg-[#C5A880]/10' : 'border-transparent bg-[#FDFBF7]'
-                  }`}
+                  className="flex flex-col items-center gap-1.5 p-2.5 rounded-md border transition-all duration-100"
                   style={{
-                    borderWidth: 2,
-                    borderColor: role === 'ADMIN' ? '#C5A880' : '#E5DEDB'
+                    borderColor: role === 'ADMIN' ? '#F5EBE0' : '#E5E5E5',
+                    backgroundColor: role === 'ADMIN' ? '#F5EBE0' : '#FFFFFF'
                   }}
                 >
-                  <Shield className="w-6 h-6" style={{ color: role === 'ADMIN' ? '#C5A880' : '#8E7F73' }} />
-                  <span className="text-xs font-medium" style={{ color: role === 'ADMIN' ? '#1C120F' : '#8E7F73' }}>
+                  <Shield className="w-5 h-5" style={{ color: role === 'ADMIN' ? '#C5A880' : '#9B9B9B' }} />
+                  <span className="text-xs font-medium" style={{ color: role === 'ADMIN' ? '#2F2F2F' : '#6B6B6B' }}>
                     Admin
                   </span>
                 </button>
@@ -282,42 +269,39 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:opacity-90 disabled:opacity-50"
+              className="w-full py-2 rounded-md font-medium text-sm flex items-center justify-center gap-2 transition-all duration-150 hover:opacity-90 disabled:opacity-50"
               style={{
-                backgroundColor: '#C5A880',
-                color: '#1C120F'
+                backgroundColor: '#2F2F2F',
+                color: '#FFFFFF'
               }}
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : (
-                <>
-                  Dang ky
-                  <ArrowRight className="w-5 h-5" />
-                </>
+                'Dang ky'
               )}
             </button>
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px" style={{ backgroundColor: '#E5DEDB' }} />
-            <span className="text-sm" style={{ color: '#8E7F73' }}>hoac</span>
-            <div className="flex-1 h-px" style={{ backgroundColor: '#E5DEDB' }} />
+          <div className="flex items-center gap-3 my-4">
+            <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
+            <span className="text-xs" style={{ color: '#9B9B9B' }}>hoac</span>
+            <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
           </div>
 
           {/* Google Sign-in Button */}
           <button
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-3.5 rounded-xl font-medium flex items-center justify-center gap-3 transition-all duration-200 hover:opacity-90 border"
+            className="w-full py-2 rounded-md font-medium text-sm flex items-center justify-center gap-2 transition-all duration-150 hover:bg-gray-50"
             style={{
               backgroundColor: '#FFFFFF',
-              borderColor: '#E5DEDB',
-              color: '#1C120F'
+              border: '1px solid #E5E5E5',
+              color: '#2F2F2F'
             }}
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -335,29 +319,22 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Dang ky voi Google
+            Tiep tuc voi Google
           </button>
 
           {/* Login Link */}
-          <p className="mt-5 text-center text-sm" style={{ color: '#8E7F73' }}>
+          <p className="mt-4 text-center text-sm" style={{ color: '#6B6B6B' }}>
             Da co tai khoan?{' '}
             <button
               onClick={onNavigateToLogin}
               className="font-medium hover:underline"
-              style={{ color: '#C5A880' }}
+              style={{ color: '#2F2F2F' }}
             >
               Dang nhap
             </button>
           </p>
         </div>
       </div>
-
-      <style>{`
-        input:focus {
-          --tw-ring-color: #C5A880 !important;
-          box-shadow: 0 0 0 2px #C5A880 !important;
-        }
-      `}</style>
     </div>
   );
 }

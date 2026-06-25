@@ -8,7 +8,6 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
-import { Coffee } from 'lucide-react';
 
 type Page = 'login' | 'register' | 'dashboard';
 
@@ -26,12 +25,12 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FDFBF7' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FAFAFA' }}>
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 animate-pulse" style={{ backgroundColor: '#C5A880' }}>
-            <Coffee className="w-8 h-8" style={{ color: '#1C120F' }} />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-4" style={{ backgroundColor: '#F5EBE0' }}>
+            <span className="text-2xl">☕</span>
           </div>
-          <p className="text-sm" style={{ color: '#8E7F73' }}>Dang tai...</p>
+          <p className="text-sm" style={{ color: '#6B6B6B' }}>Dang tai...</p>
         </div>
       </div>
     );
