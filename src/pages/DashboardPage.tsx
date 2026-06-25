@@ -3,42 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
+import { useProgress } from '../context/ProgressContext';
 import Sidebar from '../components/Sidebar';
 import LessonDetailPage from '../components/LessonDetailPage';
-import { Lesson, Quiz, TLMSState, AIFeedbackResponse } from '../types';
-
-interface DashboardLesson {
-  id: string;
-  title: string;
-  description: string;
-  order: number;
-  concepts: string[];
-  status: 'completed' | 'active' | 'locked';
-  progress: number;
-  masteredConcepts: number;
-}
+import { AIFeedbackResponse } from '../types';
 
 export default function DashboardPage() {
   const { profile } = useAuth();
+  const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
   const [activeItem, setActiveItem] = useState('workspace');
-  const [state, setState] = useState<TLMSState | null>(null);
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/tlms/state')
-      .then((res) => res.json())
-      .then((data) => {
-        setState(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Failed to load state:', err);
-        setLoading(false);
-      });
-  }, []);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -47,74 +24,49 @@ export default function DashboardPage() {
     return 'Buổi tối yên tĩnh';
   };
 
-  const lessons: DashboardLesson[] = (state?.lessons || []).map((lesson) => {
-    const isUnlocked = state?.progress.unlockedLessonIds.includes(lesson.id) ?? false;
-    const isCompleted = state?.progress.completedLessonIds.includes(lesson.id) ?? false;
-    const masteredCount = lesson.concepts.filter((c) =>
-      state?.progress.masteredConcepts.includes(c)
-    ).length;
-
-    let status: DashboardLesson['status'] = 'locked';
-    if (isCompleted) status = 'completed';
-    else if (isUnlocked) status = 'active';
-
-    return {
-      id: lesson.id,
-      title: lesson.title,
-      description: lesson.description,
-      order: lesson.order,
-      concepts: lesson.concepts,
-      status,
-      progress: isCompleted ? 100 : 0,
-      masteredConcepts: masteredCount,
-    };
-  });
-
-  const currentLesson = lessons.find((l) => l.status === 'active');
   const totalConcepts = lessons.reduce((sum, l) => sum + l.concepts.length, 0);
-  const totalMastered = lessons.reduce((sum, l) => sum + l.masteredConcepts, 0);
+  const totalMastered = progress?.masteredConcepts.length ?? 0;
   const overallProgress = totalConcepts > 0 ? Math.round((totalMastered / totalConcepts) * 100) : 0;
+  const activeLesson = roadmap.find((r) => !r.isCompleted && !r.isLocked);
 
   const handleLessonClick = (lessonId: string) => {
-    const lesson = lessons.find((l) => l.id === lessonId);
-    if (lesson && lesson.status !== 'locked') {
+    const item = roadmap.find((r) => r.lessonId === lessonId);
+    if (item && !item.isLocked) {
       setSelectedLessonId(lessonId);
     }
   };
 
-  const handleBack = () => setSelectedLessonId(null);
-
-  const handleQuizComplete = (passed: boolean, _feedback: AIFeedbackResponse) => {
-    if (passed) {
-      fetch('/api/tlms/state')
-        .then((res) => res.json())
-        .then(setState)
-        .catch(() => {});
+  const handleQuizComplete = (passed: boolean, feedback: AIFeedbackResponse) => {
+    if (selectedLessonId) {
+      onQuizComplete(selectedLessonId, passed, feedback);
     }
   };
 
   // Lesson detail view
-  if (selectedLessonId && state) {
-    const lesson = state.lessons.find((l) => l.id === selectedLessonId);
-    const quiz = state.quizzes[selectedLessonId];
-    const dashboardLesson = lessons.find((l) => l.id === selectedLessonId);
-    const isLocked = dashboardLesson?.status === 'locked';
+  if (selectedLessonId) {
+    const lesson = lessons.find((l) => l.id === selectedLessonId);
+    const quiz = quizzes[selectedLessonId];
+    const item = roadmap.find((r) => r.lessonId === selectedLessonId);
 
     if (lesson) {
       return (
         <div className="flex h-screen" style={{ backgroundColor: '#FAFAFA' }}>
           <Sidebar
-        activeItem={activeItem}
-        onItemClick={setActiveItem}
-        lessons={lessons}
-        onLessonClick={handleLessonClick}
-      />
+            activeItem={activeItem}
+            onItemClick={setActiveItem}
+            lessons={roadmap.map((r) => ({
+              id: r.lessonId,
+              title: r.title,
+              status: r.isCompleted ? 'completed' : r.isLocked ? 'locked' : 'active',
+            }))}
+            onLessonClick={handleLessonClick}
+          />
           <main className="flex-1 overflow-y-auto">
             <LessonDetailPage
               lesson={lesson}
               quiz={quiz || null}
-              isLocked={isLocked}
-              onBack={handleBack}
+              isLocked={item?.isLocked ?? false}
+              onBack={() => setSelectedLessonId(null)}
               onQuizComplete={handleQuizComplete}
             />
           </main>
@@ -130,7 +82,7 @@ export default function DashboardPage() {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-4" style={{ backgroundColor: '#F5EBE0' }}>
             <span className="text-2xl">☕</span>
           </div>
-          <p className="font-sans text-sm text-neutral-500">Đang tải...</p>
+          <p className="font-sans text-sm text-neutral-500">Đang tải lộ trình học...</p>
         </div>
       </div>
     );
@@ -141,7 +93,11 @@ export default function DashboardPage() {
       <Sidebar
         activeItem={activeItem}
         onItemClick={setActiveItem}
-        lessons={lessons}
+        lessons={roadmap.map((r) => ({
+          id: r.lessonId,
+          title: r.title,
+          status: r.isCompleted ? 'completed' : r.isLocked ? 'locked' : 'active',
+        }))}
         onLessonClick={handleLessonClick}
       />
 
@@ -155,9 +111,28 @@ export default function DashboardPage() {
             </h1>
             <p className="font-sans text-base text-neutral-500">
               Hôm nay bạn có{' '}
-              <span className="font-medium text-[#C5A880]">{lessons.filter((l) => l.status === 'active').length} bài học</span>{' '}
+              <span className="font-medium text-[#C5A880]">
+                {roadmap.filter((r) => !r.isLocked && !r.isCompleted).length} bài học
+              </span>{' '}
               đang chờ hoàn thiện.
             </p>
+          </section>
+
+          {/* Course title */}
+          <section className="mb-8">
+            <div className="rounded-xl border border-neutral-200 bg-white p-5">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">☕</span>
+                <div>
+                  <h2 className="font-heading text-lg font-semibold text-neutral-800">
+                    Lập trình hướng tư duy tối giản cùng SQL
+                  </h2>
+                  <p className="font-sans text-xs text-neutral-400">
+                    Mastery Learning · 3 bài học · Không có bảng xếp hạng
+                  </p>
+                </div>
+              </div>
+            </div>
           </section>
 
           {/* Progress */}
@@ -187,22 +162,25 @@ export default function DashboardPage() {
               </div>
 
               <div className="w-full h-2 rounded-full bg-neutral-100">
-                <div
-                  className="h-2 rounded-full transition-all duration-700"
-                  style={{ width: `${overallProgress}%`, backgroundColor: '#C5A880' }}
+                <motion.div
+                  className="h-2 rounded-full"
+                  style={{ backgroundColor: '#C5A880' }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${overallProgress}%` }}
+                  transition={{ duration: 0.7, ease: 'easeOut' }}
                 />
               </div>
 
-              {currentLesson && (
+              {activeLesson && (
                 <button
-                  onClick={() => handleLessonClick(currentLesson.id)}
+                  onClick={() => handleLessonClick(activeLesson.lessonId)}
                   className="mt-4 w-full text-left p-4 rounded-lg border-l-4 flex items-center gap-4 hover:bg-neutral-50 transition-colors"
                   style={{ backgroundColor: '#FAFAFA', borderLeftColor: '#C5A880' }}
                 >
                   <div className="flex-1">
                     <p className="font-sans text-xs font-medium mb-1 text-neutral-400">Đang học:</p>
                     <p className="font-sans text-sm font-semibold text-neutral-800">
-                      {currentLesson.title}
+                      {activeLesson.title}
                     </p>
                   </div>
                   <span className="font-sans text-xs text-[#C5A880] font-medium">Tiếp tục →</span>
@@ -211,20 +189,22 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          {/* Learning path */}
+          {/* Learning path with unlock animations */}
           <section className="mb-10">
             <h2 className="font-sans text-xs font-semibold tracking-wide mb-4 text-neutral-400">
               LỘ TRÌNH HỌC TẬP (MASTERY LEARNING)
             </h2>
             <div className="space-y-3">
-              {lessons.map((lesson, index) => (
-                <LessonCard
-                  key={lesson.id}
-                  lesson={lesson}
-                  index={index + 1}
-                  onClick={() => handleLessonClick(lesson.id)}
-                />
-              ))}
+              <AnimatePresence>
+                {roadmap.map((item, index) => (
+                  <LessonCard
+                    key={item.lessonId}
+                    item={item}
+                    index={index + 1}
+                    onClick={() => handleLessonClick(item.lessonId)}
+                  />
+                ))}
+              </AnimatePresence>
             </div>
           </section>
 
@@ -234,8 +214,8 @@ export default function DashboardPage() {
               THỐNG KÊ HỌC TẬP
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <StatCard icon="📚" label="Bài học đã mở" value={String(lessons.filter((l) => l.status !== 'locked').length)} />
-              <StatCard icon="✅" label="Bài đã hoàn thành" value={String(lessons.filter((l) => l.status === 'completed').length)} />
+              <StatCard icon="📚" label="Bài học đã mở" value={String(roadmap.filter((r) => !r.isLocked).length)} />
+              <StatCard icon="✅" label="Bài đã hoàn thành" value={String(roadmap.filter((r) => r.isCompleted).length)} />
               <StatCard icon="⭐" label="Khái niệm làm chủ" value={String(totalMastered)} />
               <StatCard icon="🔥" label="Chuỗi học tập" value="3 ngày" />
             </div>
@@ -262,22 +242,33 @@ export default function DashboardPage() {
   );
 }
 
+interface RoadmapItem {
+  lessonId: string;
+  title: string;
+  description: string;
+  order: number;
+  isLocked: boolean;
+  isCompleted: boolean;
+  masteredConcepts: number;
+  totalConcepts: number;
+}
+
 function LessonCard({
-  lesson,
+  item,
   index,
   onClick,
 }: {
-  lesson: DashboardLesson;
+  item: RoadmapItem;
   index: number;
   onClick: () => void;
 }) {
-  const isLocked = lesson.status === 'locked';
+  const isLocked = item.isLocked;
 
   const getStatusDisplay = () => {
-    if (lesson.status === 'completed') {
+    if (item.isCompleted) {
       return { icon: '✓', bg: 'bg-emerald-50', text: 'text-emerald-700', label: 'Đã làm chủ' };
     }
-    if (lesson.status === 'active') {
+    if (!isLocked) {
       return { icon: '📖', bg: 'bg-amber-50', text: 'text-amber-700', label: 'Đang học' };
     }
     return { icon: '🔒', bg: 'bg-neutral-100', text: 'text-neutral-400', label: 'Bị khóa' };
@@ -286,55 +277,71 @@ function LessonCard({
   const status = getStatusDisplay();
 
   return (
-    <button
-      onClick={onClick}
-      disabled={isLocked}
-      className={`w-full text-left rounded-xl border p-5 transition-all duration-200 ${
-        isLocked
-          ? 'cursor-not-allowed opacity-60 border-neutral-200 bg-white'
-          : 'cursor-pointer hover:shadow-sm hover:-translate-y-0.5 border-neutral-200 bg-white'
-      } ${lesson.status === 'active' ? 'ring-1 ring-[#C5A880]/40' : ''}`}
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      whileHover={!isLocked ? { y: -2 } : undefined}
     >
-      <div className="flex items-start gap-4">
-        <div
-          className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-lg ${status.bg} ${status.text}`}
-        >
-          {status.icon}
-        </div>
+      <button
+        onClick={onClick}
+        disabled={isLocked}
+        className={`w-full text-left rounded-xl border p-5 transition-all duration-200 ${
+          isLocked
+            ? 'cursor-not-allowed opacity-60 border-neutral-200 bg-white'
+            : 'cursor-pointer hover:shadow-sm border-neutral-200 bg-white'
+        } ${!isLocked && !item.isCompleted ? 'ring-1 ring-[#C5A880]/40' : ''}`}
+      >
+        <div className="flex items-start gap-4">
+          {/* Status icon with unlock animation */}
+          <motion.div
+            className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-lg ${status.bg} ${status.text}`}
+            key={status.icon}
+            initial={{ scale: 0.6, rotate: -30, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            {status.icon}
+          </motion.div>
 
-        <div className="flex-1 min-w-0">
-          <h3 className={`font-sans text-sm font-semibold mb-1 ${isLocked ? 'text-neutral-400' : 'text-neutral-800'}`}>
-            {lesson.title}
-          </h3>
-          <p className="font-sans text-xs text-neutral-400 mb-3">{lesson.description}</p>
+          <div className="flex-1 min-w-0">
+            <h3 className={`font-sans text-sm font-semibold mb-1 ${isLocked ? 'text-neutral-400' : 'text-neutral-800'}`}>
+              {item.title}
+            </h3>
+            <p className="font-sans text-xs text-neutral-400 mb-3">{item.description}</p>
 
-          {lesson.status === 'active' && (
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-1.5 rounded-full bg-neutral-100">
-                <div
-                  className="h-1.5 rounded-full transition-all duration-500"
-                  style={{ width: `${lesson.progress}%`, backgroundColor: '#C5A880' }}
-                />
+            {!isLocked && !item.isCompleted && (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-1.5 rounded-full bg-neutral-100">
+                  <motion.div
+                    className="h-1.5 rounded-full"
+                    style={{ backgroundColor: '#C5A880' }}
+                    initial={{ width: 0 }}
+                    animate={{ width: '0%' }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+                <span className="font-sans text-xs font-medium text-[#C5A880]">0%</span>
               </div>
-              <span className="font-sans text-xs font-medium text-[#C5A880]">{lesson.progress}%</span>
-            </div>
-          )}
+            )}
 
-          {isLocked && (
-            <p className="font-sans text-xs text-neutral-400">Sẽ mở khi bạn đạt Mastery bài trước</p>
-          )}
-        </div>
+            {isLocked && (
+              <p className="font-sans text-xs text-neutral-400">Sẽ mở khi bạn đạt Mastery bài trước</p>
+            )}
+          </div>
 
-        <div className="text-right flex-shrink-0">
-          <span className={`inline-block font-sans text-xs font-medium px-2.5 py-1 rounded-md ${status.bg} ${status.text}`}>
-            {status.label}
-          </span>
-          <p className="font-sans text-xs text-neutral-400 mt-2">
-            {lesson.masteredConcepts}/{lesson.concepts.length} khái niệm
-          </p>
+          <div className="text-right flex-shrink-0">
+            <span className={`inline-block font-sans text-xs font-medium px-2.5 py-1 rounded-md ${status.bg} ${status.text}`}>
+              {status.label}
+            </span>
+            <p className="font-sans text-xs text-neutral-400 mt-2">
+              {item.masteredConcepts}/{item.totalConcepts} khái niệm
+            </p>
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+    </motion.div>
   );
 }
 
