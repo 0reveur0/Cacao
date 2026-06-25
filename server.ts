@@ -8,8 +8,9 @@ import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
-import { TLMSState, Lesson, Quiz, QuizAttempt, StudentProgress } from "./src/types";
+import { TLMSState, Lesson, Quiz, QuizAttempt, StudentProgress, AIFeedbackRequest, AIFeedbackResponse, FeedbackPoint } from "./src/types";
 
 dotenv.config();
 
@@ -38,6 +39,167 @@ if (isRealApiKey) {
   }
 } else {
   console.log("Cacao AI Client: Running in simulation mode (No valid GEMINI_API_KEY detected). Ready with beautiful pre-baked diagnostics.");
+}
+
+// Initialize Supabase Client
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+if (supabaseUrl && supabaseServiceKey) {
+  supabaseClient = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+  console.log("Cacao Supabase Client: initialized successfully.");
+}
+
+// ===== AI DIAGNOSTIC SERVICE =====
+// Pedagogical System Prompt for Descriptive Feedback
+const PEDAGOGICAL_SYSTEM_PROMPT = `Bạn là Trợ lý Chẩn đoán Giáo dục (AI Diagnostic Assistant) của hệ thống học tập "Cacao".
+
+## Vai trò của bạn
+Bạn là một người thầy đồng hành thông thái, ấm áp, người phân tích bài làm của học viên và đưa ra phản hồi mang tính xây dựng.
+
+## Nguyên tắc BẤT DIỆN:
+1. TUYỆT ĐỐI KHÔNG sử dụng từ ngữ phán xét tiêu cực: "yếu kém", "sai dốt", "thất bại", "tệ", "kém".
+2. Luôn gọi học viên là "em" - thể hiện sự gần gũi, ấm áp.
+3. Mỗi lỗi sai là một "cơ hội học hỏi" - KHÔNG phải là thất bại.
+4. Không bao giờ đưa ra đáp án trực tiếp ngay lập tức - hãy gợi mở, đặt câu hỏi dẫn dắt.
+
+## Cấu trúc phản hồi JSON bắt buộc:
+Bạn PHẢI trả về JSON với cấu trúc CHÍNH XÁC sau:
+{
+  "greeting": "Lời chào ấm áp cá nhân hóa",
+  "positive_points": [
+    {"title": "Tiêu đề điểm tốt", "description": "Chi tiết tại sao đây là điểm mạnh", "concept": "Khái niệm liên quan"}
+  ],
+  "gap_analysis": [
+    {"title": "Tiêu đề điểm cần lưu ý", "description": "Phân tích ngộ nhận và bản chất", "concept": "Khái niệm liên quan"}
+  ],
+  "action_plan": [
+    {"title": "Hành động cụ thể", "description": "Gợi ý bước tiếp theo", "concept": "Khái niệm liên quan"}
+  ],
+  "encouragement": "Lời động viên theo triết lý Mastery Learning"
+}
+
+## Phương pháp phân tích:
+- Với câu SAI: Chỉ ra đây là "ngộ nhận phổ biến" → Giải thích bản chất → Gợi ý hướng tư duy
+- Với câu ĐÚNG: Khen ngợi súc tích → Củng cố tại sao kiến thức này quan trọng
+- Kết thúc bằng thông điệp: "Trong Cacao, làm sai là phần tự nhiên của hành trình làm chủ. Em cứ thoải mái học lại nhé!"
+
+Giọng văn: Ấm áp như người anh/chị, chuyên nghiệp như giáo sư, gần gũi như bạn bè.`;
+
+async function generateDiagnosticFeedback(
+  lessonTitle: string,
+  lessonDescription: string,
+  quizDetails: string,
+  score: number,
+  totalQuestions: number,
+  passed: boolean
+): Promise<AIFeedbackResponse> {
+  const startTime = Date.now();
+
+  if (!aiClient) {
+    return generateLocalStructuredFeedback(lessonTitle, quizDetails, score, totalQuestions, passed);
+  }
+
+  const userPrompt = `Vui lòng phân tích bài làm sau và đưa ra phản hồi JSON:
+
+Bài học: ${lessonTitle}
+Mô tả: ${lessonDescription}
+Kết quả: ${score}/${totalQuestions}
+Trạng thái: ${passed ? "ĐẠT" : "CHƯA ĐẠT"}
+
+Chi tiết bài làm:
+${quizDetails}
+
+Yêu cầu: Trả về JSON hợp lệ với các trường greeting, positive_points, gap_analysis, action_plan, encouragement.`;
+
+  try {
+    const response = await aiClient.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: userPrompt,
+      config: {
+        systemInstruction: PEDAGOGICAL_SYSTEM_PROMPT,
+        responseMimeType: "application/json",
+        temperature: 0.7,
+      },
+    });
+
+    const responseText = response.text || "{}";
+    const parsed = JSON.parse(responseText);
+
+    const elapsed = Date.now() - startTime;
+    console.log(`Cacao AI: Generated structured feedback in ${elapsed}ms`);
+
+    return {
+      greeting: parsed.greeting || "Chao em than men!",
+      positive_points: Array.isArray(parsed.positive_points) ? parsed.positive_points : [],
+      gap_analysis: Array.isArray(parsed.gap_analysis) ? parsed.gap_analysis : [],
+      action_plan: Array.isArray(parsed.action_plan) ? parsed.action_plan : [],
+      encouragement: parsed.encouragement || "Tiep tuc phan dau nhe!",
+    };
+  } catch (err) {
+    console.error("Cacao AI: Error generating structured feedback:", err);
+    return generateLocalStructuredFeedback(lessonTitle, quizDetails, score, totalQuestions, passed);
+  }
+}
+
+function generateLocalStructuredFeedback(
+  lessonTitle: string,
+  quizDetails: string,
+  score: number,
+  totalQuestions: number,
+  passed: boolean
+): AIFeedbackResponse {
+  const wrongCount = totalQuestions - score;
+  const percentage = Math.round((score / totalQuestions) * 100);
+
+  return {
+    greeting: `Chao em! Cacao da xem bai lam cua em voi mon "Lesson: ${lessonTitle}". Hay cung nhau di vao chi tiet nhe!`,
+    positive_points: [
+      {
+        title: "Tu duy he thong",
+        description: "Em da co su hieu biet tot ve cac khai niem co ban. Day la nen tang quan trong de tiep tuc phat trien.",
+        concept: "Core Concepts"
+      },
+      ...(score > 0 ? [{
+        title: "Chinh xac " + score + "/" + totalQuestions,
+        description: "Em da tra loi dung " + score + " cau hoi. Dieu nay cho thay em dang tren dung huong!",
+        concept: "Quiz Performance"
+      }] : [])
+    ],
+    gap_analysis: wrongCount > 0 ? [
+      {
+        title: "Co hoi cai thien",
+        description: "Co " + wrongCount + " cau em chua tra loi dung. Nhung day KHONG phai loi sai - day la nhung vien gach dung de xay dung nen thanh cong!",
+        concept: "Misconceptions"
+      },
+      {
+        title: "Diem can luu y",
+        description: "Mot so khai niem can em xem lai ky hon. Hay doc lai noi dung bai hoc va cac vi du minh hoa.",
+        concept: "Knowledge Gaps"
+      }
+    ] : [],
+    action_plan: [
+      {
+        title: "Xem lai bai giang",
+        description: "Hay xem lai video bai hoc va cac doan code vi du de lam sach se khong gian kien thuc.",
+        concept: "Review"
+      },
+      {
+        title: "Thuc hanh them",
+        description: passed ? "Hay san sang cho bai hoc tiep theo! Em da lam chu noi dung nay." : "Hay lam lai bai quiz sau khi on tap. Khong co gioi han so lan thu!",
+        concept: "Practice"
+      }
+    ],
+    encouragement: passed
+      ? "Tuyet voi! Em da lam chu bai hoc nay. Trong he thong Cacao, viec hoc khong co diem ket thuc - moi bai hoc la mo cua bai hoc tiep theo. Tiep tuc phan dau nhe!"
+      : "Dung lo lung em nhe! Trong Cacao, lam sai chi la phan tu nhien cua hanh trinh lam chu. Em hay thoai mai on lai, doc lai bai hoc va thu lai. Minh tin chac em se lam duoc!"
+  };
 }
 
 app.use(express.json());
@@ -610,6 +772,247 @@ app.post("/api/tlms/reset", (req, res) => {
   saveState(state);
   res.json({ success: true, message: "Hệ thống đã được thiết lập lại về trạng thái ban đầu mượt mà." });
 });
+
+// ====== NEW AI DIAGNOSTIC SUBMISSION API ======
+
+// Submit quiz with structured AI diagnostic feedback
+app.post("/api/submissions", async (req, res) => {
+  const { userId, profileId, lessonId, answers, content } = req.body;
+
+  if (!userId || !lessonId) {
+    return res.status(400).json({ error: "Thieu thong tin nguoi dung hoac bai hoc." });
+  }
+
+  const state = loadState();
+  const quiz = state.quizzes[lessonId];
+  const lesson = state.lessons.find(l => l.id === lessonId);
+
+  if (!quiz || !lesson) {
+    return res.status(404).json({ error: "Khong tim thay bai hoc." });
+  }
+
+  // Calculate scores
+  let correctCount = 0;
+  const resultsAnalysis = quiz.questions.map(q => {
+    const selected = answers?.[q.id];
+    const isCorrect = selected === q.correctAnswerIndex;
+    if (isCorrect) correctCount++;
+    return {
+      questionId: q.id,
+      questionText: q.text,
+      selectedOption: typeof selected === "number" ? q.options[selected] || "Chua tra loi" : "Chua tra loi",
+      selectedIndex: selected,
+      correctOption: q.options[q.correctAnswerIndex],
+      correctIndex: q.correctAnswerIndex,
+      isCorrect,
+      conceptTested: q.conceptTested
+    };
+  });
+
+  const score = correctCount;
+  const totalQuestions = quiz.questions.length;
+  const masteryThreshold = totalQuestions >= 3 ? 2 : totalQuestions;
+  const passed = score >= masteryThreshold;
+
+  // Build quiz details for AI
+  let quizDetailsText = "";
+  resultsAnalysis.forEach((res, i) => {
+    quizDetailsText += `Cau ${i + 1}: "${res.questionText}"
+- Em chon: "${res.selectedOption}" ${res.isCorrect ? "(DUNG)" : "(SAI)"}
+- Dap an: "${res.correctOption}"
+- Khai niem: ${res.conceptTested}\n\n`;
+  });
+
+  // Generate structured AI feedback
+  const aiFeedback = await generateDiagnosticFeedback(
+    lesson.title,
+    lesson.description,
+    quizDetailsText,
+    score,
+    totalQuestions,
+    passed
+  );
+
+  // Save to Supabase if available
+  let submissionId = `sub-${Date.now()}`;
+  if (supabaseClient) {
+    try {
+      const { data: submission, error: subError } = await supabaseClient
+        .from('submissions')
+        .insert({
+          user_id: userId,
+          profile_id: profileId || userId,
+          lesson_id: lessonId,
+          content: content || JSON.stringify(answers),
+          submission_type: 'quiz',
+          status: 'REVIEWED',
+          answers: answers,
+          score: score,
+          passed: passed
+        })
+        .select('id')
+        .single();
+
+      if (!subError && submission) {
+        submissionId = submission.id;
+
+        // Save feedback
+        await supabaseClient
+          .from('feedback')
+          .insert({
+            submission_id: submissionId,
+            user_id: userId,
+            greeting: aiFeedback.greeting,
+            positive_points: aiFeedback.positive_points,
+            gap_analysis: aiFeedback.gap_analysis,
+            action_plan: aiFeedback.action_plan,
+            encouragement: aiFeedback.encouragement,
+            model_used: aiClient ? 'gemini-2.0-flash' : 'local-simulation'
+          });
+      }
+    } catch (err) {
+      console.error("Error saving to Supabase:", err);
+    }
+  }
+
+  // Also update local progress
+  if (!state.progress.attempts[lessonId]) {
+    state.progress.attempts[lessonId] = [];
+  }
+
+  const newAttempt: QuizAttempt = {
+    id: submissionId,
+    lessonId,
+    submittedAt: new Date().toISOString(),
+    answers: answers || {},
+    score,
+    passed,
+    feedback: JSON.stringify(aiFeedback),
+    isAnalyzing: false
+  };
+
+  state.progress.attempts[lessonId].push(newAttempt);
+
+  if (passed) {
+    if (!state.progress.completedLessonIds.includes(lessonId)) {
+      state.progress.completedLessonIds.push(lessonId);
+    }
+    lesson.concepts.forEach(concept => {
+      if (!state.progress.masteredConcepts.includes(concept)) {
+        state.progress.masteredConcepts.push(concept);
+      }
+    });
+    const nextLesson = state.lessons.find(l => l.order === lesson.order + 1);
+    if (nextLesson && !state.progress.unlockedLessonIds.includes(nextLesson.id)) {
+      state.progress.unlockedLessonIds.push(nextLesson.id);
+    }
+  }
+
+  saveState(state);
+
+  res.json({
+    success: true,
+    submissionId,
+    score,
+    totalQuestions,
+    passed,
+    feedback: aiFeedback,
+    updatedProgress: state.progress
+  });
+});
+
+// Get feedback for a submission
+app.get("/api/submissions/:submissionId/feedback", async (req, res) => {
+  const { submissionId } = req.params;
+
+  if (supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('feedback')
+        .select('*')
+        .eq('submission_id', submissionId)
+        .single();
+
+      if (!error && data) {
+        return res.json({ success: true, feedback: data });
+      }
+    } catch (err) {
+      console.error("Error fetching from Supabase:", err);
+    }
+  }
+
+  // Fallback to local state
+  const state = loadState();
+  let foundFeedback = null;
+
+  for (const attempts of Object.values(state.progress.attempts)) {
+    const attempt = attempts.find(a => a.id === submissionId);
+    if (attempt) {
+      try {
+        foundFeedback = typeof attempt.feedback === 'string' ? JSON.parse(attempt.feedback) : attempt.feedback;
+      } catch {
+        foundFeedback = { greeting: attempt.feedback };
+      }
+      break;
+    }
+  }
+
+  if (foundFeedback) {
+    res.json({ success: true, feedback: foundFeedback });
+  } else {
+    res.status(404).json({ error: "Khong tim thay phan hoi." });
+  }
+});
+
+// Get all submissions for a user
+app.get("/api/submissions", async (req, res) => {
+  const { userId, lessonId } = req.query;
+
+  if (supabaseClient && userId) {
+    try {
+      let query = supabaseClient
+        .from('submissions')
+        .select('*, feedback(*)')
+        .eq('user_id', userId as string)
+        .order('created_at', { ascending: false });
+
+      if (lessonId) {
+        query = query.eq('lesson_id', lessonId as string);
+      }
+
+      const { data, error } = await query;
+
+      if (!error && data) {
+        return res.json({ success: true, submissions: data });
+      }
+    } catch (err) {
+      console.error("Error fetching submissions:", err);
+    }
+  }
+
+  // Fallback to local state
+  const state = loadState();
+  const allAttempts: any[] = [];
+
+  for (const [lId, attempts] of Object.entries(state.progress.attempts)) {
+    for (const attempt of attempts) {
+      allAttempts.push({
+        id: attempt.id,
+        lesson_id: lId,
+        score: attempt.score,
+        passed: attempt.passed,
+        created_at: attempt.submittedAt,
+        feedback: attempt.feedback
+      });
+    }
+  }
+
+  res.json({ success: true, submissions: allAttempts.sort((a, b) =>
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  )});
+});
+
+// ====== END NEW API ======
 
 // Helper functions for template-based professional diagnostics
 function generateLocalFeedback(lessonId: string, analysis: any[], passed: boolean): string {
