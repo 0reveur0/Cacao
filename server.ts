@@ -126,6 +126,50 @@ Yêu cầu: Trả về JSON hợp lệ với các trường greeting, positive_p
         systemInstruction: PEDAGOGICAL_SYSTEM_PROMPT,
         responseMimeType: "application/json",
         temperature: 0.7,
+        responseSchema: {
+          type: "object",
+          properties: {
+            greeting: { type: "string" },
+            positive_points: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  concept: { type: "string" }
+                },
+                required: ["title", "description"]
+              }
+            },
+            gap_analysis: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  concept: { type: "string" }
+                },
+                required: ["title", "description"]
+              }
+            },
+            action_plan: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  concept: { type: "string" }
+                },
+                required: ["title", "description"]
+              }
+            },
+            encouragement: { type: "string" }
+          },
+          required: ["greeting", "positive_points", "gap_analysis", "action_plan", "encouragement"]
+        }
       },
     });
 
@@ -757,6 +801,31 @@ Hãy viết một phản hồi chẩn đoán (Descriptive Feedback) tiếng Vi�
   res.json({ success: true, attempt: newAttempt, updatedProgress: state.progress });
 });
 
+// Get roadmap with lock status for a user
+app.get("/api/tlms/roadmap", (req, res) => {
+  const state = loadState();
+  const roadmap = state.lessons.map((lesson) => {
+    const isCompleted = state.progress.completedLessonIds.includes(lesson.id);
+    const isUnlocked = state.progress.unlockedLessonIds.includes(lesson.id);
+    const masteredCount = lesson.concepts.filter((c) =>
+      state.progress.masteredConcepts.includes(c)
+    ).length;
+
+    return {
+      lessonId: lesson.id,
+      title: lesson.title,
+      description: lesson.description,
+      order: lesson.order,
+      isLocked: !isUnlocked,
+      isCompleted,
+      masteredConcepts: masteredCount,
+      totalConcepts: lesson.concepts.length
+    };
+  });
+
+  res.json({ success: true, roadmap });
+});
+
 // Reset progress for demo purposes
 app.post("/api/tlms/reset", (req, res) => {
   const state = loadState();
@@ -811,8 +880,8 @@ app.post("/api/submissions", async (req, res) => {
 
   const score = correctCount;
   const totalQuestions = quiz.questions.length;
-  const masteryThreshold = totalQuestions >= 3 ? 2 : totalQuestions;
-  const passed = score >= masteryThreshold;
+  const percentage = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
+  const passed = percentage >= 80;
 
   // Build quiz details for AI
   let quizDetailsText = "";
@@ -869,6 +938,29 @@ app.post("/api/submissions", async (req, res) => {
             encouragement: aiFeedback.encouragement,
             model_used: aiClient ? 'gemini-2.0-flash' : 'local-simulation'
           });
+
+        // Save quiz attempt for mastery tracking
+        const existingAttempts = await supabaseClient
+          .from('quiz_attempts')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('lesson_id', lessonId);
+
+        const attemptNumber = (existingAttempts.data?.length || 0) + 1;
+
+        await supabaseClient
+          .from('quiz_attempts')
+          .insert({
+            user_id: userId,
+            quiz_id: lessonId,
+            lesson_id: lessonId,
+            answers: answers || {},
+            score: score,
+            total_questions: totalQuestions,
+            percentage: percentage,
+            passed: passed,
+            attempt_number: attemptNumber
+          });
       }
     } catch (err) {
       console.error("Error saving to Supabase:", err);
@@ -915,6 +1007,7 @@ app.post("/api/submissions", async (req, res) => {
     submissionId,
     score,
     totalQuestions,
+    percentage,
     passed,
     feedback: aiFeedback,
     updatedProgress: state.progress

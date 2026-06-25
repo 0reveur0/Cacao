@@ -12,12 +12,20 @@ interface SidebarItem {
   label: string;
 }
 
+interface SidebarLesson {
+  id: string;
+  title: string;
+  status: 'completed' | 'active' | 'locked';
+}
+
 interface SidebarProps {
   activeItem?: string;
   onItemClick?: (id: string) => void;
+  lessons?: SidebarLesson[];
+  onLessonClick?: (id: string) => void;
 }
 
-export default function Sidebar({ activeItem = 'workspace', onItemClick }: SidebarProps) {
+export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons, onLessonClick }: SidebarProps) {
   const { profile, signOut } = useAuth();
 
   const mainMenuItems: SidebarItem[] = [
@@ -115,26 +123,15 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick }: Sideb
             </span>
           </div>
           <div className="space-y-0.5">
-            <LessonNavItem
-              icon="✓"
-              title="Lesson 1: Type Safety"
-              status="completed"
-            />
-            <LessonNavItem
-              icon="📖"
-              title="Lesson 2: Generics"
-              status="active"
-            />
-            <LessonNavItem
-              icon="🔒"
-              title="Lesson 3: Event-Driven"
-              status="locked"
-            />
-            <LessonNavItem
-              icon="🔒"
-              title="Lesson 4: AI Diagnostics"
-              status="locked"
-            />
+            {(lessons || []).map((lesson) => (
+              <LessonNavItem
+                key={lesson.id}
+                icon={lesson.status === 'completed' ? '✓' : lesson.status === 'active' ? '📖' : '🔒'}
+                title={lesson.title}
+                status={lesson.status}
+                onClick={() => onLessonClick?.(lesson.id)}
+              />
+            ))}
           </div>
 
           {/* Add New Button */}
@@ -190,9 +187,10 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick }: Sideb
   );
 }
 
-function LessonNavItem({ icon, title, status }: { icon: string; title: string; status: 'completed' | 'active' | 'locked' }) {
+function LessonNavItem({ icon, title, status, onClick }: { icon: string; title: string; status: 'completed' | 'active' | 'locked'; onClick?: () => void }) {
   return (
     <button
+      onClick={onClick}
       className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-all duration-150"
       style={{
         backgroundColor: status === 'active' ? '#F5EBE0' : 'transparent',
