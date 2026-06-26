@@ -19,7 +19,7 @@ export interface Question {
   text: string;
   options: string[];
   correctAnswerIndex: number;
-  conceptTested: string; // The specific sub-concept tested
+  conceptTested: string;
 }
 
 export interface Quiz {
@@ -34,17 +34,17 @@ export interface Lesson {
   content: string;
   videoUrl: string;
   order: number;
-  concepts: string[]; // List of concepts taught in this lesson
+  concepts: string[];
 }
 
 export interface QuizAttempt {
   id: string;
   lessonId: string;
   submittedAt: string;
-  answers: Record<string, number>; // questionId -> selectedOptionIndex
-  score: number; // e.g. 2 out of 3
-  passed: boolean; // meets mastery threshold (e.g. >= 2/3)
-  feedback: string; // AI descriptive feedback
+  answers: Record<string, number>;
+  score: number;
+  passed: boolean;
+  feedback: string;
   isAnalyzing: boolean;
 }
 
@@ -52,13 +52,12 @@ export interface StudentProgress {
   unlockedLessonIds: string[];
   completedLessonIds: string[];
   masteredConcepts: string[];
-  attempts: Record<string, QuizAttempt[]>; // lessonId -> attempts
+  attempts: Record<string, QuizAttempt[]>;
 }
 
-// System state for saving to local disk/in-memory
 export interface TLMSState {
   lessons: Lesson[];
-  quizzes: Record<string, Quiz>; // lessonId -> Quiz
+  quizzes: Record<string, Quiz>;
   progress: StudentProgress;
 }
 
@@ -128,4 +127,18 @@ export interface AIFeedbackResponse {
   gap_analysis: FeedbackPoint[];
   action_plan: FeedbackPoint[];
   encouragement: string;
+}
+
+export type ScheduleEventType = 'LIVE_CLASS' | 'ASSIGNMENT' | 'QUIZ';
+
+export interface ScheduleEvent {
+  id: string;
+  user_id: string;
+  title: string;
+  start_date: string;
+  end_date: string;
+  type: ScheduleEventType;
+  color_tag: string;
+  lesson_id?: string | null;
+  created_at: string;
 }

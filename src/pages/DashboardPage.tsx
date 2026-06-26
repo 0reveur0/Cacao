@@ -9,55 +9,37 @@ import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../context/ProgressContext';
 import Sidebar from '../components/Sidebar';
 import LessonDetailPage from '../components/LessonDetailPage';
+import PomodoroTimer from '../components/PomodoroTimer';
+import CalendarView from '../components/CalendarView';
 import { Plus, MessageSquare, Calendar, BookOpen, LayoutDashboard, ClipboardList, Settings, ChevronRight, Lock, CircleCheck as CheckCircle2, Circle, Clock, GraduationCap, Layers, Info } from 'lucide-react';
 import { AIFeedbackResponse } from '../types';
 
-// ─── Static course data (mock enrichment for Gallery Cards) ───────────────────
+// ─── Static course data ────────────────────────────────────────────────────────
 const COURSE_META: Record<
   string,
   { cover: string; icon: string; subject: string; type: string; schedule: string }
 > = {
   'lesson-1': {
-    cover:
-      'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🛡️',
-    subject: 'TypeScript',
-    type: 'Lecture',
-    schedule: 'Thứ 2 & 4',
+    cover: 'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon: '🛡️', subject: 'TypeScript', type: 'Lecture', schedule: 'Thứ 2 & 4',
   },
   'lesson-2': {
-    cover:
-      'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🧪',
-    subject: 'TypeScript',
-    type: 'Workshop',
-    schedule: 'Thứ 3 & 5',
+    cover: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon: '🧪', subject: 'TypeScript', type: 'Workshop', schedule: 'Thứ 3 & 5',
   },
   'lesson-3': {
-    cover:
-      'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🚀',
-    subject: 'Architecture',
-    type: 'Deep Dive',
-    schedule: 'Thứ 6',
+    cover: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon: '🚀', subject: 'Architecture', type: 'Deep Dive', schedule: 'Thứ 6',
   },
   'lesson-4': {
-    cover:
-      'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🧠',
-    subject: 'AI & Prompting',
-    type: 'Seminar',
-    schedule: 'Thứ 7',
+    cover: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon: '🧠', subject: 'AI & Prompting', type: 'Seminar', schedule: 'Thứ 7',
   },
 };
 
 const FALLBACK_META = {
-  cover:
-    'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-  icon: '📖',
-  subject: 'General',
-  type: 'Lecture',
-  schedule: 'TBD',
+  cover: 'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+  icon: '📖', subject: 'General', type: 'Lecture', schedule: 'TBD',
 };
 
 // ─── Status helpers ────────────────────────────────────────────────────────────
@@ -73,34 +55,22 @@ const STATUS_CONFIG: Record<
   LessonStatus,
   { label: string; className: string; dot: string }
 > = {
-  completed: {
-    label: 'Hoàn thành',
-    className: 'bg-[#E2F0D9] text-[#385723]',
-    dot: 'bg-[#385723]',
-  },
-  'in-progress': {
-    label: 'Đang học',
-    className: 'bg-[#FFF2CC] text-[#7F6000]',
-    dot: 'bg-[#E6AC00]',
-  },
-  locked: {
-    label: 'Chưa mở',
-    className: 'bg-[#F2F2F2] text-[#595959]',
-    dot: 'bg-[#ADADAD]',
-  },
+  completed:     { label: 'Hoàn thành', className: 'bg-[#E2F0D9] text-[#385723]', dot: 'bg-[#385723]' },
+  'in-progress': { label: 'Đang học',   className: 'bg-[#FFF2CC] text-[#7F6000]', dot: 'bg-[#E6AC00]' },
+  locked:        { label: 'Chưa mở',    className: 'bg-[#F2F2F2] text-[#595959]', dot: 'bg-[#ADADAD]' },
 };
 
-// ─── Quick Nav items ───────────────────────────────────────────────────────────
+// ─── Nav items ─────────────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   { icon: <LayoutDashboard className="w-3.5 h-3.5" />, label: 'Bảng làm việc', badge: null },
-  { icon: <BookOpen className="w-3.5 h-3.5" />, label: 'Khóa học', badge: '4' },
-  { icon: <ClipboardList className="w-3.5 h-3.5" />, label: 'Lộ trình học', badge: null },
-  { icon: <MessageSquare className="w-3.5 h-3.5" />, label: 'Thảo luận', badge: '3' },
-  { icon: <Calendar className="w-3.5 h-3.5" />, label: 'Lịch học', badge: null },
-  { icon: <Settings className="w-3.5 h-3.5" />, label: 'Cài đặt', badge: null },
+  { icon: <BookOpen className="w-3.5 h-3.5" />,        label: 'Khóa học',      badge: '4'  },
+  { icon: <ClipboardList className="w-3.5 h-3.5" />,   label: 'Lộ trình học',  badge: null },
+  { icon: <MessageSquare className="w-3.5 h-3.5" />,   label: 'Thảo luận',     badge: '3'  },
+  { icon: <Calendar className="w-3.5 h-3.5" />,        label: 'Lịch học',      badge: null },
+  { icon: <Settings className="w-3.5 h-3.5" />,        label: 'Cài đặt',       badge: null },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// ─── Page component ────────────────────────────────────────────────────────────
 export default function DashboardPage() {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
@@ -108,12 +78,12 @@ export default function DashboardPage() {
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [goalDismissed, setGoalDismissed] = useState(false);
 
-  const totalConcepts = lessons.reduce((sum, l) => sum + l.concepts.length, 0);
-  const totalMastered = progress?.masteredConcepts.length ?? 0;
+  const totalConcepts   = lessons.reduce((sum, l) => sum + l.concepts.length, 0);
+  const totalMastered   = progress?.masteredConcepts.length ?? 0;
   const overallProgress = totalConcepts > 0 ? Math.round((totalMastered / totalConcepts) * 100) : 0;
-  const completedCount = roadmap.filter((r) => r.isCompleted).length;
+  const completedCount  = roadmap.filter((r) => r.isCompleted).length;
   const inProgressCount = roadmap.filter((r) => !r.isLocked && !r.isCompleted).length;
-  const lockedCount = roadmap.filter((r) => r.isLocked).length;
+  const lockedCount     = roadmap.filter((r) => r.isLocked).length;
 
   const handleLessonClick = (lessonId: string) => {
     const item = roadmap.find((r) => r.lessonId === lessonId);
@@ -124,11 +94,11 @@ export default function DashboardPage() {
     if (selectedLessonId) onQuizComplete(selectedLessonId, passed, feedback);
   };
 
-  // Lesson detail view
+  // ── Lesson detail view ─────────────────────────────────────────────────────
   if (selectedLessonId) {
     const lesson = lessons.find((l) => l.id === selectedLessonId);
-    const quiz = quizzes[selectedLessonId];
-    const item = roadmap.find((r) => r.lessonId === selectedLessonId);
+    const quiz   = quizzes[selectedLessonId];
+    const item   = roadmap.find((r) => r.lessonId === selectedLessonId);
     if (lesson) {
       return (
         <div className="flex h-screen" style={{ backgroundColor: '#FAFAFA' }}>
@@ -136,8 +106,7 @@ export default function DashboardPage() {
             activeItem={activeItem}
             onItemClick={setActiveItem}
             lessons={roadmap.map((r) => ({
-              id: r.lessonId,
-              title: r.title,
+              id: r.lessonId, title: r.title,
               status: r.isCompleted ? 'completed' : r.isLocked ? 'locked' : 'active',
             }))}
             onLessonClick={handleLessonClick}
@@ -160,10 +129,15 @@ export default function DashboardPage() {
     return (
       <div className="flex h-screen items-center justify-center bg-white">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3" style={{ backgroundColor: '#F5EBE0' }}>
+          <div
+            className="inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3"
+            style={{ backgroundColor: '#F5EBE0' }}
+          >
             <span className="text-xl">☕</span>
           </div>
-          <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>Đang tải...</p>
+          <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
+            Đang tải...
+          </p>
         </div>
       </div>
     );
@@ -171,13 +145,11 @@ export default function DashboardPage() {
 
   return (
     <div className="flex h-screen bg-white overflow-hidden">
-      {/* ── Notion-style compact sidebar ── */}
       <Sidebar
         activeItem={activeItem}
         onItemClick={setActiveItem}
         lessons={roadmap.map((r) => ({
-          id: r.lessonId,
-          title: r.title,
+          id: r.lessonId, title: r.title,
           status: r.isCompleted ? 'completed' : r.isLocked ? 'locked' : 'active',
         }))}
         onLessonClick={handleLessonClick}
@@ -185,7 +157,7 @@ export default function DashboardPage() {
 
       {/* ── Main canvas ── */}
       <div className="flex-1 overflow-y-auto bg-[#FAFAFA]">
-        {/* ── Cover image banner ── */}
+        {/* Cover banner */}
         <div className="relative h-40 w-full overflow-hidden">
           <img
             src="https://images.pexels.com/photos/590493/pexels-photo-590493.jpeg?auto=compress&cs=tinysrgb&w=1400&h=400&dpr=1"
@@ -195,12 +167,10 @@ export default function DashboardPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/30" />
         </div>
 
-        {/* ── Page header (icon + title floating over cover) ── */}
         <div className="max-w-[1200px] mx-auto px-8">
+          {/* Page header */}
           <div className="-mt-6 mb-6 flex items-end gap-4">
-            <div
-              className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shadow-sm border border-neutral-100 bg-white flex-shrink-0"
-            >
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shadow-sm border border-neutral-100 bg-white flex-shrink-0">
               ☕
             </div>
             <div className="pb-1">
@@ -219,9 +189,9 @@ export default function DashboardPage() {
           {/* ── 2-column asymmetric grid ── */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 pb-16">
 
-            {/* ════════════════════════════════════════
+            {/* ══════════════════════════════
                 LEFT COLUMN  (1/4 width)
-            ════════════════════════════════════════ */}
+            ══════════════════════════════ */}
             <aside className="lg:col-span-1 space-y-4">
 
               {/* Quick Actions */}
@@ -236,9 +206,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="p-2 space-y-0.5">
                   {[
-                    { icon: <Plus className="w-3.5 h-3.5" />, label: '+ New Course' },
+                    { icon: <Plus className="w-3.5 h-3.5" />,         label: '+ New Course'     },
                     { icon: <MessageSquare className="w-3.5 h-3.5" />, label: '+ Ask a Question' },
-                    { icon: <Calendar className="w-3.5 h-3.5" />, label: '+ View Schedule' },
+                    { icon: <Calendar className="w-3.5 h-3.5" />,      label: '+ View Schedule'  },
                     { icon: <GraduationCap className="w-3.5 h-3.5" />, label: '+ New Assignment' },
                   ].map(({ icon, label }) => (
                     <button
@@ -252,6 +222,9 @@ export default function DashboardPage() {
                   ))}
                 </div>
               </div>
+
+              {/* Pomodoro Focus Timer */}
+              <PomodoroTimer />
 
               {/* Navigation */}
               <div className="rounded-lg border border-neutral-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
@@ -295,9 +268,9 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 <div className="p-4 space-y-3">
-                  <SnapshotRow label="Hoàn thành" value={completedCount} color="#385723" bg="#E2F0D9" />
-                  <SnapshotRow label="Đang học" value={inProgressCount} color="#7F6000" bg="#FFF2CC" />
-                  <SnapshotRow label="Chưa mở" value={lockedCount} color="#595959" bg="#F2F2F2" />
+                  <SnapshotRow label="Hoàn thành" value={completedCount}  color="#385723" bg="#E2F0D9" />
+                  <SnapshotRow label="Đang học"   value={inProgressCount} color="#7F6000" bg="#FFF2CC" />
+                  <SnapshotRow label="Chưa mở"    value={lockedCount}     color="#595959" bg="#F2F2F2" />
                   <div className="pt-2 border-t border-neutral-100">
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[11px] text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
@@ -321,9 +294,9 @@ export default function DashboardPage() {
               </div>
             </aside>
 
-            {/* ════════════════════════════════════════
+            {/* ══════════════════════════════
                 RIGHT COLUMN (3/4 width)
-            ════════════════════════════════════════ */}
+            ══════════════════════════════ */}
             <div className="lg:col-span-3 space-y-8">
 
               {/* Welcome block */}
@@ -336,13 +309,9 @@ export default function DashboardPage() {
                 </h2>
                 <p className="text-sm text-neutral-400 mb-4" style={{ fontFamily: 'var(--font-body)' }}>
                   Hôm nay có{' '}
-                  <span className="font-medium text-[#C5A880]">
-                    {inProgressCount} bài học
-                  </span>{' '}
+                  <span className="font-medium text-[#C5A880]">{inProgressCount} bài học</span>{' '}
                   đang chờ bạn hoàn thiện.
                 </p>
-
-                {/* Goal alert block */}
                 <AnimatePresence>
                   {!goalDismissed && (
                     <motion.div
@@ -375,25 +344,21 @@ export default function DashboardPage() {
                 </AnimatePresence>
               </section>
 
-              {/* ── Courses / Classes & Schedule (Gallery Grid) ── */}
+              {/* Courses gallery grid */}
               <section>
                 <SectionHeader
                   icon={<BookOpen className="w-4 h-4" />}
                   title="Courses / Classes & Schedule"
                   tabs={['Gallery View', 'Schedule', 'All Details']}
                 />
-
                 {lessons.length === 0 ? (
                   <EmptyState label="Chưa có khóa học nào được tải." />
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                     {lessons.map((lesson) => {
-                      const meta = COURSE_META[lesson.id] ?? FALLBACK_META;
+                      const meta        = COURSE_META[lesson.id] ?? FALLBACK_META;
                       const roadmapItem = roadmap.find((r) => r.lessonId === lesson.id);
-                      const status = getStatus(
-                        roadmapItem?.isCompleted ?? false,
-                        roadmapItem?.isLocked ?? true
-                      );
+                      const status      = getStatus(roadmapItem?.isCompleted ?? false, roadmapItem?.isLocked ?? true);
                       const isClickable = status !== 'locked';
                       return (
                         <CourseGalleryCard
@@ -410,14 +375,13 @@ export default function DashboardPage() {
                 )}
               </section>
 
-              {/* ── Assignments & Learning Roadmap (Table / List View) ── */}
+              {/* Roadmap table */}
               <section>
                 <SectionHeader
                   icon={<Layers className="w-4 h-4" />}
                   title="Assignments & Learning Roadmap"
                   tabs={['Table View', 'To Do', 'Upcoming']}
                 />
-
                 <div className="mt-4 rounded-lg border border-neutral-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
                   {/* Table header */}
                   <div
@@ -429,7 +393,7 @@ export default function DashboardPage() {
                         <div
                           key={h}
                           className={`text-[11px] font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1 ${
-                            i === 0 ? 'col-span-4' : i === 4 ? 'col-span-2' : 'col-span-2'
+                            i === 0 ? 'col-span-4' : 'col-span-2'
                           }`}
                         >
                           {h}
@@ -438,24 +402,22 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  {/* Table rows */}
                   {roadmap.length === 0 ? (
                     <div className="px-4 py-8 text-center text-xs text-neutral-400">Không có dữ liệu</div>
                   ) : (
                     <div className="divide-y divide-neutral-50">
                       {roadmap.map((item, idx) => {
-                        const lesson = lessons.find((l) => l.id === item.lessonId);
-                        const meta = COURSE_META[item.lessonId] ?? FALLBACK_META;
-                        const status = getStatus(item.isCompleted, item.isLocked);
-                        const statusCfg = STATUS_CONFIG[status];
-                        const priority = idx === 0 ? 'Cao' : idx === 1 ? 'Trung bình' : 'Thấp';
+                        const lesson      = lessons.find((l) => l.id === item.lessonId);
+                        const meta        = COURSE_META[item.lessonId] ?? FALLBACK_META;
+                        const status      = getStatus(item.isCompleted, item.isLocked);
+                        const statusCfg   = STATUS_CONFIG[status];
+                        const priority    = idx === 0 ? 'Cao' : idx === 1 ? 'Trung bình' : 'Thấp';
                         const priorityStyle =
                           idx === 0
                             ? 'bg-[#FCE4D6] text-[#843C0C]'
                             : idx === 1
                               ? 'bg-[#FFF2CC] text-[#7F6000]'
                               : 'bg-[#E2EFDA] text-[#375623]';
-
                         return (
                           <motion.div
                             key={item.lessonId}
@@ -470,9 +432,8 @@ export default function DashboardPage() {
                             }`}
                             style={{ fontFamily: 'var(--font-body)' }}
                           >
-                            {/* Title */}
                             <div className="col-span-4 flex items-center gap-2.5 min-w-0">
-                              <span className="text-base flex-shrink-0">
+                              <span className="flex-shrink-0">
                                 {status === 'completed' ? (
                                   <CheckCircle2 className="w-4 h-4 text-[#385723]" />
                                 ) : status === 'in-progress' ? (
@@ -481,41 +442,25 @@ export default function DashboardPage() {
                                   <Lock className="w-3.5 h-3.5 text-neutral-300" />
                                 )}
                               </span>
-                              <div className="min-w-0">
-                                <p className="text-xs font-medium text-neutral-700 truncate group-hover:text-neutral-900 transition-colors">
-                                  {lesson?.title ?? item.title}
-                                </p>
-                              </div>
+                              <p className="text-xs font-medium text-neutral-700 truncate group-hover:text-neutral-900 transition-colors">
+                                {lesson?.title ?? item.title}
+                              </p>
                             </div>
-
-                            {/* Subject */}
                             <div className="col-span-2">
                               <span className="text-xs text-neutral-500">{meta.subject}</span>
                             </div>
-
-                            {/* Schedule */}
                             <div className="col-span-2 flex items-center gap-1">
                               <Clock className="w-3 h-3 text-neutral-300 flex-shrink-0" />
                               <span className="text-xs text-neutral-400">{meta.schedule}</span>
                             </div>
-
-                            {/* Priority */}
                             <div className="col-span-2">
-                              <span
-                                className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded ${priorityStyle}`}
-                              >
+                              <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded ${priorityStyle}`}>
                                 {priority}
                               </span>
                             </div>
-
-                            {/* Status */}
                             <div className="col-span-2">
-                              <span
-                                className={`inline-flex items-center gap-1.5 text-[10px] font-medium px-2 py-0.5 rounded ${statusCfg.className}`}
-                              >
-                                <span
-                                  className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${statusCfg.dot}`}
-                                />
+                              <span className={`inline-flex items-center gap-1.5 text-[10px] font-medium px-2 py-0.5 rounded ${statusCfg.className}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${statusCfg.dot}`} />
                                 {statusCfg.label}
                               </span>
                             </div>
@@ -525,12 +470,8 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  {/* Table footer */}
                   <div className="px-4 py-2.5 border-t border-neutral-100 bg-neutral-50/40 flex items-center justify-between">
-                    <p
-                      className="text-[11px] text-neutral-400"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                    <p className="text-[11px] text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
                       {roadmap.length} bài học · {completedCount} hoàn thành · {inProgressCount} đang học
                     </p>
                     <button
@@ -543,7 +484,19 @@ export default function DashboardPage() {
                 </div>
               </section>
 
-              {/* ── Motivational footer ── */}
+              {/* Calendar view */}
+              <section>
+                <SectionHeader
+                  icon={<Calendar className="w-4 h-4" />}
+                  title="Course Schedule & Deadlines"
+                  tabs={['Calendar View', 'List View', 'This Week']}
+                />
+                <div className="mt-4">
+                  <CalendarView />
+                </div>
+              </section>
+
+              {/* Motivational footer */}
               <section>
                 <div
                   className="rounded-lg border border-[#F5EBE0] px-5 py-4"
@@ -569,7 +522,6 @@ export default function DashboardPage() {
                 </div>
               </section>
             </div>
-            {/* END right column */}
           </div>
         </div>
       </div>
@@ -577,7 +529,7 @@ export default function DashboardPage() {
   );
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Sub-components ────────────────────────────────────────────────────────────
 
 function SectionHeader({
   icon,
@@ -634,7 +586,6 @@ function CourseGalleryCard({
   onClick: () => void;
 }) {
   const statusCfg = STATUS_CONFIG[status];
-
   return (
     <motion.div
       whileHover={isClickable ? { y: -2, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' } : undefined}
@@ -644,7 +595,6 @@ function CourseGalleryCard({
         isClickable ? 'cursor-pointer' : 'cursor-default opacity-60'
       }`}
     >
-      {/* Cover image */}
       <div className="relative h-28 overflow-hidden bg-neutral-100">
         <img
           src={meta.cover}
@@ -653,7 +603,6 @@ function CourseGalleryCard({
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-        {/* Order badge */}
         <div className="absolute top-2 left-2">
           <span
             className="text-[10px] font-semibold px-2 py-0.5 rounded bg-black/40 text-white backdrop-blur-sm"
@@ -662,7 +611,6 @@ function CourseGalleryCard({
             Lesson {lesson.order}
           </span>
         </div>
-        {/* Status badge */}
         <div className="absolute top-2 right-2">
           <span
             className={`text-[10px] font-medium px-2 py-0.5 rounded ${statusCfg.className}`}
@@ -672,8 +620,6 @@ function CourseGalleryCard({
           </span>
         </div>
       </div>
-
-      {/* Card body */}
       <div className="p-3">
         <div className="flex items-start gap-2 mb-2">
           <span className="text-xl flex-shrink-0 mt-0.5">{meta.icon}</span>
@@ -684,12 +630,7 @@ function CourseGalleryCard({
             {lesson.title}
           </h4>
         </div>
-
-        {/* Meta properties */}
-        <div
-          className="flex flex-wrap items-center gap-x-3 gap-y-1"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1" style={{ fontFamily: 'var(--font-body)' }}>
           <MetaProp icon="📅" label={meta.schedule} />
           <MetaProp icon="🏷️" label={meta.type} />
           <MetaProp icon="📚" label={meta.subject} />
