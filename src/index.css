@@ -34,8 +34,10 @@
 
 :root {
   /* Font Variables */
-  --font-heading: 'Kanit', 'Segoe UI', sans-serif;
-  --font-body:    'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-kanit:        'Kanit', 'Segoe UI', sans-serif;
+  --font-space-grotesk:'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-heading: var(--font-kanit);
+  --font-body:    var(--font-space-grotesk);
 
   /* Notion-style Cacao Palette */
   --bg-primary:    #FAFAFA;

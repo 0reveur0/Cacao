@@ -4,13 +4,8 @@
  */
 
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { LogOut, ChevronDown, Plus } from 'lucide-react';
-
-interface SidebarItem {
-  id: string;
-  icon: string;
-  label: string;
-}
 
 interface SidebarLesson {
   id: string;
@@ -25,108 +20,116 @@ interface SidebarProps {
   onLessonClick?: (id: string) => void;
 }
 
-export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons, onLessonClick }: SidebarProps) {
+export default function Sidebar({
+  activeItem = 'workspace',
+  onItemClick,
+  lessons,
+  onLessonClick,
+}: SidebarProps) {
   const { profile, signOut } = useAuth();
+  const { locale, t, toggle } = useLanguage();
 
-  const mainMenuItems: SidebarItem[] = [
-    { id: 'workspace', icon: '🏠', label: 'Bảng làm việc' },
-    { id: 'courses', icon: '📚', label: 'Khóa học' },
-    { id: 'assignments', icon: '📝', label: 'Hộp bài tập & Thi cử' },
-    { id: 'discussions', icon: '💬', label: 'Góc thảo luận' },
-    { id: 'billing', icon: '💳', label: 'Lịch sử học phí' },
+  const mainMenuItems = [
+    { id: 'workspace',   emoji: '🏠', label: t('nav_workspace') },
+    { id: 'courses',     emoji: '📚', label: t('nav_courses')   },
+    { id: 'assignments', emoji: '📝', label: locale === 'vi' ? 'Hộp bài tập & Thi cử' : 'Assignments & Exams' },
+    { id: 'discussions', emoji: '💬', label: locale === 'vi' ? 'Góc thảo luận' : 'Discussion'          },
+    { id: 'billing',     emoji: '💳', label: locale === 'vi' ? 'Lịch sử học phí' : 'Billing History'    },
   ];
 
-  const getInitials = () => {
-    return profile?.name?.charAt(0).toUpperCase() || 'U';
-  };
+  const getInitials = () => profile?.name?.charAt(0).toUpperCase() || 'U';
 
   const getRoleLabel = () => {
     switch (profile?.role) {
-      case 'STUDENT':
-        return 'Học sinh';
-      case 'TEACHER':
-        return 'Giảng viên';
-      case 'ADMIN':
-        return 'Admin';
-      default:
-        return 'Thành viên';
+      case 'STUDENT': return t('roleStudent');
+      case 'TEACHER': return t('roleTeacher');
+      case 'ADMIN':   return t('roleAdmin');
+      default:        return locale === 'vi' ? 'Thành viên' : 'Member';
     }
   };
 
   return (
     <aside
-      className="h-screen w-[260px] flex flex-col border-r relative flex-shrink-0"
-      style={{ backgroundColor: '#F5F5F5', borderColor: '#E5E5E5' }}
+      className="h-screen w-[240px] flex flex-col border-r flex-shrink-0"
+      style={{
+        backgroundColor: '#FBFBFA',
+        borderColor: '#E9E9E9',
+        fontFamily: 'var(--font-body)',
+      }}
     >
-      {/* Workspace Header */}
-      <div className="px-3 py-3">
-        <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md transition-all duration-150"
-          style={{ backgroundColor: 'transparent' }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+      {/* Workspace header */}
+      <div className="px-2 pt-3 pb-1">
+        <button
+          className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md transition-colors hover:bg-black/[0.04]"
         >
           <div
-            className="w-7 h-7 rounded flex items-center justify-center text-base"
+            className="w-6 h-6 rounded flex items-center justify-center text-sm flex-shrink-0"
             style={{ backgroundColor: '#F5EBE0' }}
           >
             ☕
           </div>
-          <div className="flex-1 text-left">
-            <span className="text-sm font-semibold" style={{ color: '#2F2F2F' }}>
+          <div className="flex-1 text-left min-w-0">
+            <span
+              className="text-sm font-semibold truncate block"
+              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+            >
               Cacao TLMS
             </span>
           </div>
-          <ChevronDown className="w-4 h-4" style={{ color: '#9B9B9B' }} />
+          <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#ADADAD' }} />
         </button>
       </div>
 
-      {/* Divider */}
-      <div className="mx-3 h-px" style={{ backgroundColor: '#E5E5E5' }} />
-
-      {/* Main Navigation */}
-      <nav className="flex-1 px-2 py-3 overflow-y-auto">
-        <div className="space-y-0.5">
-          {mainMenuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => onItemClick?.(item.id)}
-              className="w-full flex items-center gap-3 px-2.5 py-2 rounded-md text-sm transition-all duration-150"
-              style={{
-                backgroundColor: activeItem === item.id ? '#F5EBE0' : 'transparent',
-                color: activeItem === item.id ? '#2F2F2F' : '#6B6B6B'
-              }}
-              onMouseEnter={(e) => {
-                if (activeItem !== item.id) {
-                  e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeItem !== item.id) {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }
-              }}
-            >
-              <span className="text-lg leading-none">{item.icon}</span>
-              <span className="font-medium">{item.label}</span>
-            </button>
-          ))}
+      {/* Main navigation */}
+      <nav className="flex-1 px-1.5 py-2 overflow-y-auto">
+        <div className="space-y-0.5 mb-1">
+          {mainMenuItems.map((item) => {
+            const isActive = activeItem === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onItemClick?.(item.id)}
+                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors"
+                style={{
+                  backgroundColor: isActive ? 'rgba(0,0,0,0.06)' : 'transparent',
+                  color: isActive ? '#2F2F2F' : '#6B6B6B',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                <span className="text-base leading-none w-5 text-center flex-shrink-0">{item.emoji}</span>
+                <span className="text-[13px] font-medium truncate">{item.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Divider */}
-        <div className="my-4 mx-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
+        <div className="my-2 mx-2 h-px" style={{ backgroundColor: '#E9E9E9' }} />
 
-        {/* Lessons Section */}
+        {/* Learning path section */}
         <div>
-          <div className="px-2.5 mb-2 flex items-center justify-between">
-            <span className="text-xs font-semibold tracking-wide" style={{ color: '#9B9B9B' }}>
-              LỘ TRÌNH HỌC TẬP
+          <div className="px-2 mb-1.5 flex items-center justify-between">
+            <span
+              className="text-[10px] font-semibold tracking-widest uppercase"
+              style={{ color: '#ADADAD' }}
+            >
+              {locale === 'vi' ? 'Lộ trình học tập' : 'LEARNING PATH'}
             </span>
           </div>
+
           <div className="space-y-0.5">
             {(lessons || []).map((lesson) => (
               <LessonNavItem
                 key={lesson.id}
-                icon={lesson.status === 'completed' ? '✓' : lesson.status === 'active' ? '📖' : '🔒'}
+                icon={
+                  lesson.status === 'completed' ? '✓' :
+                  lesson.status === 'active'    ? '📖' : '🔒'
+                }
                 title={lesson.title}
                 status={lesson.status}
                 onClick={() => onLessonClick?.(lesson.id)}
@@ -134,52 +137,73 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
             ))}
           </div>
 
-          {/* Add New Button */}
-          <button
-            className="w-full flex items-center gap-2 px-2.5 py-2 mt-2 rounded-md text-sm transition-all duration-150"
-            style={{ color: '#9B9B9B' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)';
-              e.currentTarget.style.color = '#6B6B6B';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#9B9B9B';
-            }}
-          >
-            <Plus className="w-4 h-4" />
-            <span>Xem tất cả khóa học</span>
-          </button>
+          {(lessons || []).length > 0 && (
+            <button
+              className="w-full flex items-center gap-2 px-2 py-1.5 mt-1 rounded-md text-[12px] transition-colors"
+              style={{ color: '#ADADAD' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)';
+                e.currentTarget.style.color = '#6B6B6B';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = '#ADADAD';
+              }}
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>{locale === 'vi' ? 'Xem tất cả khóa học' : 'View all courses'}</span>
+            </button>
+          )}
         </div>
       </nav>
 
-      {/* Bottom Section */}
-      <div className="px-2 py-3 border-t" style={{ borderColor: '#E5E5E5' }}>
-        {/* User Profile */}
-        <div className="flex items-center gap-2.5 px-2 py-2 rounded-md transition-all duration-150 cursor-pointer"
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+      {/* Bottom section */}
+      <div className="px-1.5 pb-2 border-t" style={{ borderColor: '#E9E9E9' }}>
+        {/* Language toggle */}
+        <button
+          onClick={toggle}
+          className="w-full flex items-center gap-2 px-2 py-2 mt-2 mb-1 rounded-md text-xs transition-colors hover:bg-black/[0.03]"
+          style={{ color: '#9B9B9B' }}
+        >
+          <span className="text-sm">{locale === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
+          <span className="font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+            {locale === 'vi' ? 'Tiếng Việt' : 'English'}
+          </span>
+          <span
+            className="ml-auto text-[10px] px-1.5 py-0.5 rounded"
+            style={{ backgroundColor: '#F0F0F0', color: '#9B9B9B' }}
+          >
+            {locale === 'vi' ? 'VI' : 'EN'}
+          </span>
+        </button>
+
+        {/* User profile */}
+        <div
+          className="flex items-center gap-2 px-2 py-1.5 rounded-md transition-colors cursor-pointer hover:bg-black/[0.03]"
         >
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
+            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
             style={{ backgroundColor: '#F5EBE0', color: '#C5A880' }}
           >
             {getInitials()}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate" style={{ color: '#2F2F2F' }}>
-              {profile?.name || 'Học sinh'}
+            <p
+              className="text-[13px] font-medium truncate"
+              style={{ color: '#2F2F2F' }}
+            >
+              {profile?.name || (locale === 'vi' ? 'Học sinh' : 'Student')}
             </p>
-            <p className="text-xs" style={{ color: '#9B9B9B' }}>
+            <p className="text-[11px]" style={{ color: '#ADADAD' }}>
               {getRoleLabel()}
             </p>
           </div>
           <button
             onClick={signOut}
-            className="p-1.5 rounded transition-all duration-150 hover:bg-red-50"
-            title="Đăng xuất"
+            className="p-1 rounded transition-colors hover:bg-red-50 flex-shrink-0"
+            title={locale === 'vi' ? 'Đăng xuất' : 'Sign out'}
           >
-            <LogOut className="w-4 h-4" style={{ color: '#9B9B9B' }} />
+            <LogOut className="w-3.5 h-3.5" style={{ color: '#ADADAD' }} />
           </button>
         </div>
       </div>
@@ -187,33 +211,48 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
   );
 }
 
-function LessonNavItem({ icon, title, status, onClick }: { icon: string; title: string; status: 'completed' | 'active' | 'locked'; onClick?: () => void }) {
+function LessonNavItem({
+  icon,
+  title,
+  status,
+  onClick,
+}: {
+  icon: string;
+  title: string;
+  status: 'completed' | 'active' | 'locked';
+  onClick?: () => void;
+}) {
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-sm transition-all duration-150"
-      style={{
-        backgroundColor: status === 'active' ? '#F5EBE0' : 'transparent',
-        opacity: status === 'locked' ? 0.5 : 1,
-        color: '#6B6B6B'
-      }}
       disabled={status === 'locked'}
+      className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-[12px] transition-colors"
+      style={{
+        backgroundColor: status === 'active' ? 'rgba(197,168,128,0.1)' : 'transparent',
+        opacity: status === 'locked' ? 0.45 : 1,
+        color: '#6B6B6B',
+      }}
       onMouseEnter={(e) => {
         if (status !== 'locked') {
-          e.currentTarget.style.backgroundColor = status === 'active' ? '#F5EBE0' : 'rgba(0,0,0,0.03)';
+          e.currentTarget.style.backgroundColor =
+            status === 'active' ? 'rgba(197,168,128,0.15)' : 'rgba(0,0,0,0.03)';
         }
       }}
       onMouseLeave={(e) => {
         if (status !== 'locked') {
-          e.currentTarget.style.backgroundColor = status === 'active' ? '#F5EBE0' : 'transparent';
+          e.currentTarget.style.backgroundColor =
+            status === 'active' ? 'rgba(197,168,128,0.1)' : 'transparent';
         }
       }}
     >
-      <span className="text-base leading-none">{icon}</span>
-      <span className="truncate flex-1 text-left text-xs">{title}</span>
+      <span className="text-sm leading-none w-5 text-center flex-shrink-0">{icon}</span>
+      <span className="truncate flex-1 text-left">{title}</span>
       {status === 'completed' && (
-        <span className="text-xs px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: '#DCFCE7', color: '#166534' }}>
-          Done
+        <span
+          className="text-[9px] px-1.5 py-0.5 rounded flex-shrink-0"
+          style={{ backgroundColor: '#DCFCE7', color: '#166534' }}
+        >
+          ✓
         </span>
       )}
     </button>
