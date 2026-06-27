@@ -6,6 +6,7 @@
 import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
+import { LanguageProvider } from './context/LanguageContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -73,10 +74,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <ProgressProvider>
-        <AppContent />
-      </ProgressProvider>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <ProgressProvider>
+          <AppContent />
+        </ProgressProvider>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

@@ -7,39 +7,76 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../context/ProgressContext';
+import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/Sidebar';
 import LessonDetailPage from '../components/LessonDetailPage';
 import PomodoroTimer from '../components/PomodoroTimer';
 import CalendarView from '../components/CalendarView';
-import { Plus, MessageSquare, Calendar, BookOpen, LayoutDashboard, ClipboardList, Settings, ChevronRight, Lock, CircleCheck as CheckCircle2, Circle, Clock, GraduationCap, Layers, Info } from 'lucide-react';
+import {
+  Plus,
+  MessageSquare,
+  Calendar,
+  BookOpen,
+  LayoutDashboard,
+  ClipboardList,
+  Settings,
+  ChevronRight,
+  Lock,
+  CircleCheck as CheckCircle2,
+  Circle,
+  Clock,
+  GraduationCap,
+  Layers,
+  Info,
+} from 'lucide-react';
 import { AIFeedbackResponse } from '../types';
 
-// ─── Static course data ────────────────────────────────────────────────────────
+// ─── Static course meta ────────────────────────────────────────────────────────
 const COURSE_META: Record<
   string,
-  { cover: string; icon: string; subject: string; type: string; schedule: string }
+  { cover: string; icon: string; subject: string; type: string; scheduleVi: string; scheduleEn: string }
 > = {
   'lesson-1': {
-    cover: 'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🛡️', subject: 'TypeScript', type: 'Lecture', schedule: 'Thứ 2 & 4',
+    cover:       'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon:        '🛡️',
+    subject:     'TypeScript',
+    type:        'Lecture',
+    scheduleVi:  'Thứ 2 & 4',
+    scheduleEn:  'Mon & Wed',
   },
   'lesson-2': {
-    cover: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🧪', subject: 'TypeScript', type: 'Workshop', schedule: 'Thứ 3 & 5',
+    cover:       'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon:        '🧪',
+    subject:     'TypeScript',
+    type:        'Workshop',
+    scheduleVi:  'Thứ 3 & 5',
+    scheduleEn:  'Tue & Thu',
   },
   'lesson-3': {
-    cover: 'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🚀', subject: 'Architecture', type: 'Deep Dive', schedule: 'Thứ 6',
+    cover:       'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon:        '🚀',
+    subject:     'Architecture',
+    type:        'Deep Dive',
+    scheduleVi:  'Thứ 6',
+    scheduleEn:  'Friday',
   },
   'lesson-4': {
-    cover: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon: '🧠', subject: 'AI & Prompting', type: 'Seminar', schedule: 'Thứ 7',
+    cover:       'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+    icon:        '🧠',
+    subject:     'AI & Prompting',
+    type:        'Seminar',
+    scheduleVi:  'Thứ 7',
+    scheduleEn:  'Saturday',
   },
 };
 
 const FALLBACK_META = {
-  cover: 'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-  icon: '📖', subject: 'General', type: 'Lecture', schedule: 'TBD',
+  cover:      'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
+  icon:       '📖',
+  subject:    'General',
+  type:       'Lecture',
+  scheduleVi: 'TBD',
+  scheduleEn: 'TBD',
 };
 
 // ─── Status helpers ────────────────────────────────────────────────────────────
@@ -51,25 +88,6 @@ function getStatus(isCompleted: boolean, isLocked: boolean): LessonStatus {
   return 'locked';
 }
 
-const STATUS_CONFIG: Record<
-  LessonStatus,
-  { label: string; className: string; dot: string }
-> = {
-  completed:     { label: 'Hoàn thành', className: 'bg-[#E2F0D9] text-[#385723]', dot: 'bg-[#385723]' },
-  'in-progress': { label: 'Đang học',   className: 'bg-[#FFF2CC] text-[#7F6000]', dot: 'bg-[#E6AC00]' },
-  locked:        { label: 'Chưa mở',    className: 'bg-[#F2F2F2] text-[#595959]', dot: 'bg-[#ADADAD]' },
-};
-
-// ─── Nav items ─────────────────────────────────────────────────────────────────
-const NAV_ITEMS = [
-  { icon: <LayoutDashboard className="w-3.5 h-3.5" />, label: 'Bảng làm việc', badge: null },
-  { icon: <BookOpen className="w-3.5 h-3.5" />,        label: 'Khóa học',      badge: '4'  },
-  { icon: <ClipboardList className="w-3.5 h-3.5" />,   label: 'Lộ trình học',  badge: null },
-  { icon: <MessageSquare className="w-3.5 h-3.5" />,   label: 'Thảo luận',     badge: '3'  },
-  { icon: <Calendar className="w-3.5 h-3.5" />,        label: 'Lịch học',      badge: null },
-  { icon: <Settings className="w-3.5 h-3.5" />,        label: 'Cài đặt',       badge: null },
-];
-
 // ─── Page component ────────────────────────────────────────────────────────────
 export default function DashboardPage({
   onNavigateToAdmin,
@@ -80,6 +98,7 @@ export default function DashboardPage({
 }) {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
+  const { locale, t, toggle } = useLanguage();
   const [activeItem, setActiveItem] = useState('workspace');
   const [selectedLessonId, setSelectedLessonId] = useState<string | null>(null);
   const [goalDismissed, setGoalDismissed] = useState(false);
@@ -90,6 +109,22 @@ export default function DashboardPage({
   const completedCount  = roadmap.filter((r) => r.isCompleted).length;
   const inProgressCount = roadmap.filter((r) => !r.isLocked && !r.isCompleted).length;
   const lockedCount     = roadmap.filter((r) => r.isLocked).length;
+
+  // Status config uses translated labels
+  const STATUS_CONFIG: Record<LessonStatus, { label: string; className: string; dot: string }> = {
+    completed:     { label: t('completed'),  className: 'bg-[#E2F0D9] text-[#385723]', dot: 'bg-[#385723]' },
+    'in-progress': { label: t('inProgress'), className: 'bg-[#FFF2CC] text-[#7F6000]', dot: 'bg-[#E6AC00]' },
+    locked:        { label: t('locked'),     className: 'bg-[#F2F2F2] text-[#595959]', dot: 'bg-[#ADADAD]' },
+  };
+
+  const NAV_ITEMS = [
+    { icon: <LayoutDashboard className="w-3.5 h-3.5" />, label: t('nav_workspace'), badge: null },
+    { icon: <BookOpen className="w-3.5 h-3.5" />,        label: t('nav_courses'),   badge: '4'  },
+    { icon: <ClipboardList className="w-3.5 h-3.5" />,   label: t('nav_roadmap'),   badge: null },
+    { icon: <MessageSquare className="w-3.5 h-3.5" />,   label: t('nav_discussion'),badge: '3'  },
+    { icon: <Calendar className="w-3.5 h-3.5" />,        label: t('nav_schedule'),  badge: null },
+    { icon: <Settings className="w-3.5 h-3.5" />,        label: t('nav_settings'),  badge: null },
+  ];
 
   const handleLessonClick = (lessonId: string) => {
     const item = roadmap.find((r) => r.lessonId === lessonId);
@@ -135,19 +170,20 @@ export default function DashboardPage({
     return (
       <div className="flex h-screen items-center justify-center bg-white">
         <div className="text-center">
-          <div
-            className="inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3"
-            style={{ backgroundColor: '#F5EBE0' }}
-          >
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3" style={{ backgroundColor: '#F5EBE0' }}>
             <span className="text-xl">☕</span>
           </div>
           <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
-            Đang tải...
+            {t('loading')}
           </p>
         </div>
       </div>
     );
   }
+
+  const welcomeStr = profile?.name
+    ? t('welcome', { name: profile.name })
+    : t('welcomeGuest');
 
   return (
     <div className="flex h-screen bg-white overflow-hidden">
@@ -171,12 +207,30 @@ export default function DashboardPage({
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/30" />
+
+          {/* Language toggle — top-right of banner */}
+          <div className="absolute top-3 right-4">
+            <button
+              onClick={toggle}
+              title={t('langToggleTitle')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-semibold transition-all duration-200 backdrop-blur-sm"
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.85)',
+                borderColor: 'rgba(255,255,255,0.5)',
+                color: '#2F2F2F',
+                fontFamily: 'var(--font-body)',
+              }}
+            >
+              <span className="text-sm">{locale === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
+              {locale === 'vi' ? 'VI' : 'EN'}
+            </button>
+          </div>
         </div>
 
         <div className="max-w-[1200px] mx-auto px-8">
           {/* Page header */}
           <div className="-mt-6 mb-6 flex items-end gap-4">
-            <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shadow-sm border border-neutral-100 bg-white flex-shrink-0">
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl border border-neutral-100 bg-white flex-shrink-0">
               ☕
             </div>
             <div className="pb-1">
@@ -187,7 +241,9 @@ export default function DashboardPage({
                 Cacao TLMS
               </h1>
               <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
-                Mastery Learning · Không bảng xếp hạng · Không áp lực
+                {locale === 'vi'
+                  ? 'Mastery Learning · Không bảng xếp hạng · Không áp lực'
+                  : 'Mastery Learning · No Leaderboards · No Pressure'}
               </p>
             </div>
           </div>
@@ -207,7 +263,7 @@ export default function DashboardPage({
                     className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400"
                     style={{ fontFamily: 'var(--font-body)' }}
                   >
-                    Quick Action
+                    {t('quickAction')}
                   </p>
                 </div>
                 <div className="p-2 space-y-0.5">
@@ -218,7 +274,7 @@ export default function DashboardPage({
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
                       <span className="text-sm">⚙️</span>
-                      Admin Workspace
+                      {t('adminWorkspace')}
                     </button>
                   )}
                   {onNavigateToFeed && (
@@ -227,23 +283,27 @@ export default function DashboardPage({
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-200 ease-in-out"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
-                      <span className="text-neutral-400"><svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>
-                      Updates &amp; Announcements
+                      <span className="text-neutral-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
+                        </svg>
+                      </span>
+                      {t('feedLink')}
                     </button>
                   )}
-                  {[
-                    { icon: <Plus className="w-3.5 h-3.5" />,         label: '+ New Course'     },
-                    { icon: <MessageSquare className="w-3.5 h-3.5" />, label: '+ Ask a Question' },
-                    { icon: <Calendar className="w-3.5 h-3.5" />,      label: '+ View Schedule'  },
-                    { icon: <GraduationCap className="w-3.5 h-3.5" />, label: '+ New Assignment' },
-                  ].map(({ icon, label }) => (
+                  {([
+                    { icon: <Plus className="w-3.5 h-3.5" />,         key: 'newCourse'     },
+                    { icon: <MessageSquare className="w-3.5 h-3.5" />, key: 'askQuestion'   },
+                    { icon: <Calendar className="w-3.5 h-3.5" />,      key: 'viewSchedule'  },
+                    { icon: <GraduationCap className="w-3.5 h-3.5" />, key: 'newAssignment' },
+                  ] as const).map(({ icon, key }) => (
                     <button
-                      key={label}
+                      key={key}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all duration-200 ease-in-out"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
                       <span className="text-neutral-400">{icon}</span>
-                      {label}
+                      {t(key)}
                     </button>
                   ))}
                 </div>
@@ -290,17 +350,17 @@ export default function DashboardPage({
                     className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400"
                     style={{ fontFamily: 'var(--font-body)' }}
                   >
-                    Reminders
+                    {t('reminders')}
                   </p>
                 </div>
                 <div className="p-4 space-y-3">
-                  <SnapshotRow label="Hoàn thành" value={completedCount}  color="#385723" bg="#E2F0D9" />
-                  <SnapshotRow label="Đang học"   value={inProgressCount} color="#7F6000" bg="#FFF2CC" />
-                  <SnapshotRow label="Chưa mở"    value={lockedCount}     color="#595959" bg="#F2F2F2" />
+                  <SnapshotRow label={t('completed')}  value={completedCount}  color="#385723" bg="#E2F0D9" />
+                  <SnapshotRow label={t('inProgress')} value={inProgressCount} color="#7F6000" bg="#FFF2CC" />
+                  <SnapshotRow label={t('locked')}     value={lockedCount}     color="#595959" bg="#F2F2F2" />
                   <div className="pt-2 border-t border-neutral-100">
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[11px] text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
-                        Mastery tổng
+                        {t('masteryTotal')}
                       </span>
                       <span className="text-[11px] font-semibold text-[#C5A880]">
                         {overallProgress}%
@@ -331,12 +391,10 @@ export default function DashboardPage({
                   className="text-2xl font-semibold text-neutral-800 leading-snug mb-1"
                   style={{ fontFamily: 'var(--font-heading)' }}
                 >
-                  👋 Hi, {profile?.name ? profile.name : 'bạn'}! Thong thả học nhé.
+                  {welcomeStr}
                 </h2>
                 <p className="text-sm text-neutral-400 mb-4" style={{ fontFamily: 'var(--font-body)' }}>
-                  Hôm nay có{' '}
-                  <span className="font-medium text-[#C5A880]">{inProgressCount} bài học</span>{' '}
-                  đang chờ bạn hoàn thiện.
+                  {t('subWelcome', { count: inProgressCount })}
                 </p>
                 <AnimatePresence>
                   {!goalDismissed && (
@@ -353,10 +411,10 @@ export default function DashboardPage({
                           className="text-xs font-semibold text-[#7F6000] mb-0.5"
                           style={{ fontFamily: 'var(--font-body)' }}
                         >
-                          💡 Mục tiêu cốt lõi: Mastery Learning
+                          {t('goalTitle')}
                         </p>
                         <p className="text-xs text-[#9B7A00]" style={{ fontFamily: 'var(--font-body)' }}>
-                          Không có áp lực điểm số, không bảng xếp hạng. Học đến khi làm chủ kiến thức — sau đó tiến bước tiếp theo.
+                          {t('goalBody')}
                         </p>
                       </div>
                       <button
@@ -374,11 +432,11 @@ export default function DashboardPage({
               <section>
                 <SectionHeader
                   icon={<BookOpen className="w-4 h-4" />}
-                  title="Courses / Classes & Schedule"
-                  tabs={['Gallery View', 'Schedule', 'All Details']}
+                  title={t('section_courses')}
+                  tabs={[t('tab_gallery'), t('tab_schedule'), t('tab_details')]}
                 />
                 {lessons.length === 0 ? (
-                  <EmptyState label="Chưa có khóa học nào được tải." />
+                  <EmptyState label={t('noCoursesYet')} />
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
                     {lessons.map((lesson) => {
@@ -386,12 +444,15 @@ export default function DashboardPage({
                       const roadmapItem = roadmap.find((r) => r.lessonId === lesson.id);
                       const status      = getStatus(roadmapItem?.isCompleted ?? false, roadmapItem?.isLocked ?? true);
                       const isClickable = status !== 'locked';
+                      const schedule    = locale === 'vi' ? meta.scheduleVi : meta.scheduleEn;
                       return (
                         <CourseGalleryCard
                           key={lesson.id}
                           lesson={lesson}
-                          meta={meta}
+                          meta={{ ...meta, schedule }}
                           status={status}
+                          statusLabel={STATUS_CONFIG[status].label}
+                          statusClassName={STATUS_CONFIG[status].className}
                           isClickable={isClickable}
                           onClick={() => isClickable && handleLessonClick(lesson.id)}
                         />
@@ -405,8 +466,8 @@ export default function DashboardPage({
               <section>
                 <SectionHeader
                   icon={<Layers className="w-4 h-4" />}
-                  title="Assignments & Learning Roadmap"
-                  tabs={['Table View', 'To Do', 'Upcoming']}
+                  title={t('section_roadmap')}
+                  tabs={[t('tab_table'), t('tab_todo'), t('tab_upcoming')]}
                 />
                 <div className="mt-4 rounded-lg border border-neutral-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden">
                   {/* Table header */}
@@ -414,30 +475,40 @@ export default function DashboardPage({
                     className="grid grid-cols-12 gap-2 px-4 py-2.5 border-b border-neutral-100 bg-neutral-50/60"
                     style={{ fontFamily: 'var(--font-body)' }}
                   >
-                    {['Tiêu đề bài học', 'Môn học', 'Lịch học', 'Ưu tiên', 'Trạng thái'].map(
-                      (h, i) => (
-                        <div
-                          key={h}
-                          className={`text-[11px] font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1 ${
-                            i === 0 ? 'col-span-4' : 'col-span-2'
-                          }`}
-                        >
-                          {h}
-                        </div>
-                      )
-                    )}
+                    {[
+                      t('col_title'),
+                      t('col_subject'),
+                      t('col_schedule'),
+                      t('col_priority'),
+                      t('col_status'),
+                    ].map((h, i) => (
+                      <div
+                        key={h}
+                        className={`text-[11px] font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1 ${
+                          i === 0 ? 'col-span-4' : 'col-span-2'
+                        }`}
+                      >
+                        {h}
+                      </div>
+                    ))}
                   </div>
 
                   {roadmap.length === 0 ? (
-                    <div className="px-4 py-8 text-center text-xs text-neutral-400">Không có dữ liệu</div>
+                    <div className="px-4 py-8 text-center text-xs text-neutral-400">{t('noData')}</div>
                   ) : (
                     <div className="divide-y divide-neutral-50">
                       {roadmap.map((item, idx) => {
                         const lesson      = lessons.find((l) => l.id === item.lessonId);
                         const meta        = COURSE_META[item.lessonId] ?? FALLBACK_META;
+                        const schedule    = locale === 'vi' ? meta.scheduleVi : meta.scheduleEn;
                         const status      = getStatus(item.isCompleted, item.isLocked);
                         const statusCfg   = STATUS_CONFIG[status];
-                        const priority    = idx === 0 ? 'Cao' : idx === 1 ? 'Trung bình' : 'Thấp';
+                        const priorityLabel =
+                          idx === 0
+                            ? t('priority_high')
+                            : idx === 1
+                              ? t('priority_mid')
+                              : t('priority_low');
                         const priorityStyle =
                           idx === 0
                             ? 'bg-[#FCE4D6] text-[#843C0C]'
@@ -477,11 +548,11 @@ export default function DashboardPage({
                             </div>
                             <div className="col-span-2 flex items-center gap-1">
                               <Clock className="w-3 h-3 text-neutral-300 flex-shrink-0" />
-                              <span className="text-xs text-neutral-400">{meta.schedule}</span>
+                              <span className="text-xs text-neutral-400">{schedule}</span>
                             </div>
                             <div className="col-span-2">
                               <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded ${priorityStyle}`}>
-                                {priority}
+                                {priorityLabel}
                               </span>
                             </div>
                             <div className="col-span-2">
@@ -498,13 +569,17 @@ export default function DashboardPage({
 
                   <div className="px-4 py-2.5 border-t border-neutral-100 bg-neutral-50/40 flex items-center justify-between">
                     <p className="text-[11px] text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
-                      {roadmap.length} bài học · {completedCount} hoàn thành · {inProgressCount} đang học
+                      {t('roadmapFooter', {
+                        total:  roadmap.length,
+                        done:   completedCount,
+                        active: inProgressCount,
+                      })}
                     </p>
                     <button
                       className="text-[11px] text-[#C5A880] hover:text-[#B89A70] flex items-center gap-1 transition-colors"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
-                      Xem tất cả <ChevronRight className="w-3 h-3" />
+                      {t('viewAll')} <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
                 </div>
@@ -514,8 +589,8 @@ export default function DashboardPage({
               <section>
                 <SectionHeader
                   icon={<Calendar className="w-4 h-4" />}
-                  title="Course Schedule & Deadlines"
-                  tabs={['Calendar View', 'List View', 'This Week']}
+                  title={t('section_calendar')}
+                  tabs={[t('tab_calendar'), t('tab_list'), t('tab_week')]}
                 />
                 <div className="mt-4">
                   <CalendarView />
@@ -535,13 +610,13 @@ export default function DashboardPage({
                         className="text-xs font-semibold text-neutral-600 mb-0.5"
                         style={{ fontFamily: 'var(--font-body)' }}
                       >
-                        Lời nhắn từ Cacao
+                        {t('footerTitle')}
                       </p>
                       <p
                         className="text-xs text-neutral-500 leading-relaxed"
                         style={{ fontFamily: 'var(--font-body)' }}
                       >
-                        Trong hệ thống Cacao, việc làm sai chỉ là một phần tự nhiên của hành trình làm chủ kiến thức. Không có điểm số phán xét, không bảng xếp hạng — bạn chỉ cần so sánh với chính mình của hôm qua.
+                        {t('footerBody')}
                       </p>
                     </div>
                   </div>
@@ -602,16 +677,19 @@ function CourseGalleryCard({
   lesson,
   meta,
   status,
+  statusLabel,
+  statusClassName,
   isClickable,
   onClick,
 }: {
   lesson: { id: string; title: string; description: string; order: number };
-  meta: typeof FALLBACK_META;
+  meta: { cover: string; icon: string; subject: string; type: string; schedule: string };
   status: LessonStatus;
+  statusLabel: string;
+  statusClassName: string;
   isClickable: boolean;
   onClick: () => void;
 }) {
-  const statusCfg = STATUS_CONFIG[status];
   return (
     <motion.div
       whileHover={isClickable ? { y: -2, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' } : undefined}
@@ -639,10 +717,10 @@ function CourseGalleryCard({
         </div>
         <div className="absolute top-2 right-2">
           <span
-            className={`text-[10px] font-medium px-2 py-0.5 rounded ${statusCfg.className}`}
+            className={`text-[10px] font-medium px-2 py-0.5 rounded ${statusClassName}`}
             style={{ fontFamily: 'var(--font-body)' }}
           >
-            {statusCfg.label}
+            {statusLabel}
           </span>
         </div>
       </div>
@@ -676,15 +754,9 @@ function MetaProp({ icon, label }: { icon: string; label: string }) {
 }
 
 function SnapshotRow({
-  label,
-  value,
-  color,
-  bg,
+  label, value, color, bg,
 }: {
-  label: string;
-  value: number;
-  color: string;
-  bg: string;
+  label: string; value: number; color: string; bg: string;
 }) {
   return (
     <div className="flex items-center justify-between" style={{ fontFamily: 'var(--font-body)' }}>

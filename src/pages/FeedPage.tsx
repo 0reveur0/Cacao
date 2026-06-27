@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Pin, Plus, ChevronDown, Search, RefreshCw, Trash2, X, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type AnnouncementCategory = 'EXAM' | 'FEATURE' | 'GENERAL';
@@ -24,13 +25,25 @@ interface Announcement {
 }
 
 // ─── Category config ───────────────────────────────────────────────────────────
-const CAT_CONFIG: Record<
-  AnnouncementCategory,
-  { label: string; bg: string; text: string; dot: string; emoji: string }
-> = {
-  EXAM:    { label: 'Exam Update',  bg: '#FCE4D6', text: '#C65911', dot: '#C65911', emoji: '📅' },
-  FEATURE: { label: 'New Feature',  bg: '#E2EFDA', text: '#375623', dot: '#4E7A34', emoji: '✨' },
-  GENERAL: { label: 'Announcement', bg: '#F2F2F2', text: '#595959', dot: '#8A8A8A', emoji: '📣' },
+const CAT_STYLE: Record<AnnouncementCategory, { bg: string; text: string; dot: string; emoji: string }> = {
+  EXAM:    { bg: '#FCE4D6', text: '#C65911', dot: '#C65911', emoji: '📅' },
+  FEATURE: { bg: '#E2EFDA', text: '#375623', dot: '#4E7A34', emoji: '✨' },
+  GENERAL: { bg: '#F2F2F2', text: '#595959', dot: '#8A8A8A', emoji: '📣' },
+};
+
+function useCatConfig() {
+  const { t } = useLanguage();
+  return {
+    EXAM:    { label: t('cat_exam'),     ...CAT_STYLE.EXAM    },
+    FEATURE: { label: t('cat_feature'),  ...CAT_STYLE.FEATURE },
+    GENERAL: { label: t('cat_general'),  ...CAT_STYLE.GENERAL },
+  } as Record<AnnouncementCategory, { label: string; bg: string; text: string; dot: string; emoji: string }>;
+}
+
+const CAT_CONFIG = {
+  EXAM:    { label: 'Exam Update',  ...CAT_STYLE.EXAM    },
+  FEATURE: { label: 'New Feature',  ...CAT_STYLE.FEATURE },
+  GENERAL: { label: 'Announcement', ...CAT_STYLE.GENERAL },
 };
 
 const ALL_CATS = Object.keys(CAT_CONFIG) as AnnouncementCategory[];
@@ -145,6 +158,8 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
   const [error, setError] = useState('');
   const [preview, setPreview] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { t } = useLanguage();
+  const catConfig = useCatConfig();
 
   const isEdit = !!initial;
 
@@ -204,7 +219,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
             className="text-sm font-semibold text-neutral-800"
             style={{ fontFamily: 'var(--font-heading)' }}
           >
-            {isEdit ? 'Edit Announcement' : 'New Announcement'}
+            {isEdit ? t('composeEdit') : t('composeNew')}
           </h3>
           <div className="flex items-center gap-2">
             <button
@@ -216,7 +231,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
               }`}
               style={{ fontFamily: 'var(--font-body)' }}
             >
-              {preview ? 'Edit' : 'Preview'}
+              {preview ? t('composeEdit2') : t('composePreview')}
             </button>
             <button
               onClick={onClose}
@@ -232,7 +247,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
           {/* Category & Pin row */}
           <div className="flex items-center gap-3 flex-wrap">
             {ALL_CATS.map((c) => {
-              const cfg = CAT_CONFIG[c];
+              const cfg = catConfig[c];
               const active = category === c;
               return (
                 <button
@@ -258,14 +273,14 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
               style={{ fontFamily: 'var(--font-body)' }}
             >
               <Pin className="w-3 h-3" />
-              {pinned ? 'Pinned' : 'Pin this'}
+              {pinned ? t('composePinned') : t('composePinThis')}
             </button>
           </div>
 
           {/* Title */}
           <input
             type="text"
-            placeholder="Announcement title..."
+            placeholder={t('composeTitlePh')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full text-base font-semibold text-neutral-800 placeholder:text-neutral-300 border-0 border-b border-neutral-100 pb-2 outline-none focus:border-neutral-300 transition-colors bg-transparent"
@@ -281,7 +296,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
             <div className="relative">
               <textarea
                 ref={textareaRef}
-                placeholder={`Write your announcement in markdown...\n\n**Bold text**, \`inline code\`, bullet lists with - or *, blockquotes with >, numbered lists.\n\nUse blank lines to separate paragraphs.`}
+                placeholder={t('composeBodyPh')}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 className="w-full min-h-[220px] text-sm text-neutral-700 placeholder:text-neutral-300 outline-none resize-y bg-neutral-50/50 rounded-md p-3 border border-neutral-100 focus:border-neutral-200 transition-colors"
@@ -311,7 +326,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
               className="text-xs text-neutral-400 hover:text-neutral-600 px-3 py-1.5 rounded-md hover:bg-neutral-100 transition-colors"
               style={{ fontFamily: 'var(--font-body)' }}
             >
-              Cancel
+              {t('composeCancel')}
             </button>
             <button
               onClick={handleSave}
@@ -320,7 +335,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
               style={{ backgroundColor: '#2F2F2F', fontFamily: 'var(--font-body)' }}
             >
               {saving ? <RefreshCw className="w-3 h-3 animate-spin" /> : null}
-              {isEdit ? 'Save Changes' : 'Publish'}
+              {isEdit ? t('composeSave') : t('composePublish')}
             </button>
           </div>
         </div>
@@ -342,7 +357,9 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
   const [expanded, setExpanded] = useState(item.pinned);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const cfg = CAT_CONFIG[item.category];
+  const { t } = useLanguage();
+  const catConfig = useCatConfig();
+  const cfg = catConfig[item.category];
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -481,7 +498,7 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
                 className="mt-2 text-xs text-neutral-400 hover:text-neutral-600 transition-colors flex items-center gap-1"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
-                Read more <ChevronDown className="w-3 h-3" />
+                {t('readMore')} <ChevronDown className="w-3 h-3" />
               </button>
             </motion.div>
           ) : (
@@ -499,7 +516,7 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
                 className="mt-3 text-xs text-neutral-400 hover:text-neutral-600 transition-colors flex items-center gap-1"
                 style={{ fontFamily: 'var(--font-body)' }}
               >
-                Collapse <ChevronDown className="w-3 h-3 rotate-180" />
+                {t('collapse')} <ChevronDown className="w-3 h-3 rotate-180" />
               </button>
             </motion.div>
           )}
@@ -527,6 +544,8 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
 // ─── Main FeedPage ─────────────────────────────────────────────────────────────
 export default function FeedPage({ onBack }: { onBack: () => void }) {
   const { profile } = useAuth();
+  const { t } = useLanguage();
+  const catConfig = useCatConfig();
   const isAdmin = profile?.role === 'ADMIN';
 
   const [items, setItems] = useState<Announcement[]>([]);
@@ -622,7 +641,7 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
             style={{ fontFamily: 'var(--font-body)' }}
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Dashboard
+            {t('feedBackBtn')}
           </button>
 
           <div className="flex items-center gap-2">
@@ -656,7 +675,7 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
                 style={{ backgroundColor: '#2F2F2F', fontFamily: 'var(--font-body)' }}
               >
                 <Plus className="w-3 h-3" />
-                New Post
+                {t('feedNewPost')}
               </button>
             )}
           </div>
@@ -671,13 +690,13 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
             className="text-3xl font-semibold text-neutral-900 mb-3 leading-tight"
             style={{ fontFamily: 'var(--font-heading)' }}
           >
-            Updates &amp; Announcements
+            {t('feedTitle')}
           </h1>
           <p
             className="text-sm text-neutral-500 max-w-lg leading-relaxed"
             style={{ fontFamily: 'var(--font-body)' }}
           >
-            Stay informed with the latest exam schedules, feature releases, and course updates.
+            {t('feedSubtitle')}
           </p>
 
           {/* Category filter pills */}
@@ -691,11 +710,11 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
               }`}
               style={{ fontFamily: 'var(--font-body)' }}
             >
-              All{' '}
+              {t('feedAll')}{' '}
               <span className="ml-1 opacity-70">{items.length}</span>
             </button>
             {ALL_CATS.map((c) => {
-              const cfg = CAT_CONFIG[c];
+              const cfg = catConfig[c];
               const count = items.filter((a) => a.category === c).length;
               const active = filter === c;
               return (
@@ -720,7 +739,7 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
             {pinnedCount > 0 && (
               <span className="inline-flex items-center gap-1 text-[11px] text-neutral-400 ml-2" style={{ fontFamily: 'var(--font-body)' }}>
                 <Pin className="w-3 h-3" />
-                {pinnedCount} pinned
+                {pinnedCount} {t('feedPinned')}
               </span>
             )}
           </div>
@@ -742,10 +761,10 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
           <div className="rounded-lg border border-dashed border-neutral-200 py-20 text-center">
             <p className="text-2xl mb-3">🔍</p>
             <p className="text-sm font-medium text-neutral-500 mb-1" style={{ fontFamily: 'var(--font-heading)' }}>
-              {search ? `No results for "${search}"` : 'No announcements yet'}
+              {search ? t('feedNoResults', { q: search }) : t('feedEmpty')}
             </p>
             <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
-              {search ? 'Try a different search term or clear the filter.' : 'Check back soon for platform updates.'}
+              {search ? t('feedSearchHint') : t('feedEmptyHint')}
             </p>
           </div>
         ) : (
@@ -769,8 +788,7 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
         {!loading && items.length > 0 && (
           <div className="mt-12 pt-6 border-t border-neutral-100 text-center">
             <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
-              {items.length} announcement{items.length !== 1 ? 's' : ''} ·{' '}
-              Synced in real-time via Supabase
+              {items.length} {t('feedRealtime')}
             </p>
           </div>
         )}

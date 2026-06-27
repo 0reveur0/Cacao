@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Users, BookOpen, FileText, DollarSign, ChevronRight, ChevronDown, Plus, MoveHorizontal as MoreHorizontal, Search, RefreshCw, LogOut, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { supabase } from '../lib/supabase';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -796,6 +797,7 @@ export default function AdminPage({
   onNavigateToFeed?: () => void;
 }) {
   const { profile, signOut } = useAuth();
+  const { t } = useLanguage();
   const [section, setSection] = useState<AdminSection>('users');
 
   const [metrics, setMetrics] = useState<Metrics | null>(null);
@@ -916,10 +918,10 @@ export default function AdminPage({
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-neutral-800 leading-none truncate" style={{ fontFamily: 'var(--font-heading)' }}>
-                Cacao TLMS
+                {t('adminTitle')}
               </p>
               <p className="text-[10px] text-neutral-400 mt-0.5" style={{ fontFamily: 'var(--font-body)' }}>
-                Admin Workspace
+                {t('adminSubtitle')}
               </p>
             </div>
           </div>
@@ -954,7 +956,7 @@ export default function AdminPage({
               style={{ fontFamily: 'var(--font-body)' }}
             >
               <span className="text-[13px]">📢</span>
-              Updates &amp; Feed
+              {t('adminFeedLink')}
             </button>
           )}
           <button
@@ -963,7 +965,7 @@ export default function AdminPage({
             style={{ fontFamily: 'var(--font-body)' }}
           >
             <ChevronRight className="w-3.5 h-3.5 rotate-180" />
-            Back to Dashboard
+            {t('adminBackDash')}
           </button>
           <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-md">
             <div
