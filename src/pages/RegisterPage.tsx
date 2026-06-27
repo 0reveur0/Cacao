@@ -102,7 +102,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
 
   const inputStyle: CSSProperties = {
     backgroundColor: '#FAFAFA',
-    border: '1px solid #E9E9E9',
+    border: '1px solid #E5E5E5',
     color: '#2F2F2F',
     outline: 'none',
   };
@@ -115,7 +115,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
       {/* Top bar */}
       <div
         className="flex items-center justify-between px-6 py-4 border-b"
-        style={{ borderColor: '#F0F0F0', backgroundColor: '#FFFFFF' }}
+        style={{ borderColor: '#E5E5E5', backgroundColor: '#FFFFFF' }}
       >
         <div className="flex items-center gap-2">
           <span
@@ -133,8 +133,8 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
         </div>
         <button
           onClick={toggle}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium transition-colors hover:bg-neutral-50"
-          style={{ borderColor: '#E9E9E9', color: '#6B6B6B', backgroundColor: '#FFFFFF' }}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border text-xs font-medium transition-colors duration-100 hover:bg-[#F1F1EF]"
+          style={{ borderColor: '#E5E5E5', color: '#6B6B6B', backgroundColor: '#FFFFFF' }}
         >
           <span>{locale === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
           {locale === 'vi' ? 'VI' : 'EN'}
@@ -153,7 +153,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             >
               {t('registerTitle')}
             </h1>
-            <p className="text-sm" style={{ color: '#9B9B9B' }}>
+            <p className="text-sm" style={{ color: '#6B6B6B' }}>
               {t('registerSubtitle')}
             </p>
           </div>
@@ -161,7 +161,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
           {/* Card */}
           <div
             className="rounded-lg border p-6"
-            style={{ backgroundColor: '#FFFFFF', borderColor: '#E9E9E9' }}
+            style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E5E5' }}
           >
             {error && (
               <div
@@ -179,17 +179,17 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                   {t('yourNameLabel')}
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#CBCBCB' }} />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#9B9B9B' }} />
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t('yourNamePh')}
                     required
-                    className="w-full pl-9 pr-3 py-2.5 rounded-md text-sm"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-md text-sm transition-colors duration-100"
                     style={inputStyle}
                     onFocus={(e) => (e.currentTarget.style.borderColor = '#C5A880')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E9E9E9')}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E5E5E5')}
                   />
                 </div>
               </div>
@@ -200,17 +200,17 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                   {t('emailLabel')}
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#CBCBCB' }} />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#9B9B9B' }} />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t('emailPlaceholder')}
                     required
-                    className="w-full pl-9 pr-3 py-2.5 rounded-md text-sm"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-md text-sm transition-colors duration-100"
                     style={inputStyle}
                     onFocus={(e) => (e.currentTarget.style.borderColor = '#C5A880')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E9E9E9')}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E5E5E5')}
                   />
                 </div>
               </div>
@@ -221,26 +221,26 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                   {t('passwordLabel')}
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#CBCBCB' }} />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#9B9B9B' }} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t('passwordPlaceholder')}
                     required
-                    className="w-full pl-9 pr-10 py-2.5 rounded-md text-sm"
+                    className="w-full pl-9 pr-10 py-2.5 rounded-md text-sm transition-colors duration-100"
                     style={inputStyle}
                     onFocus={(e) => (e.currentTarget.style.borderColor = '#C5A880')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E9E9E9')}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E5E5E5')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-opacity hover:opacity-70"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors duration-100 hover:text-[#6B6B6B]"
                   >
                     {showPassword
-                      ? <EyeOff className="w-3.5 h-3.5" style={{ color: '#CBCBCB' }} />
-                      : <Eye className="w-3.5 h-3.5" style={{ color: '#CBCBCB' }} />}
+                      ? <EyeOff className="w-3.5 h-3.5" style={{ color: '#9B9B9B' }} />
+                      : <Eye className="w-3.5 h-3.5" style={{ color: '#9B9B9B' }} />}
                   </button>
                 </div>
               </div>
@@ -251,17 +251,17 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                   {t('confirmPasswordLabel')}
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#CBCBCB' }} />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: '#9B9B9B' }} />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder={t('confirmPasswordPh')}
                     required
-                    className="w-full pl-9 pr-3 py-2.5 rounded-md text-sm"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-md text-sm transition-colors duration-100"
                     style={inputStyle}
                     onFocus={(e) => (e.currentTarget.style.borderColor = '#C5A880')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E9E9E9')}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '#E5E5E5')}
                   />
                 </div>
               </div>
@@ -277,18 +277,18 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                       key={value}
                       type="button"
                       onClick={() => setRole(value)}
-                      className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-md border transition-all duration-100"
+                      className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-md border transition-colors duration-100"
                       style={{
-                        borderColor: role === value ? '#C5A880' : '#E9E9E9',
+                        borderColor: role === value ? '#C5A880' : '#E5E5E5',
                         backgroundColor: role === value ? '#FDF6EE' : '#FFFFFF',
                       }}
                     >
-                      <span style={{ color: role === value ? '#C5A880' : '#CBCBCB' }}>
+                      <span style={{ color: role === value ? '#C5A880' : '#9B9B9B' }}>
                         {icon}
                       </span>
                       <span
                         className="text-[11px] font-medium"
-                        style={{ color: role === value ? '#2F2F2F' : '#9B9B9B' }}
+                        style={{ color: role === value ? '#2F2F2F' : '#6B6B6B' }}
                       >
                         {t(labelKey)}
                       </span>
@@ -301,7 +301,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-md text-sm font-semibold flex items-center justify-center gap-2 mt-1 transition-all hover:bg-[#1A1A1A] disabled:opacity-50"
+                className="w-full py-2.5 rounded-md text-sm font-semibold flex items-center justify-center gap-2 mt-1 transition-colors duration-100 hover:bg-[#1A1A1A] disabled:opacity-50"
                 style={{ backgroundColor: '#2F2F2F', color: '#FFFFFF' }}
               >
                 {loading
@@ -312,19 +312,19 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-4">
-              <div className="flex-1 h-px" style={{ backgroundColor: '#F0F0F0' }} />
-              <span className="text-xs" style={{ color: '#CBCBCB' }}>{t('orDivider')}</span>
-              <div className="flex-1 h-px" style={{ backgroundColor: '#F0F0F0' }} />
+              <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
+              <span className="text-xs" style={{ color: '#9B9B9B' }}>{t('orDivider')}</span>
+              <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
             </div>
 
             {/* Google */}
             <button
               onClick={handleGoogleSignIn}
               disabled={loading}
-              className="w-full py-2.5 rounded-md text-sm font-medium flex items-center justify-center gap-2.5 transition-all hover:bg-neutral-50 disabled:opacity-50"
+              className="w-full py-2.5 rounded-md text-sm font-medium flex items-center justify-center gap-2.5 transition-colors duration-100 hover:bg-[#F1F1EF] disabled:opacity-50"
               style={{
                 backgroundColor: '#FFFFFF',
-                border: '1px solid #E9E9E9',
+                border: '1px solid #E5E5E5',
                 color: '#2F2F2F',
               }}
             >
@@ -339,11 +339,11 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
           </div>
 
           {/* Login link */}
-          <p className="mt-5 text-center text-sm" style={{ color: '#9B9B9B' }}>
+          <p className="mt-5 text-center text-sm" style={{ color: '#6B6B6B' }}>
             {t('hasAccount')}{' '}
             <button
               onClick={onNavigateToLogin}
-              className="font-semibold transition-colors hover:underline"
+              className="font-semibold transition-colors duration-100 hover:text-[#C5A880]"
               style={{ color: '#2F2F2F' }}
             >
               {t('signInLink')}

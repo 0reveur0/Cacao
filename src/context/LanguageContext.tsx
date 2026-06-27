@@ -7,47 +7,47 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 
 export type Locale = 'vi' | 'en';
 
-// ─── Full translation dictionary ───────────────────────────────────────────────
+// ─── Full translation dictionary (Natural, friendly tone) ───────────────────────
 export const translations = {
   vi: {
     // Welcome block
-    welcome:            '👋 Chào {name}! Thoải thả học nhé.',
-    welcomeGuest:       '👋 Chào bạn! Thoải thả học nhé.',
-    subWelcome:         'Hôm nay có {count} bài học đang chờ bạn hoàn thiện.',
-    subWelcomeSingle:   'Hôm nay có 1 bài học mới và 1 bài tập cần hoàn thiện.',
-    goalTitle:          '💡 Mục tiêu cốt lõi: Mastery Learning',
-    goalBody:           'Không có áp lực điểm số, không bảng xếp hạng. Học đến khi làm chủ kiến thức — sau đó tiến bước tiếp theo.',
+    welcome:            '👋 Chào {name}! Thong thả học nhé.',
+    welcomeGuest:       '👋 Chào bạn! Thong thả học nhé.',
+    subWelcome:         'Hôm nay có {count} bài học đang chờ bạn.',
+    subWelcomeSingle:   'Hôm nay bạn có một bài học mới và một bài tập cần hoàn thiện.',
+    goalTitle:          '💡 Mục tiêu: Học thấu, không học vẹt',
+    goalBody:           'Không áp lực điểm số, không so kè. Bạn học cho đến khi thực sự hiểu — rồi mới tiến bước tiếp.',
 
     // Status labels
-    completed:          'Hoàn thành',
-    inProgress:         'Đang học',
+    completed:          'Đã xong',
+    inProgress:         'Đang làm',
     locked:             'Chưa mở',
-    lockedTooltip:      'Hoàn thành bài trước đạt ≥ 80% để mở khóa',
+    lockedTooltip:      'Hoàn thành bài trước với 80% trở lên để mở khóa',
 
     // Nav items
-    nav_workspace:      'Bảng làm việc',
+    nav_workspace:      'Trang làm việc',
     nav_courses:        'Khóa học',
-    nav_roadmap:        'Lộ trình học',
+    nav_roadmap:        'Lộ trình',
     nav_discussion:     'Thảo luận',
-    nav_schedule:       'Lịch học',
+    nav_schedule:       'Lịch',
     nav_settings:       'Cài đặt',
 
     // Quick actions
     quickAction:        'Thao tác nhanh',
-    adminWorkspace:     'Quản trị hệ thống',
-    feedLink:           'Bản tin & Thông báo',
+    adminWorkspace:     'Quản trị',
+    feedLink:           'Bản tin',
     newCourse:          '+ Khóa học mới',
     askQuestion:        '+ Đặt câu hỏi',
-    viewSchedule:       '+ Xem lịch học',
+    viewSchedule:       '+ Xem lịch',
     newAssignment:      '+ Bài tập mới',
 
     // Reminders / progress
     reminders:          'Nhắc nhở',
-    masteryTotal:       'Mastery tổng',
+    masteryTotal:       'Tiến độ tổng',
     viewAll:            'Xem tất cả',
-    noData:             'Không có dữ liệu',
+    noData:             'Chưa có gì',
     loading:            'Đang tải...',
-    noCoursesYet:       'Chưa có khóa học nào được tải.',
+    noCoursesYet:       'Chưa có khóa học nào.',
 
     // Table headers
     col_title:          'Tiêu đề bài học',
@@ -62,27 +62,27 @@ export const translations = {
     priority_low:       'Thấp',
 
     // Section titles
-    section_courses:    'Khóa học & Lịch học',
+    section_courses:    'Khóa học',
     section_roadmap:    'Bài tập & Lộ trình',
-    section_calendar:   'Lịch học & Deadline',
+    section_calendar:   'Lịch & Deadline',
 
     // Section tab labels
-    tab_gallery:        'Gallery',
-    tab_schedule:       'Lịch học',
+    tab_gallery:        'Dạng lưới',
+    tab_schedule:       'Lịch',
     tab_details:        'Chi tiết',
-    tab_table:          'Dạng bảng',
+    tab_table:          'Bảng',
     tab_todo:           'Cần làm',
     tab_upcoming:       'Sắp tới',
-    tab_calendar:       'Lịch tháng',
+    tab_calendar:       'Tháng',
     tab_list:           'Danh sách',
     tab_week:           'Tuần này',
 
     // Footer message
-    footerTitle:        'Lời nhắn từ Cacao',
-    footerBody:         'Trong hệ thống Cacao, việc làm sai chỉ là một phần tự nhiên của hành trình làm chủ kiến thức. Không có điểm số phán xét, không bảng xếp hạng — bạn chỉ cần so sánh với chính mình của hôm qua.',
+    footerTitle:        'Lời nhắn',
+    footerBody:         'Làm sai là chuyện bình thường. Không ai đánh giá bạn, không có bảng xếp hạng. Bạn chỉ cần so với chính mình của hôm qua thôi.',
 
     // Roadmap footer
-    roadmapFooter:      '{total} bài học · {done} hoàn thành · {active} đang học',
+    roadmapFooter:      '{total} bài · {done} xong · {active} đang làm',
 
     // Feed page
     feedTitle:          'Bản tin & Thông báo',
@@ -200,22 +200,22 @@ export const translations = {
     assignmentFeedbackAvailable:'Có phản hồi mới',
 
     // Auth pages
-    loginTitle:          'Đăng nhập vào Cacao Workspace',
-    loginSubtitle:       'Hệ thống Mastery Learning không điểm số',
-    emailLabel:          'Email',
-    emailPlaceholder:    'Nhập địa chỉ email của bạn...',
+    loginTitle:          'Đăng nhập vào không gian học tập',
+    loginSubtitle:       'Học tập thong thả, hiểu thấu vấn đề',
+    emailLabel:          'Địa chỉ email của bạn',
+    emailPlaceholder:    'Nhập email...',
     passwordLabel:       'Mật khẩu',
     passwordPlaceholder: 'Nhập mật khẩu...',
-    loginBtn:            'Tiếp tục với email',
+    loginBtn:            'Tiếp tục bằng email',
     forgotPassword:      'Quên mật khẩu?',
-    continueWithGoogle:  'Tiếp tục với Google',
+    continueWithGoogle:  'Tiếp tục bằng Google',
     orDivider:           'hoặc',
     noAccount:           'Chưa có tài khoản?',
     hasAccount:          'Đã có tài khoản?',
-    signUpLink:          'Đăng ký ngay',
+    signUpLink:          'Đăng ký',
     signInLink:          'Đăng nhập',
-    registerTitle:       'Tạo tài khoản Cacao',
-    registerSubtitle:    'Bắt đầu hành trình học tập không áp lực',
+    registerTitle:       'Tạo tài khoản mới',
+    registerSubtitle:    'Bắt đầu hành trình học tập của bạn',
     registerBtn:         'Tạo tài khoản',
     yourNameLabel:       'Họ tên',
     yourNamePh:          'Nguyễn Văn A...',
@@ -226,30 +226,30 @@ export const translations = {
     roleTeacher:         'Giảng viên',
     roleAdmin:           'Quản trị',
     registerSuccess:     'Đăng ký thành công!',
-    registerSuccessHint: 'Vui lòng kiểm tra email để xác thực tài khoản.',
-    backToLogin:         'Quay lại Đăng nhập',
+    registerSuccessHint: 'Kiểm tra email để xác thực tài khoản nhé.',
+    backToLogin:         'Quay lại đăng nhập',
     pwMismatch:          'Mật khẩu xác nhận không khớp.',
-    pwTooShort:          'Mật khẩu phải có ít nhất 6 ký tự.',
-    authError:           'Đăng nhập thất bại. Vui lòng thử lại.',
-    authGoogleError:     'Đăng nhập Google thất bại.',
-    authRegisterError:   'Đăng ký thất bại. Vui lòng thử lại.',
-    masteryTagline:      'Mastery Learning · Không bảng xếp hạng · Không áp lực',
+    pwTooShort:          'Mật khẩu cần ít nhất 6 ký tự.',
+    authError:           'Đăng nhập không thành công. Thử lại nhé.',
+    authGoogleError:     'Đăng nhập Google không thành công.',
+    authRegisterError:   'Đăng ký không thành công. Thử lại nhé.',
+    masteryTagline:      'Không áp lực, không so kè, chỉ có bạn và kiến thức',
   },
 
   en: {
     // Welcome block
     welcome:            '👋 Hi, {name}! Take your time.',
     welcomeGuest:       '👋 Hi there! Take your time.',
-    subWelcome:         'You have {count} lesson(s) waiting to be completed.',
+    subWelcome:         'You have {count} lesson(s) waiting for you.',
     subWelcomeSingle:   'You have 1 new lesson and 1 assignment to complete today.',
-    goalTitle:          '💡 Core Goal: Mastery Learning',
-    goalBody:           'No grade pressure, no leaderboards. Study until you truly master the concept — then move to the next step.',
+    goalTitle:          '💡 Core Goal: Master it, don\'t just memorize',
+    goalBody:           'No grade pressure, no competition. Learn until you truly understand — then move on.',
 
     // Status labels
-    completed:          'Completed',
-    inProgress:         'In Progress',
+    completed:          'Done',
+    inProgress:         'In progress',
     locked:             'Locked',
-    lockedTooltip:      'Complete previous lesson with ≥ 80% score to unlock',
+    lockedTooltip:      'Complete previous lesson with 80% or higher to unlock',
 
     // Nav items
     nav_workspace:      'Workspace',
@@ -261,8 +261,8 @@ export const translations = {
 
     // Quick actions
     quickAction:        'Quick Actions',
-    adminWorkspace:     'Admin Workspace',
-    feedLink:           'Updates & Announcements',
+    adminWorkspace:     'Admin',
+    feedLink:           'Updates',
     newCourse:          '+ New Course',
     askQuestion:        '+ Ask a Question',
     viewSchedule:       '+ View Schedule',
@@ -270,11 +270,11 @@ export const translations = {
 
     // Reminders / progress
     reminders:          'Reminders',
-    masteryTotal:       'Overall Mastery',
+    masteryTotal:       'Overall Progress',
     viewAll:            'View all',
-    noData:             'No data',
+    noData:             'Nothing here',
     loading:            'Loading...',
-    noCoursesYet:       'No courses loaded yet.',
+    noCoursesYet:       'No courses yet.',
 
     // Table headers
     col_title:          'Lesson Title',
@@ -289,27 +289,27 @@ export const translations = {
     priority_low:       'Low',
 
     // Section titles
-    section_courses:    'Courses & Schedule',
+    section_courses:    'Courses',
     section_roadmap:    'Assignments & Roadmap',
     section_calendar:   'Schedule & Deadlines',
 
     // Section tab labels
-    tab_gallery:        'Gallery View',
+    tab_gallery:        'Gallery',
     tab_schedule:       'Schedule',
-    tab_details:        'All Details',
-    tab_table:          'Table View',
+    tab_details:        'Details',
+    tab_table:          'Table',
     tab_todo:           'To Do',
     tab_upcoming:       'Upcoming',
-    tab_calendar:       'Calendar View',
-    tab_list:           'List View',
+    tab_calendar:       'Month',
+    tab_list:           'List',
     tab_week:           'This Week',
 
     // Footer message
-    footerTitle:        'A Message from Cacao',
-    footerBody:         'In the Cacao system, making mistakes is a natural part of the mastery journey. No grades to judge you, no leaderboards — just you vs. the you of yesterday.',
+    footerTitle:        'A quick note',
+    footerBody:         'Making mistakes is normal. No grades to judge you, no leaderboards — just you vs. the you of yesterday.',
 
     // Roadmap footer
-    roadmapFooter:      '{total} lessons · {done} completed · {active} in progress',
+    roadmapFooter:      '{total} lessons · {done} done · {active} in progress',
 
     // Feed page
     feedTitle:          'Updates & Announcements',
@@ -427,10 +427,10 @@ export const translations = {
     assignmentFeedbackAvailable:'New feedback available',
 
     // Auth pages
-    loginTitle:          'Sign in to Cacao Workspace',
-    loginSubtitle:       'Mastery Learning — no grades, no pressure',
-    emailLabel:          'Email',
-    emailPlaceholder:    'Enter your email address...',
+    loginTitle:          'Sign in to your workspace',
+    loginSubtitle:       'Learn at your own pace, master the core',
+    emailLabel:          'Your email address',
+    emailPlaceholder:    'Enter email...',
     passwordLabel:       'Password',
     passwordPlaceholder: 'Enter password...',
     loginBtn:            'Continue with email',
@@ -441,26 +441,26 @@ export const translations = {
     hasAccount:          'Already have an account?',
     signUpLink:          'Sign up',
     signInLink:          'Sign in',
-    registerTitle:       'Create a Cacao account',
-    registerSubtitle:    'Start your pressure-free learning journey',
+    registerTitle:       'Create your account',
+    registerSubtitle:    'Start your learning journey',
     registerBtn:         'Create account',
     yourNameLabel:       'Full name',
-    yourNamePh:          'Your full name...',
+    yourNamePh:          'Your name...',
     confirmPasswordLabel:'Confirm password',
-    confirmPasswordPh:   'Re-enter your password...',
+    confirmPasswordPh:   'Re-enter password...',
     selectRoleLabel:     'Role',
     roleStudent:         'Student',
     roleTeacher:         'Teacher',
     roleAdmin:           'Admin',
     registerSuccess:     'Account created!',
-    registerSuccessHint: 'Please check your email to verify your account.',
-    backToLogin:         'Back to Sign In',
+    registerSuccessHint: 'Check your email to verify your account.',
+    backToLogin:         'Back to sign in',
     pwMismatch:          'Passwords do not match.',
     pwTooShort:          'Password must be at least 6 characters.',
     authError:           'Sign in failed. Please try again.',
     authGoogleError:     'Google sign-in failed.',
     authRegisterError:   'Registration failed. Please try again.',
-    masteryTagline:      'Mastery Learning · No Leaderboards · No Pressure',
+    masteryTagline:      'No pressure, no competition — just you and the knowledge',
   },
 } as const;
 
