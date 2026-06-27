@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { LanguageProvider } from './context/LanguageContext';
+import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -14,11 +15,11 @@ import AdminPage from './pages/AdminPage';
 import FeedPage from './pages/FeedPage';
 import AssignmentPage from './pages/AssignmentPage';
 
-type Page = 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments';
+type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments';
 
 function AppContent() {
   const { user, profile, loading } = useAuth();
-  const [currentPage, setCurrentPage] = useState<Page>('login');
+  const [currentPage, setCurrentPage] = useState<Page>('landing');
 
   useEffect(() => {
     if (loading) return;
@@ -27,7 +28,7 @@ function AppContent() {
     } else if (user && !profile) {
       setCurrentPage('dashboard');
     } else {
-      setCurrentPage('login');
+      setCurrentPage('landing');
     }
   }, [user, profile, loading]);
 
@@ -48,6 +49,13 @@ function AppContent() {
   }
 
   switch (currentPage) {
+    case 'landing':
+      return (
+        <LandingPage
+          onNavigateToLogin={() => setCurrentPage('login')}
+          onNavigateToRegister={() => setCurrentPage('register')}
+        />
+      );
     case 'login':
       return <LoginPage onNavigateToRegister={() => setCurrentPage('register')} />;
     case 'register':
@@ -72,7 +80,12 @@ function AppContent() {
         />
       );
     default:
-      return <LoginPage onNavigateToRegister={() => setCurrentPage('register')} />;
+      return (
+        <LandingPage
+          onNavigateToLogin={() => setCurrentPage('login')}
+          onNavigateToRegister={() => setCurrentPage('register')}
+        />
+      );
   }
 }
 
