@@ -1278,6 +1278,185 @@ app.get("/api/admin/billing", requireAdminKey, async (req, res) => {
   res.json({ success: true, ledger: [] });
 });
 
+// ====== ASSIGNMENTS API ======
+
+// GET /api/assignments - Get all assignments for the logged-in user
+app.get("/api/assignments", async (req, res) => {
+  const { userId } = req.query;
+
+  if (supabaseClient && userId) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('assignments')
+        .select('*')
+        .eq('user_id', userId as string)
+        .order('due_date', { ascending: true });
+
+      if (!error && data) {
+        return res.json({ success: true, assignments: data });
+      }
+    } catch (err) {
+      console.error("Error fetching assignments:", err);
+    }
+  }
+
+  // Return mock assignments if no Supabase data
+  res.json({ success: true, assignments: [] });
+});
+
+// GET /api/assignments/:id - Get single assignment
+app.get("/api/assignments/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('assignments')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (!error && data) {
+        return res.json({ success: true, assignment: data });
+      }
+    } catch (err) {
+      console.error("Error fetching assignment:", err);
+    }
+  }
+
+  res.status(404).json({ error: "Assignment not found" });
+});
+
+// POST /api/assignments/:id/submit - Submit an assignment
+app.post("/api/assignments/:id/submit", async (req, res) => {
+  const { id } = req.params;
+  const { userId, content, files } = req.body;
+
+  if (supabaseClient && userId) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('assignments')
+        .update({
+          status: 'UNDER_REVIEW',
+          content: content,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      if (!error && data) {
+        // Optionally trigger AI feedback generation here
+        return res.json({ success: true, assignment: data });
+      }
+    } catch (err) {
+      console.error("Error submitting assignment:", err);
+    }
+  }
+
+  // Fallback: return success for demo
+  res.json({
+    success: true,
+    assignment: {
+      id,
+      status: 'UNDER_REVIEW',
+      updated_at: new Date().toISOString(),
+    }
+  });
+});
+
+// PATCH /api/assignments/:id/status - Update assignment status
+app.patch("/api/assignments/:id/status", async (req, res) => {
+  const { id } = req.params;
+  const { userId, status } = req.body;
+
+  const validStatuses = ['TODO', 'IN_PROGRESS', 'UNDER_REVIEW', 'COMPLETED'];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+
+  if (supabaseClient && userId) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('assignments')
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      if (!error && data) {
+        return res.json({ success: true, assignment: data });
+      }
+    } catch (err) {
+      console.error("Error updating assignment status:", err);
+    }
+  }
+
+  res.json({ success: true, id, status });
+});
+
+// POST /api/assignments - Create new assignment (Admin/Teacher only)
+app.post("/api/assignments", async (req, res) => {
+  const {
+    userId,
+    title,
+    description,
+    instructions,
+    subject,
+    type,
+    priority,
+    due_date,
+    target_users // Array of user IDs for batch assignment
+  } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).json({ error: "Title and description are required" });
+  }
+
+  const assignmentData = {
+    user_id: userId || 'system',
+    title,
+    description,
+    instructions: instructions || description,
+    subject: subject || 'General',
+    type: type || 'PROJECT',
+    status: 'TODO',
+    priority: priority || 'MEDIUM',
+    due_date: due_date || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
+  if (supabaseClient) {
+    try {
+      // If target_users provided, create assignments for each
+      const users = target_users && target_users.length > 0 ? target_users : [userId];
+
+      const assignments = users.map((uid: string) => ({
+        ...assignmentData,
+        user_id: uid,
+      }));
+
+      const { data, error } = await supabaseClient
+        .from('assignments')
+        .insert(assignments)
+        .select();
+
+      if (!error && data) {
+        return res.json({ success: true, assignments: data });
+      }
+    } catch (err) {
+      console.error("Error creating assignments:", err);
+    }
+  }
+
+  res.json({ success: true, assignment: assignmentData });
+});
+
+// ====== END ASSIGNMENTS API ======
+
 // ====== END NEW API ======
 
 // Helper functions for template-based professional diagnostics

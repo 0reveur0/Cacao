@@ -92,9 +92,11 @@ function getStatus(isCompleted: boolean, isLocked: boolean): LessonStatus {
 export default function DashboardPage({
   onNavigateToAdmin,
   onNavigateToFeed,
+  onNavigateToAssignments,
 }: {
   onNavigateToAdmin?: () => void;
   onNavigateToFeed?: () => void;
+  onNavigateToAssignments?: () => void;
 }) {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
@@ -291,11 +293,25 @@ export default function DashboardPage({
                       {t('feedLink')}
                     </button>
                   )}
+                  {onNavigateToAssignments && (
+                    <button
+                      onClick={onNavigateToAssignments}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-200 ease-in-out"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      <span className="text-neutral-400">
+                        <ClipboardList className="w-3.5 h-3.5" />
+                      </span>
+                      {t('assignmentTitle')}
+                      <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-[#FEF4E8] text-[#9A6A2A]">
+                        3
+                      </span>
+                    </button>
+                  )}
                   {([
                     { icon: <Plus className="w-3.5 h-3.5" />,         key: 'newCourse'     },
                     { icon: <MessageSquare className="w-3.5 h-3.5" />, key: 'askQuestion'   },
                     { icon: <Calendar className="w-3.5 h-3.5" />,      key: 'viewSchedule'  },
-                    { icon: <GraduationCap className="w-3.5 h-3.5" />, key: 'newAssignment' },
                   ] as const).map(({ icon, key }) => (
                     <button
                       key={key}

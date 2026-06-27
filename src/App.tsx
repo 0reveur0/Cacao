@@ -12,8 +12,9 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminPage from './pages/AdminPage';
 import FeedPage from './pages/FeedPage';
+import AssignmentPage from './pages/AssignmentPage';
 
-type Page = 'login' | 'register' | 'dashboard' | 'admin' | 'feed';
+type Page = 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments';
 
 function AppContent() {
   const { user, profile, loading } = useAuth();
@@ -60,11 +61,14 @@ function AppContent() {
       );
     case 'feed':
       return <FeedPage onBack={() => setCurrentPage(profile?.role === 'ADMIN' ? 'admin' : 'dashboard')} />;
+    case 'assignments':
+      return <AssignmentPage onBack={() => setCurrentPage('dashboard')} />;
     case 'dashboard':
       return (
         <DashboardPage
           onNavigateToAdmin={profile?.role === 'ADMIN' ? () => setCurrentPage('admin') : undefined}
           onNavigateToFeed={() => setCurrentPage('feed')}
+          onNavigateToAssignments={() => setCurrentPage('assignments')}
         />
       );
     default:
