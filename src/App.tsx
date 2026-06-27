@@ -10,8 +10,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminPage from './pages/AdminPage';
+import FeedPage from './pages/FeedPage';
 
-type Page = 'login' | 'register' | 'dashboard' | 'admin';
+type Page = 'login' | 'register' | 'dashboard' | 'admin' | 'feed';
 
 function AppContent() {
   const { user, profile, loading } = useAuth();
@@ -20,10 +21,8 @@ function AppContent() {
   useEffect(() => {
     if (loading) return;
     if (user && profile) {
-      // Auto-route ADMIN users to admin workspace on first login
       setCurrentPage(profile.role === 'ADMIN' ? 'admin' : 'dashboard');
     } else if (user && !profile) {
-      // User authenticated but profile not loaded yet — wait
       setCurrentPage('dashboard');
     } else {
       setCurrentPage('login');
@@ -40,36 +39,35 @@ function AppContent() {
           >
             <span className="text-2xl">☕</span>
           </div>
-          <p className="text-sm" style={{ color: '#6B6B6B' }}>Dang tai...</p>
+          <p className="text-sm" style={{ color: '#6B6B6B' }}>Đang tải...</p>
         </div>
       </div>
     );
   }
 
-  const handleNavigateToRegister = () => setCurrentPage('register');
-  const handleNavigateToLogin = () => setCurrentPage('login');
-
   switch (currentPage) {
     case 'login':
-      return <LoginPage onNavigateToRegister={handleNavigateToRegister} />;
+      return <LoginPage onNavigateToRegister={() => setCurrentPage('register')} />;
     case 'register':
-      return <RegisterPage onNavigateToLogin={handleNavigateToLogin} />;
+      return <RegisterPage onNavigateToLogin={() => setCurrentPage('login')} />;
     case 'admin':
       return (
         <AdminPage
           onExit={() => setCurrentPage('dashboard')}
+          onNavigateToFeed={() => setCurrentPage('feed')}
         />
       );
+    case 'feed':
+      return <FeedPage onBack={() => setCurrentPage(profile?.role === 'ADMIN' ? 'admin' : 'dashboard')} />;
     case 'dashboard':
       return (
         <DashboardPage
-          onNavigateToAdmin={
-            profile?.role === 'ADMIN' ? () => setCurrentPage('admin') : undefined
-          }
+          onNavigateToAdmin={profile?.role === 'ADMIN' ? () => setCurrentPage('admin') : undefined}
+          onNavigateToFeed={() => setCurrentPage('feed')}
         />
       );
     default:
-      return <LoginPage onNavigateToRegister={handleNavigateToRegister} />;
+      return <LoginPage onNavigateToRegister={() => setCurrentPage('register')} />;
   }
 }
 

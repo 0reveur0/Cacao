@@ -788,7 +788,13 @@ function BillingBlock({ ledger, loading }: { ledger: BillingRow[]; loading: bool
 // ─── Main AdminPage ───────────────────────────────────────────────────────────────
 type AdminSection = 'users' | 'curriculum' | 'billing' | 'submissions';
 
-export default function AdminPage({ onExit }: { onExit: () => void }) {
+export default function AdminPage({
+  onExit,
+  onNavigateToFeed,
+}: {
+  onExit: () => void;
+  onNavigateToFeed?: () => void;
+}) {
   const { profile, signOut } = useAuth();
   const [section, setSection] = useState<AdminSection>('users');
 
@@ -941,6 +947,16 @@ export default function AdminPage({ onExit }: { onExit: () => void }) {
 
         {/* Bottom */}
         <div className="px-2 py-3 border-t border-neutral-100 space-y-0.5">
+          {onNavigateToFeed && (
+            <button
+              onClick={onNavigateToFeed}
+              className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-100 transition-colors"
+              style={{ fontFamily: 'var(--font-body)' }}
+            >
+              <span className="text-[13px]">📢</span>
+              Updates &amp; Feed
+            </button>
+          )}
           <button
             onClick={onExit}
             className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-100 transition-colors"

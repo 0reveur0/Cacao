@@ -71,7 +71,13 @@ const NAV_ITEMS = [
 ];
 
 // ─── Page component ────────────────────────────────────────────────────────────
-export default function DashboardPage({ onNavigateToAdmin }: { onNavigateToAdmin?: () => void }) {
+export default function DashboardPage({
+  onNavigateToAdmin,
+  onNavigateToFeed,
+}: {
+  onNavigateToAdmin?: () => void;
+  onNavigateToFeed?: () => void;
+}) {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
   const [activeItem, setActiveItem] = useState('workspace');
@@ -213,6 +219,16 @@ export default function DashboardPage({ onNavigateToAdmin }: { onNavigateToAdmin
                     >
                       <span className="text-sm">⚙️</span>
                       Admin Workspace
+                    </button>
+                  )}
+                  {onNavigateToFeed && (
+                    <button
+                      onClick={onNavigateToFeed}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-200 ease-in-out"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      <span className="text-neutral-400"><svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></span>
+                      Updates &amp; Announcements
                     </button>
                   )}
                   {[
