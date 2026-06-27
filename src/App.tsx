@@ -9,26 +9,35 @@ import { ProgressProvider } from './context/ProgressContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import AdminPage from './pages/AdminPage';
 
-type Page = 'login' | 'register' | 'dashboard';
+type Page = 'login' | 'register' | 'dashboard' | 'admin';
 
 function AppContent() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [currentPage, setCurrentPage] = useState<Page>('login');
 
   useEffect(() => {
-    if (user && !loading) {
+    if (loading) return;
+    if (user && profile) {
+      // Auto-route ADMIN users to admin workspace on first login
+      setCurrentPage(profile.role === 'ADMIN' ? 'admin' : 'dashboard');
+    } else if (user && !profile) {
+      // User authenticated but profile not loaded yet — wait
       setCurrentPage('dashboard');
-    } else if (!loading) {
+    } else {
       setCurrentPage('login');
     }
-  }, [user, loading]);
+  }, [user, profile, loading]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#FAFAFA' }}>
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-4" style={{ backgroundColor: '#F5EBE0' }}>
+          <div
+            className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-4"
+            style={{ backgroundColor: '#F5EBE0' }}
+          >
             <span className="text-2xl">☕</span>
           </div>
           <p className="text-sm" style={{ color: '#6B6B6B' }}>Dang tai...</p>
@@ -45,8 +54,20 @@ function AppContent() {
       return <LoginPage onNavigateToRegister={handleNavigateToRegister} />;
     case 'register':
       return <RegisterPage onNavigateToLogin={handleNavigateToLogin} />;
+    case 'admin':
+      return (
+        <AdminPage
+          onExit={() => setCurrentPage('dashboard')}
+        />
+      );
     case 'dashboard':
-      return <DashboardPage />;
+      return (
+        <DashboardPage
+          onNavigateToAdmin={
+            profile?.role === 'ADMIN' ? () => setCurrentPage('admin') : undefined
+          }
+        />
+      );
     default:
       return <LoginPage onNavigateToRegister={handleNavigateToRegister} />;
   }

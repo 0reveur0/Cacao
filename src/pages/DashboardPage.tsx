@@ -71,7 +71,7 @@ const NAV_ITEMS = [
 ];
 
 // ─── Page component ────────────────────────────────────────────────────────────
-export default function DashboardPage() {
+export default function DashboardPage({ onNavigateToAdmin }: { onNavigateToAdmin?: () => void }) {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
   const [activeItem, setActiveItem] = useState('workspace');
@@ -205,6 +205,16 @@ export default function DashboardPage() {
                   </p>
                 </div>
                 <div className="p-2 space-y-0.5">
+                  {onNavigateToAdmin && (
+                    <button
+                      onClick={onNavigateToAdmin}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-[#9A6A2A] bg-[#FEF4E8] hover:bg-[#F5EBE0] transition-all duration-200 ease-in-out"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      <span className="text-sm">⚙️</span>
+                      Admin Workspace
+                    </button>
+                  )}
                   {[
                     { icon: <Plus className="w-3.5 h-3.5" />,         label: '+ New Course'     },
                     { icon: <MessageSquare className="w-3.5 h-3.5" />, label: '+ Ask a Question' },
