@@ -133,6 +133,21 @@ export const translations = {
     // Language toggle
     langToggle:         'EN',
     langToggleTitle:    'Switch to English',
+
+    // Interactive Lesson Page
+    lesson_videoLecture:     'Bài giảng video',
+    lesson_readingMaterial: 'Tài liệu đọc',
+    lesson_yourNotes:       'Ghi chú cá nhân',
+    lesson_addTimestamp:    '+ Thêm ghi chú tại thời điểm này',
+    lesson_timestampHint:   'Nhấn vào timestamp để nhảy đến thời điểm trong video',
+    lesson_notesPlaceholder:'Ghi chú của bạn sẽ được lưu tự động...',
+    lesson_noVideo:         'Video chưa có',
+    lesson_saveSuccess:     'Đã lưu ghi chú',
+    lesson_saveError:       'Lỗi khi lưu ghi chú',
+    lesson_syncedNotes:     'Ghi chú đồng bộ',
+    lesson_exportNotes:     'Xuất ghi chú',
+    lesson_autoSaveHint:    'Tự động lưu mỗi vài giây',
+    lesson_timestampFormat: '⏱️ {time} - ',
   },
 
   en: {
@@ -259,6 +274,21 @@ export const translations = {
     // Language toggle
     langToggle:         'VI',
     langToggleTitle:    'Chuyển sang Tiếng Việt',
+
+    // Interactive Lesson Page
+    lesson_videoLecture:     'Video Lecture',
+    lesson_readingMaterial: 'Reading Material',
+    lesson_yourNotes:       'Your Personal Notes',
+    lesson_addTimestamp:    '+ Add Timestamp Note',
+    lesson_timestampHint:   'Click a timestamp to jump to that point in the video',
+    lesson_notesPlaceholder:'Your notes will be auto-saved...',
+    lesson_noVideo:         'No video available',
+    lesson_saveSuccess:     'Notes saved',
+    lesson_saveError:       'Error saving notes',
+    lesson_syncedNotes:     'Synced Notes',
+    lesson_exportNotes:     'Export Notes',
+    lesson_autoSaveHint:    'Auto-saves every few seconds',
+    lesson_timestampFormat: '⏱️ {time} - ',
   },
 } as const;
 

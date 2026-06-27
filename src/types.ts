@@ -142,3 +142,19 @@ export interface ScheduleEvent {
   lesson_id?: string | null;
   created_at: string;
 }
+
+// ===== Lesson Note Types =====
+
+export interface LessonNote {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TimestampNote {
+  seconds: number;
+  text: string;
+}

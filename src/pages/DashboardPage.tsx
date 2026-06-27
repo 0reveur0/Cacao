@@ -9,7 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../context/ProgressContext';
 import { useLanguage } from '../context/LanguageContext';
 import Sidebar from '../components/Sidebar';
-import LessonDetailPage from '../components/LessonDetailPage';
+import InteractiveLessonPage from './InteractiveLessonPage';
 import PomodoroTimer from '../components/PomodoroTimer';
 import CalendarView from '../components/CalendarView';
 import {
@@ -142,7 +142,7 @@ export default function DashboardPage({
     const item   = roadmap.find((r) => r.lessonId === selectedLessonId);
     if (lesson) {
       return (
-        <div className="flex h-screen" style={{ backgroundColor: '#FAFAFA' }}>
+        <div className="flex h-screen" style={{ backgroundColor: '#FFFFFF' }}>
           <Sidebar
             activeItem={activeItem}
             onItemClick={setActiveItem}
@@ -153,7 +153,7 @@ export default function DashboardPage({
             onLessonClick={handleLessonClick}
           />
           <main className="flex-1 overflow-y-auto">
-            <LessonDetailPage
+            <InteractiveLessonPage
               lesson={lesson}
               quiz={quiz || null}
               isLocked={item?.isLocked ?? false}
