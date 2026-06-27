@@ -29,12 +29,12 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
     setError(null);
 
     if (password !== confirmPassword) {
-      setError('Mat khau xac nhan khong khop.');
+      setError('Mật khẩu xác nhận không khớp.');
       return;
     }
 
     if (password.length < 6) {
-      setError('Mat khau phai co it nhat 6 ky tu.');
+      setError('Mật khẩu phải có ít nhất 6 ký tự.');
       return;
     }
 
@@ -43,7 +43,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
     const { error } = await signUp(email, password, name, role);
 
     if (error) {
-      setError(error.message || 'Dang ky that bai. Vui long thu lai.');
+      setError(error.message || 'Đăng ký thất bại. Vui lòng thử lại.');
       setLoading(false);
     } else {
       setSuccess(true);
@@ -56,7 +56,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
     setLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      setError(error.message || 'Dang nhap Google that bai.');
+      setError(error.message || 'Đăng nhập Google thất bại.');
       setLoading(false);
     }
   };
@@ -69,17 +69,17 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             <span className="text-2xl">☕</span>
           </div>
           <h1 className="text-xl font-semibold mb-2" style={{ color: '#2F2F2F' }}>
-            Dang ky thanh cong!
+            Đăng ký thành công!
           </h1>
           <p className="mb-5 text-sm" style={{ color: '#6B6B6B' }}>
-            Vui long kiem tra email de xac thuc tai khoan.
+            Vui lòng kiểm tra email để xác thực tài khoản.
           </p>
           <button
             onClick={onNavigateToLogin}
             className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-150 hover:opacity-90"
             style={{ backgroundColor: '#2F2F2F', color: '#FFFFFF' }}
           >
-            Quay lai Dang nhap
+            Quay lại Đăng nhập
           </button>
         </div>
       </div>
@@ -98,7 +98,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             Cacao
           </h1>
           <p className="mt-0.5 text-sm" style={{ color: '#6B6B6B' }}>
-            Tao tai khoan moi
+            Tạo tài khoản mới
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             {/* Name Input */}
             <div className="space-y-1">
               <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
-                Ho ten
+                Họ tên
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
@@ -122,7 +122,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Nguyen Van A"
+                  placeholder="Nguyễn Văn A"
                   required
                   className="w-full pl-10 pr-3 py-2 rounded-md text-sm outline-none transition-all"
                   style={{
@@ -160,7 +160,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             {/* Password Input */}
             <div className="space-y-1">
               <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
-                Mat khau
+                Mật khẩu
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
@@ -194,7 +194,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             {/* Confirm Password Input */}
             <div className="space-y-1">
               <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
-                Xac nhan mat khau
+                Xác nhận mật khẩu
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
@@ -217,7 +217,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             {/* Role Selection */}
             <div className="space-y-1">
               <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
-                Vai tro
+                Vai trò
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <button
@@ -231,7 +231,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                 >
                   <GraduationCap className="w-5 h-5" style={{ color: role === 'STUDENT' ? '#C5A880' : '#9B9B9B' }} />
                   <span className="text-xs font-medium" style={{ color: role === 'STUDENT' ? '#2F2F2F' : '#6B6B6B' }}>
-                    Hoc sinh
+                    Học sinh
                   </span>
                 </button>
                 <button
@@ -245,7 +245,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                 >
                   <BookOpen className="w-5 h-5" style={{ color: role === 'TEACHER' ? '#C5A880' : '#9B9B9B' }} />
                   <span className="text-xs font-medium" style={{ color: role === 'TEACHER' ? '#2F2F2F' : '#6B6B6B' }}>
-                    Giang vien
+                    Giảng viên
                   </span>
                 </button>
                 <button
@@ -278,7 +278,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
               {loading ? (
                 <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : (
-                'Dang ky'
+                'Đăng ký'
               )}
             </button>
           </form>
@@ -286,7 +286,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
           {/* Divider */}
           <div className="flex items-center gap-3 my-4">
             <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
-            <span className="text-xs" style={{ color: '#9B9B9B' }}>hoac</span>
+            <span className="text-xs" style={{ color: '#9B9B9B' }}>hoặc</span>
             <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
           </div>
 
@@ -319,18 +319,18 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Tiep tuc voi Google
+            Tiếp tục với Google
           </button>
 
           {/* Login Link */}
           <p className="mt-4 text-center text-sm" style={{ color: '#6B6B6B' }}>
-            Da co tai khoan?{' '}
+            Đã có tài khoản?{' '}
             <button
               onClick={onNavigateToLogin}
               className="font-medium hover:underline"
               style={{ color: '#2F2F2F' }}
             >
-              Dang nhap
+              Đăng nhập
             </button>
           </p>
         </div>

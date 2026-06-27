@@ -11,8 +11,8 @@ export type Locale = 'vi' | 'en';
 export const translations = {
   vi: {
     // Welcome block
-    welcome:            '👋 Chào {name}! Thong thả học nhé.',
-    welcomeGuest:       '👋 Chào bạn! Thong thả học nhé.',
+    welcome:            '👋 Chào {name}! Thoải thả học nhé.',
+    welcomeGuest:       '👋 Chào bạn! Thoải thả học nhé.',
     subWelcome:         'Hôm nay có {count} bài học đang chờ bạn hoàn thiện.',
     subWelcomeSingle:   'Hôm nay có 1 bài học mới và 1 bài tập cần hoàn thiện.',
     goalTitle:          '💡 Mục tiêu cốt lõi: Mastery Learning',

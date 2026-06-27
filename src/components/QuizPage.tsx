@@ -121,12 +121,12 @@ export default function QuizPage({
               className="text-2xl font-semibold mb-2"
               style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
             >
-              {result.passed ? 'Hoan Thanh!' : 'Dong Vien!'}
+              {result.passed ? 'Hoàn Thành!' : 'Động Viên!'}
             </h2>
             <p className="text-sm mb-4" style={{ color: '#6B6B6B' }}>
               {result.passed
-                ? 'Em da dat yeu cau lam chu. Baj hoc nay da mo khoa.'
-                : 'Khong sao ca! Em co the thu lai bat ky luc nao.'}
+                ? 'Em đã đạt yêu cầu làm chủ. Bài học này đã mở khóa.'
+                : 'Không sao cả! Em có thể thử lại bất kỳ lúc nào.'}
             </p>
 
             <div className="flex items-center justify-center gap-4">
@@ -137,7 +137,7 @@ export default function QuizPage({
                 <p className="text-3xl font-semibold" style={{ color: '#2F2F2F' }}>
                   {result.score}/{result.totalQuestions}
                 </p>
-                <p className="text-xs" style={{ color: '#9B9B9B' }}>So cau dung</p>
+                <p className="text-xs" style={{ color: '#9B9B9B' }}>Số câu đúng</p>
               </div>
               <button
                 onClick={handleRetry}
@@ -145,7 +145,7 @@ export default function QuizPage({
                 style={{ backgroundColor: '#F3F4F6', color: '#2F2F2F' }}
               >
                 <RotateCcw className="w-4 h-4" />
-                Lam lai bai
+                Làm lại bài
               </button>
             </div>
           </div>
@@ -175,13 +175,13 @@ export default function QuizPage({
               {lessonTitle}
             </h1>
             <p className="text-sm" style={{ color: '#9B9B9B' }}>
-              Quiz - {totalQuestions} cau hoi
+              Quiz - {totalQuestions} câu hỏi
             </p>
           </div>
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ backgroundColor: '#F3F4F6' }}>
             <Clock className="w-4 h-4" style={{ color: '#9B9B9B' }} />
             <span className="text-sm font-medium" style={{ color: '#6B6B6B' }}>
-              Cau {currentIndex + 1}/{totalQuestions}
+              Câu {currentIndex + 1}/{totalQuestions}
             </span>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function QuizPage({
                 opacity: currentIndex === 0 ? 0.5 : 1
               }}
             >
-              Cau truoc
+              Câu trước
             </button>
 
             {currentIndex === totalQuestions - 1 ? (
@@ -299,12 +299,12 @@ export default function QuizPage({
                     >
                       ⏳
                     </motion.span>
-                    Dang xu ly...
+                    Đang xử lý...
                   </>
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    Nop bai
+                    Nộp bài
                   </>
                 )}
               </button>
@@ -318,7 +318,7 @@ export default function QuizPage({
                   color: answers[currentQuestion.id] === undefined ? '#9B9B9B' : '#2F2F2F'
                 }}
               >
-                Cau tiep theo
+                Câu tiếp theo
               </button>
             )}
           </div>
@@ -328,7 +328,7 @@ export default function QuizPage({
       {/* Question Navigator */}
       <div className="mt-6 p-4 rounded-lg border" style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E5E5' }}>
         <p className="text-xs font-medium mb-3" style={{ color: '#9B9B9B' }}>
-          Tien do lam bai
+          Tiến độ làm bài
         </p>
         <div className="flex flex-wrap gap-2">
           {questions.map((q, idx) => {

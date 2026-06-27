@@ -27,7 +27,7 @@ export default function LoginPage({ onNavigateToRegister }: LoginPageProps) {
     const { error } = await signIn(email, password);
 
     if (error) {
-      setError(error.message || 'Dang nhap that bai. Vui long thu lai.');
+      setError(error.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
       setLoading(false);
     }
   };
@@ -37,7 +37,7 @@ export default function LoginPage({ onNavigateToRegister }: LoginPageProps) {
     setLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
-      setError(error.message || 'Dang nhap Google that bai.');
+      setError(error.message || 'Đăng nhập Google thất bại.');
       setLoading(false);
     }
   };
@@ -54,14 +54,14 @@ export default function LoginPage({ onNavigateToRegister }: LoginPageProps) {
             Cacao
           </h1>
           <p className="mt-1 text-sm" style={{ color: '#6B6B6B' }}>
-            He thong Quan ly Hoc tap
+            Hệ thống Quản lý Học tập
           </p>
         </div>
 
         {/* Form Card - Notion style */}
         <div className="rounded-lg border p-6" style={{ backgroundColor: '#FFFFFF', borderColor: '#E5E5E5' }}>
           <h2 className="text-lg font-medium mb-5" style={{ color: '#2F2F2F' }}>
-            Dang nhap
+            Đăng nhập
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -97,7 +97,7 @@ export default function LoginPage({ onNavigateToRegister }: LoginPageProps) {
             {/* Password Input */}
             <div className="space-y-1">
               <label className="block text-sm font-medium" style={{ color: '#2F2F2F' }}>
-                Mat khau
+                Mật khẩu
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9B9B9B' }} />
@@ -141,7 +141,7 @@ export default function LoginPage({ onNavigateToRegister }: LoginPageProps) {
               {loading ? (
                 <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : (
-                'Dang nhap'
+                'Đăng nhập'
               )}
             </button>
           </form>
@@ -149,7 +149,7 @@ export default function LoginPage({ onNavigateToRegister }: LoginPageProps) {
           {/* Divider */}
           <div className="flex items-center gap-3 my-4">
             <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
-            <span className="text-xs" style={{ color: '#9B9B9B' }}>hoac</span>
+            <span className="text-xs" style={{ color: '#9B9B9B' }}>hoặc</span>
             <div className="flex-1 h-px" style={{ backgroundColor: '#E5E5E5' }} />
           </div>
 
@@ -182,18 +182,18 @@ export default function LoginPage({ onNavigateToRegister }: LoginPageProps) {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Tiep tuc voi Google
+            Tiếp tục với Google
           </button>
 
           {/* Register Link */}
           <p className="mt-4 text-center text-sm" style={{ color: '#6B6B6B' }}>
-            Chua co tai khoan?{' '}
+            Chưa có tài khoản?{' '}
             <button
               onClick={onNavigateToRegister}
               className="font-medium hover:underline"
               style={{ color: '#2F2F2F' }}
             >
-              Dang ky
+              Đăng ký
             </button>
           </p>
         </div>

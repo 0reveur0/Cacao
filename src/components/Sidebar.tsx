@@ -29,11 +29,11 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
   const { profile, signOut } = useAuth();
 
   const mainMenuItems: SidebarItem[] = [
-    { id: 'workspace', icon: '🏠', label: 'Ban lam viec' },
-    { id: 'courses', icon: '📚', label: 'Khoa hoc' },
-    { id: 'assignments', icon: '📝', label: 'Hop bai tap & Thi cu' },
-    { id: 'discussions', icon: '💬', label: 'Goc thao luan' },
-    { id: 'billing', icon: '💳', label: 'Lich su hoc phi' },
+    { id: 'workspace', icon: '🏠', label: 'Bảng làm việc' },
+    { id: 'courses', icon: '📚', label: 'Khóa học' },
+    { id: 'assignments', icon: '📝', label: 'Hộp bài tập & Thi cử' },
+    { id: 'discussions', icon: '💬', label: 'Góc thảo luận' },
+    { id: 'billing', icon: '💳', label: 'Lịch sử học phí' },
   ];
 
   const getInitials = () => {
@@ -43,13 +43,13 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
   const getRoleLabel = () => {
     switch (profile?.role) {
       case 'STUDENT':
-        return 'Hoc sinh';
+        return 'Học sinh';
       case 'TEACHER':
-        return 'Giang vien';
+        return 'Giảng viên';
       case 'ADMIN':
         return 'Admin';
       default:
-        return 'Thanh vien';
+        return 'Thành viên';
     }
   };
 
@@ -119,7 +119,7 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
         <div>
           <div className="px-2.5 mb-2 flex items-center justify-between">
             <span className="text-xs font-semibold tracking-wide" style={{ color: '#9B9B9B' }}>
-              LO TRINH HOC TAP
+              LỘ TRÌNH HỌC TẬP
             </span>
           </div>
           <div className="space-y-0.5">
@@ -148,7 +148,7 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
             }}
           >
             <Plus className="w-4 h-4" />
-            <span>Xem tat ca khoa hoc</span>
+            <span>Xem tất cả khóa học</span>
           </button>
         </div>
       </nav>
@@ -168,7 +168,7 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate" style={{ color: '#2F2F2F' }}>
-              {profile?.name || 'Hoc sinh'}
+              {profile?.name || 'Học sinh'}
             </p>
             <p className="text-xs" style={{ color: '#9B9B9B' }}>
               {getRoleLabel()}
@@ -177,7 +177,7 @@ export default function Sidebar({ activeItem = 'workspace', onItemClick, lessons
           <button
             onClick={signOut}
             className="p-1.5 rounded transition-all duration-150 hover:bg-red-50"
-            title="Dang xuat"
+            title="Đăng xuất"
           >
             <LogOut className="w-4 h-4" style={{ color: '#9B9B9B' }} />
           </button>

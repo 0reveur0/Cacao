@@ -192,7 +192,7 @@ Nội dung cần bao gồm:
     score: 85,
     feedback: {
       id: 'fb-003',
-      greeting: 'Chào em! Cacao đã đọc kỹ bài luận của em và rất印象深刻...',
+      greeting: 'Chào em! Cacao đã đọc kỹ bài luận của em và rất ấn tượng.',
       positive_points: [
         { title: 'Tư duy hệ thống', description: 'Em đã phân tích rất sâu mối liên hệ giữa Mastery Learning và AI' },
         { title: 'Cấu trúc chặt chẽ', description: 'Các luận điểm được sắp xếp logic, dẫn dắt tự nhiên' },
