@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../context/ProgressContext';
@@ -28,17 +28,22 @@ import {
   GraduationCap,
   Layers,
   Info,
+  Coffee,
+  Shield,
+  FlaskConical,
+  Rocket,
+  Brain,
 } from 'lucide-react';
 import { AIFeedbackResponse } from '../types';
 
 // ─── Static course meta ────────────────────────────────────────────────────────
 const COURSE_META: Record<
   string,
-  { cover: string; icon: string; subject: string; type: string; scheduleVi: string; scheduleEn: string }
+  { cover: string; icon: typeof Shield; subject: string; type: string; scheduleVi: string; scheduleEn: string }
 > = {
   'lesson-1': {
     cover:       'https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon:        '🛡️',
+    icon:        Shield,
     subject:     'TypeScript',
     type:        'Lecture',
     scheduleVi:  'Thứ 2 & 4',
@@ -46,7 +51,7 @@ const COURSE_META: Record<
   },
   'lesson-2': {
     cover:       'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon:        '🧪',
+    icon:        FlaskConical,
     subject:     'TypeScript',
     type:        'Workshop',
     scheduleVi:  'Thứ 3 & 5',
@@ -54,7 +59,7 @@ const COURSE_META: Record<
   },
   'lesson-3': {
     cover:       'https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon:        '🚀',
+    icon:        Rocket,
     subject:     'Architecture',
     type:        'Deep Dive',
     scheduleVi:  'Thứ 6',
@@ -62,7 +67,7 @@ const COURSE_META: Record<
   },
   'lesson-4': {
     cover:       'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-    icon:        '🧠',
+    icon:        Brain,
     subject:     'AI & Prompting',
     type:        'Seminar',
     scheduleVi:  'Thứ 7',
@@ -72,7 +77,7 @@ const COURSE_META: Record<
 
 const FALLBACK_META = {
   cover:      'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=800&h=300&dpr=1',
-  icon:       '📖',
+  icon:       BookOpen,
   subject:    'General',
   type:       'Lecture',
   scheduleVi: 'TBD',
@@ -94,11 +99,13 @@ export default function DashboardPage({
   onNavigateToFeed,
   onNavigateToAssignments,
   onNavigateToProgress,
+  onNavigateToDiscussions,
 }: {
   onNavigateToAdmin?: () => void;
   onNavigateToFeed?: () => void;
   onNavigateToAssignments?: () => void;
   onNavigateToProgress?: () => void;
+  onNavigateToDiscussions?: () => void;
 }) {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
@@ -175,7 +182,7 @@ export default function DashboardPage({
       <div className="flex h-screen items-center justify-center bg-white">
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg mb-3" style={{ backgroundColor: '#F5EBE0' }}>
-            <span className="text-xl">☕</span>
+            <Coffee className="w-5 h-5" style={{ color: '#C5A880' }} />
           </div>
           <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
             {t('loading')}
@@ -234,8 +241,8 @@ export default function DashboardPage({
         <div className="max-w-[1200px] mx-auto px-8">
           {/* Page header */}
           <div className="-mt-6 mb-6 flex items-end gap-4">
-            <div className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl border border-neutral-100 bg-white flex-shrink-0">
-              ☕
+            <div className="w-14 h-14 rounded-xl flex items-center justify-center border border-neutral-100 bg-white flex-shrink-0">
+              <Coffee className="w-7 h-7" style={{ color: '#C5A880' }} />
             </div>
             <div className="pb-1">
               <h1
@@ -320,6 +327,21 @@ export default function DashboardPage({
                         <Layers className="w-3.5 h-3.5" />
                       </span>
                       {t('nav_progress')}
+                    </button>
+                  )}
+                  {onNavigateToDiscussions && (
+                    <button
+                      onClick={onNavigateToDiscussions}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-colors duration-100"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      <span className="text-neutral-400">
+                        <MessageSquare className="w-3.5 h-3.5" />
+                      </span>
+                      {t('nav_discussion')}
+                      <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-600">
+                        4
+                      </span>
                     </button>
                   )}
                   {([
@@ -714,13 +736,14 @@ function CourseGalleryCard({
   onClick,
 }: {
   lesson: { id: string; title: string; description: string; order: number };
-  meta: { cover: string; icon: string; subject: string; type: string; schedule: string };
+  meta: { cover: string; icon: typeof Shield; subject: string; type: string; schedule: string };
   status: LessonStatus;
   statusLabel: string;
   statusClassName: string;
   isClickable: boolean;
   onClick: () => void;
 }) {
+  const IconComponent = meta.icon;
   return (
     <motion.div
       whileHover={isClickable ? { y: -2, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' } : undefined}
@@ -757,7 +780,9 @@ function CourseGalleryCard({
       </div>
       <div className="p-3">
         <div className="flex items-start gap-2 mb-2">
-          <span className="text-xl flex-shrink-0 mt-0.5">{meta.icon}</span>
+          <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 bg-[#F5EBE0]">
+            <IconComponent className="w-3.5 h-3.5" style={{ color: '#C5A880' }} strokeWidth={1.5} />
+          </div>
           <h4
             className="text-xs font-semibold text-neutral-800 leading-snug line-clamp-2"
             style={{ fontFamily: 'var(--font-heading)' }}
@@ -766,19 +791,19 @@ function CourseGalleryCard({
           </h4>
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1" style={{ fontFamily: 'var(--font-body)' }}>
-          <MetaProp icon="📅" label={meta.schedule} />
-          <MetaProp icon="🏷️" label={meta.type} />
-          <MetaProp icon="📚" label={meta.subject} />
+          <MetaProp icon={<Calendar className="w-3 h-3" style={{ color: '#9B9B9B' }} />} label={meta.schedule} />
+          <MetaProp icon={<Settings className="w-3 h-3" style={{ color: '#9B9B9B' }} />} label={meta.type} />
+          <MetaProp icon={<BookOpen className="w-3 h-3" style={{ color: '#9B9B9B' }} />} label={meta.subject} />
         </div>
       </div>
     </motion.div>
   );
 }
 
-function MetaProp({ icon, label }: { icon: string; label: string }) {
+function MetaProp({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <span className="flex items-center gap-1 text-[10px] text-neutral-400">
-      <span>{icon}</span>
+      {icon}
       {label}
     </span>
   );

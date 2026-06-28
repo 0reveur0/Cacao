@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { Coffee } from 'lucide-react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ProgressProvider } from './context/ProgressContext';
 import { LanguageProvider } from './context/LanguageContext';
@@ -15,8 +16,9 @@ import AdminPage from './pages/AdminPage';
 import FeedPage from './pages/FeedPage';
 import AssignmentPage from './pages/AssignmentPage';
 import ProgressPage from './pages/ProgressPage';
+import DiscussionPage from './pages/DiscussionPage';
 
-type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments' | 'progress';
+type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments' | 'progress' | 'discussions';
 
 function AppContent() {
   const { user, profile, loading } = useAuth();
@@ -41,7 +43,7 @@ function AppContent() {
             className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-4"
             style={{ backgroundColor: '#F5EBE0' }}
           >
-            <span className="text-2xl">☕</span>
+            <Coffee className="w-6 h-6" style={{ color: '#C5A880' }} />
           </div>
           <p className="text-sm" style={{ color: '#6B6B6B' }}>Đang tải...</p>
         </div>
@@ -74,6 +76,8 @@ function AppContent() {
       return <AssignmentPage onBack={() => setCurrentPage('dashboard')} />;
     case 'progress':
       return <ProgressPage onBack={() => setCurrentPage('dashboard')} />;
+    case 'discussions':
+      return <DiscussionPage onBack={() => setCurrentPage('dashboard')} />;
     case 'dashboard':
       return (
         <DashboardPage
@@ -81,6 +85,7 @@ function AppContent() {
           onNavigateToFeed={() => setCurrentPage('feed')}
           onNavigateToAssignments={() => setCurrentPage('assignments')}
           onNavigateToProgress={() => setCurrentPage('progress')}
+          onNavigateToDiscussions={() => setCurrentPage('discussions')}
         />
       );
     default:
