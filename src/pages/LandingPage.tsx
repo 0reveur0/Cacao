@@ -7,151 +7,148 @@ import { useRef, type ReactNode } from 'react';
 import { motion, useInView } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 
-// ─── Local i18n dictionary (Natural, friendly tone) ───────────────────────────────
+// ─── Local i18n dictionary ─────────────────────────────────────────────────────
 const copy = {
   vi: {
-    // Navbar
-    navSignIn:      'Đăng nhập',
-    navStart:       'Bắt đầu',
+    // Top Navigation Bar
+    navIntro:   'Giới thiệu',
+    navDocs:    'Tài liệu',
+    navContact: 'Liên hệ',
+    navLogin:   'Đăng nhập',
 
-    // Hero badge
-    heroBadge:      'Học thấu hiểu, không học vẹt. Không điểm số, không so kè.',
+    // Hero Section
+    heroBadge:    'Học thấu hiểu, không học vẹt. Không điểm số, không so kè.',
+    heroTitle:    'Cacao TLMS — Thong thả học, thực chất master.',
+    heroDesc:     'Không gian học tập bình yên, nơi bạn có thể học theo cách riêng của mình. Không áp lực, không bảng xếp hạng — chỉ có bạn và kiến thức.',
+    btnStart:     'Bắt đầu ngay',
+    btnLearnMore: 'Xem giới thiệu',
 
-    // Hero headline & subtitle
-    heroTitle1:     'Cacao TLMS —',
-    heroTitle2:     'Thong thả học, thực chất master.',
-    heroSub:        'Không gian học tập bình yên, nơi bạn có thể học theo cách riêng của mình. Không áp lực, không bảng xếp hạng — chỉ có bạn và kiến thức.',
+    // Mock Live Database Sheet Preview
+    mockUrl:      'cacao.tlms / workspace',
+    mockDone:     'Đã xong: TypeScript Fundamentals',
+    mockProgress: 'Đang làm: Microservices Architecture',
+    mockLocked:   'Chưa mở: Advanced AI Prompting',
 
-    // Hero CTAs
-    ctaPrimary:     'Bắt đầu ngay',
-    ctaSecondary:   'Xem giới thiệu',
+    // Core Value Divider
+    section1Title: 'Thiết kế cho người học, không phải cho điểm số.',
+    section1Desc:  'Mỗi tính năng đều giúp bạn thực sự hiểu bài — không hơn không kém.',
 
-    // Section — core features
-    featHeading:    'Thiết kế cho người học, không phải cho điểm số.',
-    featSubheading: 'Mỗi tính năng đều giúp bạn thực sự hiểu bài — không hơn không kém.',
+    // 6-Grid Feature Section
+    feat1Title: '🧠 Mastery Learning',
+    feat1Desc:  'Hoàn thành bài kiểm tra đạt 80% để mở khóa bài tiếp theo. Bạn tự chủ lộ trình, chỉ so sánh với chính mình của hôm qua.',
 
-    feat1Icon:  '🧠',
-    feat1Title: 'Mastery Learning',
-    feat1Body:  'Hoàn thành bài kiểm tra đạt 80% để mở khóa bài tiếp theo. Bạn tự chủ lộ trình, chỉ so sánh với chính mình của hôm qua.',
+    feat2Title: '📝 Ghi chú thông minh',
+    feat2Desc:  'Xem video và ghi chú cùng lúc, tự động bắt mốc thời gian. Ghi chú được lưu ngay khi bạn viết.',
 
-    feat2Icon:  '📝',
-    feat2Title: 'Ghi chú thông minh',
-    feat2Body:  'Xem video và ghi chú cùng lúc, tự động bắt mốc thời gian. Ghi chú được lưu ngay khi bạn viết.',
+    feat3Title: '💬 Không gian thảo luận',
+    feat3Desc:  'Góc thảo luận kiểu Notion Docs, có Mentor và AI giúp giải đáp. Mỗi câu hỏi đều được trả lời.',
 
-    feat3Icon:  '💬',
-    feat3Title: 'Không gian thảo luận',
-    feat3Body:  'Góc thảo luận kiểu Notion Docs, có Mentor và AI giúp giải đáp. Mỗi câu hỏi đều được trả lời.',
+    feat4Title: '🤖 Phản hồi AI chi tiết',
+    feat4Desc:  'Sau mỗi bài nộp, nhận phản hồi cụ thể từ AI — không chấm điểm, chỉ chỉ ra điểm mạnh và hướng cải thiện.',
 
-    feat4Icon:  '🤖',
-    feat4Title: 'Phản hồi AI chi tiết',
-    feat4Body:  'Sau mỗi bài nộp, nhận phản hồi cụ thể từ AI — không chấm điểm, chỉ chỉ ra điểm mạnh và hướng cải thiện.',
+    feat5Title: '📋 Kanban Workspace',
+    feat5Desc:  'Quản lý bài tập kiểu Kanban: Chưa làm → Đang làm → Chờ chấm → Hoàn thành. Không bỏ sót deadline.',
 
-    feat5Icon:  '📋',
-    feat5Title: 'Kanban Workspace',
-    feat5Body:  'Quản lý bài tập kiểu Kanban: Chưa làm → Đang làm → Chờ chấm → Hoàn thành. Không bỏ sót deadline.',
+    feat6Title: '⏱️ Pomodoro Timer',
+    feat6Desc:  'Bộ đếm thời gian Pomodoro giúp bạn giữ sự tập trung trong mỗi buổi học. Nghỉ đúng lúc, học đúng cách.',
 
-    feat6Icon:  '⏱️',
-    feat6Title: 'Pomodoro Timer',
-    feat6Body:  'Bộ đếm thời gian Pomodoro giúp bạn giữ sự tập trung trong mỗi buổi học. Nghỉ đúng lúc, học đúng cách.',
+    // Quote Block
+    quoteText:   '"Không có học sinh chậm — chỉ có hệ thống chưa đủ kiên nhẫn."',
+    quoteAuthor: '— Cacao TLMS',
 
-    // Philosophy strip
-    philoQuote: '"Không có học sinh chậm — chỉ có hệ thống chưa đủ kiên nhẫn."',
-    philoAttr:  '— Cacao TLMS',
-
-    // How it works
-    howTitle:   'Học theo cách của bạn, từng bước một.',
-    howSub:     'Ba bước đơn giản để bắt đầu.',
+    // Three Steps Section
+    section2Title: 'Học theo cách của bạn, từng bước một.',
+    section2Desc:  'Ba bước đơn giản để bắt đầu.',
 
     step1Num:   '01',
     step1Title: 'Đăng ký & Chọn lộ trình',
-    step1Body:  'Tạo tài khoản trong 30 giây. Chọn vai trò Học sinh hoặc Giảng viên — không gian làm việc sẵn sàng ngay.',
+    step1Desc:  'Tạo tài khoản trong 30 giây. Chọn vai trò Học sinh hoặc Giảng viên — không gian làm việc sẵn sàng ngay.',
 
     step2Num:   '02',
     step2Title: 'Học · Ghi chú · Làm bài',
-    step2Body:  'Xem video, ghi chú đồng bộ, hoàn thành bài tập trong Kanban. Không deadline áp lực — chỉ có mốc bạn tự đặt.',
+    step2Desc:  'Xem video, ghi chú đồng bộ, hoàn thành bài tập trong Kanban. Không deadline áp lực — chỉ có mốc bạn tự đặt.',
 
     step3Num:   '03',
     step3Title: 'Nhận phản hồi & Tiến bước',
-    step3Body:  'AI và Mentor phân tích bài làm, chỉ ra điểm mạnh và hướng cải thiện. Đạt 80%, bài tiếp theo tự mở khóa.',
+    step3Desc:  'AI và Mentor phân tích bài làm, chỉ ra điểm mạnh và hướng cải thiện. Đạt 80%, bài tiếp theo tự mở khóa.',
 
-    // Final CTA
-    ctaFinalTitle: 'Bắt đầu hành trình học tập\ncủa bạn hôm nay.',
-    ctaFinalSub:   'Miễn phí. Không quảng cáo. Không điểm số phán xét.',
-    ctaFinalBtn:   'Tạo tài khoản',
-    ctaFinalLink:  'Đã có tài khoản? Đăng nhập',
-
-    // Footer
-    footerTagline: 'Thong thả học nhé. ☕',
-    footerRight:   'Cacao TLMS',
-    footerLinks:   ['Giới thiệu', 'Tài liệu', 'Liên hệ'],
+    // Bottom CTA Footer Area
+    footerTitle:      'Bắt đầu hành trình học tập của bạn hôm nay.',
+    footerSubtitle:   'Miễn phí. Không quảng cáo. Không điểm số phán xét.',
+    footerBtnCreate:  'Tạo tài khoản',
+    footerHasAccount: 'Đã có tài khoản? Đăng nhập',
+    footerClosing:    '☕ Thong thả học nhé. ☕',
   },
 
   en: {
-    navSignIn:      'Sign in',
-    navStart:       'Get started',
+    // Top Navigation Bar
+    navIntro:   'About',
+    navDocs:    'Docs',
+    navContact: 'Contact',
+    navLogin:   'Login',
 
-    heroBadge:      'Learn deeply, not quickly. No grades, no competition.',
+    // Hero Section
+    heroBadge:    'Deep understanding over rote learning. No grades, no competition.',
+    heroTitle:    'Cacao TLMS — Learn at your pace, master the core.',
+    heroDesc:     'A peaceful learning workspace designed for your own path. No pressure, no leaderboards — just you and knowledge.',
+    btnStart:     'Get Started',
+    btnLearnMore: 'Introduction',
 
-    heroTitle1:     'Cacao TLMS —',
-    heroTitle2:     'Learn at your pace, master for real.',
-    heroSub:        'A calm learning space where you learn your own way. No pressure, no leaderboards — just you and the knowledge.',
+    // Mock Live Database Sheet Preview
+    mockUrl:      'cacao.tlms / workspace',
+    mockDone:     'Done: TypeScript Fundamentals',
+    mockProgress: 'In Progress: Microservices Architecture',
+    mockLocked:   'Locked: Advanced AI Prompting',
 
-    ctaPrimary:     'Get started',
-    ctaSecondary:   'Learn more',
+    // Core Value Divider
+    section1Title: 'Designed for learners, not for scores.',
+    section1Desc:  'Every feature serves one purpose: to help you truly understand.',
 
-    featHeading:    'Designed for learners, not for grades.',
-    featSubheading: 'Every feature helps you truly understand — nothing more, nothing less.',
+    // 6-Grid Feature Section
+    feat1Title: '🧠 Mastery Learning',
+    feat1Desc:  'Score 80% or higher on the quiz to unlock the next block. Own your roadmap and only compete with yourself.',
 
-    feat1Icon:  '🧠',
-    feat1Title: 'Mastery Learning',
-    feat1Body:  'Score 80% or higher to unlock the next lesson. Own your path, compete only with yesterday\'s version of yourself.',
+    feat2Title: '📝 Smart Notes',
+    feat2Desc:  'Watch lectures and take notes simultaneously with auto-timestamps. Your notes are saved as you type.',
 
-    feat2Icon:  '📝',
-    feat2Title: 'Smart Notes',
-    feat2Body:  'Watch videos and take notes with automatic timestamps. Notes sync as you type — no manual saves.',
+    feat3Title: '💬 Discussion Board',
+    feat3Desc:  'A Notion-style discussion workspace with Mentor and AI support. Every question gets answered.',
 
-    feat3Icon:  '💬',
-    feat3Title: 'Discussion Space',
-    feat3Body:  'A Notion Docs-style discussion board with Mentors and AI for instant answers. Every question gets answered.',
+    feat4Title: '🤖 Detailed AI Feedback',
+    feat4Desc:  'Get actionable text breakdowns from AI after every submission. No grading, just clear ways to improve.',
 
-    feat4Icon:  '🤖',
-    feat4Title: 'AI Feedback',
-    feat4Body:  'After each submission, receive specific AI feedback — no arbitrary scores, just strengths and improvements.',
+    feat5Title: '📋 Kanban Workspace',
+    feat5Desc:  'Manage tasks with a clear Kanban flow: To Do → Doing → Under Review → Done. Never miss a deadline.',
 
-    feat5Icon:  '📋',
-    feat5Title: 'Kanban Workspace',
-    feat5Body:  'Manage assignments visually: To Do → In Progress → Under Review → Done. Never miss a deadline.',
+    feat6Title: '⏱️ Pomodoro Timer',
+    feat6Desc:  'An embedded Pomodoro tracker to keep you in the zone. Take breaks naturally, study efficiently.',
 
-    feat6Icon:  '⏱️',
-    feat6Title: 'Pomodoro Timer',
-    feat6Body:  'An integrated Pomodoro timer keeps you focused during each session. Rest at the right time.',
+    // Quote Block
+    quoteText:   '"There are no slow students — only systems lacking patience."',
+    quoteAuthor: '— Cacao TLMS',
 
-    philoQuote: '"There are no slow learners — only impatient systems."',
-    philoAttr:  '— Cacao TLMS',
-
-    howTitle:   'Learn your way, one step at a time.',
-    howSub:     'Three simple steps to begin.',
+    // Three Steps Section
+    section2Title: 'Your learning, one step at a time.',
+    section2Desc:  'Three simple steps to start.',
 
     step1Num:   '01',
-    step1Title: 'Sign up & Choose your path',
-    step1Body:  'Create an account in 30 seconds. Choose Student or Teacher — your workspace is ready instantly.',
+    step1Title: 'Sign Up & Choose Path',
+    step1Desc:  'Create an account in 30 seconds. Choose Student or Instructor role — your workspace is instantly ready.',
 
     step2Num:   '02',
-    step2Title: 'Study · Take notes · Complete work',
-    step2Body:  'Watch videos, sync notes, complete assignments in Kanban. No stressful deadlines — just milestones you set.',
+    step2Title: 'Learn · Note · Submit',
+    step2Desc:  'Watch videos, sync your notes, and track assignments on Kanban. No stressful deadlines — just your goals.',
 
     step3Num:   '03',
-    step3Title: 'Get feedback & Move forward',
-    step3Body:  'AI and Mentors analyze your work, highlight strengths and improvements. Hit 80%, and the next lesson unlocks.',
+    step3Title: 'Feedback & Advance',
+    step3Desc:  'AI and Mentors break down your work. Hit 80% accuracy to unlock the next lesson automatically.',
 
-    ctaFinalTitle: 'Start your learning journey\ntoday.',
-    ctaFinalSub:   'Free. No ads. No grades to judge you.',
-    ctaFinalBtn:   'Create account',
-    ctaFinalLink:  'Already have an account? Sign in',
-
-    footerTagline: 'Take your time. Learn well. ☕',
-    footerRight:   'Cacao TLMS',
-    footerLinks:   ['About', 'Docs', 'Contact'],
+    // Bottom CTA Footer Area
+    footerTitle:      'Start your learning journey today.',
+    footerSubtitle:   'Free. No ads. No judgmental grading.',
+    footerBtnCreate:  'Create Account',
+    footerHasAccount: 'Already have an account? Log in',
+    footerClosing:    '☕ Take your time. ☕',
   },
 } as const;
 
@@ -180,7 +177,12 @@ function FadeIn({ children, delay = 0 }: { children: ReactNode; delay?: number }
 }
 
 // ─── Feature Card ──────────────────────────────────────────────────────────────
-function FeatureCard({ icon, title, body, delay }: { icon: string; title: string; body: string; delay: number }) {
+function FeatureCard({ title, body, delay }: { title: string; body: string; delay: number }) {
+  // title carries the emoji prefix per spec (e.g. "🧠 Mastery Learning")
+  const spaceIdx = title.indexOf(' ');
+  const icon  = spaceIdx > -1 ? title.slice(0, spaceIdx) : '';
+  const label = spaceIdx > -1 ? title.slice(spaceIdx + 1) : title;
+
   return (
     <FadeIn delay={delay}>
       <div
@@ -197,7 +199,7 @@ function FeatureCard({ icon, title, body, delay }: { icon: string; title: string
           className="text-sm font-semibold mb-1.5"
           style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
         >
-          {title}
+          {label}
         </h3>
         <p className="text-[13px] leading-relaxed" style={{ color: '#6B6B6B' }}>
           {body}
@@ -208,27 +210,18 @@ function FeatureCard({ icon, title, body, delay }: { icon: string; title: string
 }
 
 // ─── Step row ──────────────────────────────────────────────────────────────────
-function StepRow({
-  num, title, body, delay,
-}: { num: string; title: string; body: string; delay: number }) {
+function StepRow({ num, title, body, delay }: { num: string; title: string; body: string; delay: number }) {
   return (
     <FadeIn delay={delay}>
       <div className="flex gap-5 items-start">
         <div
           className="w-10 h-10 rounded-md flex items-center justify-center text-sm font-semibold flex-shrink-0 mt-0.5"
-          style={{
-            backgroundColor: '#2F2F2F',
-            color: '#FFFFFF',
-            fontFamily: 'var(--font-heading)',
-          }}
+          style={{ backgroundColor: '#2F2F2F', color: '#FFFFFF', fontFamily: 'var(--font-heading)' }}
         >
           {num}
         </div>
         <div>
-          <p
-            className="text-sm font-semibold mb-1"
-            style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
-          >
+          <p className="text-sm font-semibold mb-1" style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}>
             {title}
           </p>
           <p className="text-[13px] leading-relaxed" style={{ color: '#6B6B6B' }}>
@@ -245,19 +238,31 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
   const { locale, toggle } = useLanguage();
   const c: Copy = copy[locale] as Copy;
 
-  const features = [
-    { icon: c.feat1Icon, title: c.feat1Title, body: c.feat1Body },
-    { icon: c.feat2Icon, title: c.feat2Title, body: c.feat2Body },
-    { icon: c.feat3Icon, title: c.feat3Title, body: c.feat3Body },
-    { icon: c.feat4Icon, title: c.feat4Title, body: c.feat4Body },
-    { icon: c.feat5Icon, title: c.feat5Title, body: c.feat5Body },
-    { icon: c.feat6Icon, title: c.feat6Title, body: c.feat6Body },
+  const features: { title: string; body: string }[] = [
+    { title: c.feat1Title, body: c.feat1Desc },
+    { title: c.feat2Title, body: c.feat2Desc },
+    { title: c.feat3Title, body: c.feat3Desc },
+    { title: c.feat4Title, body: c.feat4Desc },
+    { title: c.feat5Title, body: c.feat5Desc },
+    { title: c.feat6Title, body: c.feat6Desc },
   ];
 
   const steps = [
-    { num: c.step1Num, title: c.step1Title, body: c.step1Body },
-    { num: c.step2Num, title: c.step2Title, body: c.step2Body },
-    { num: c.step3Num, title: c.step3Title, body: c.step3Body },
+    { num: c.step1Num, title: c.step1Title, body: c.step1Desc },
+    { num: c.step2Num, title: c.step2Title, body: c.step2Desc },
+    { num: c.step3Num, title: c.step3Title, body: c.step3Desc },
+  ];
+
+  const navLinks = [
+    { label: c.navIntro,   key: 'intro'   },
+    { label: c.navDocs,    key: 'docs'    },
+    { label: c.navContact, key: 'contact' },
+  ];
+
+  const mockRows = [
+    { icon: '✓',  label: c.mockDone,     color: '#385723', bg: '#E2F0D9' },
+    { icon: '⏳', label: c.mockProgress,  color: '#7F6000', bg: '#FFF2CC' },
+    { icon: '🔒', label: c.mockLocked,   color: '#6B6B6B', bg: '#F2F2F2' },
   ];
 
   return (
@@ -287,7 +292,20 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             </span>
           </div>
 
-          {/* Right nav */}
+          {/* Center nav links */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map(({ label, key }) => (
+              <button
+                key={key}
+                className="px-3 py-1.5 rounded-md text-[13px] transition-colors duration-100 hover:bg-neutral-100"
+                style={{ color: '#6B6B6B' }}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+
+          {/* Right actions */}
           <div className="flex items-center gap-2">
             <button
               onClick={toggle}
@@ -299,17 +317,17 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             </button>
             <button
               onClick={onNavigateToLogin}
-              className="px-3 py-1.5 rounded-md text-[13px] font-medium transition-colors hover:bg-neutral-100"
+              className="px-3 py-1.5 rounded-md text-[13px] font-medium transition-colors duration-100 hover:bg-neutral-100"
               style={{ color: '#6B6B6B' }}
             >
-              {c.navSignIn}
+              {c.navLogin}
             </button>
             <button
               onClick={onNavigateToRegister}
-              className="px-3.5 py-1.5 rounded-md text-[13px] font-semibold transition-all hover:bg-[#1A1A1A]"
+              className="px-3.5 py-1.5 rounded-md text-[13px] font-semibold transition-colors duration-100 hover:bg-[#1A1A1A]"
               style={{ backgroundColor: '#2F2F2F', color: '#FFFFFF' }}
             >
-              {c.navStart}
+              {c.btnStart}
             </button>
           </div>
         </div>
@@ -318,7 +336,6 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="flex-1 flex flex-col items-center justify-center text-center px-6 pt-24 pb-20">
         <FadeIn delay={0}>
-          {/* Badge */}
           <div
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border mb-8 text-xs font-medium"
             style={{ borderColor: '#E5E5E5', backgroundColor: '#FFFFFF', color: '#6B6B6B' }}
@@ -333,9 +350,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             className="text-[42px] md:text-[58px] font-semibold leading-tight tracking-tight mb-5 max-w-3xl"
             style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
           >
-            {c.heroTitle1}
-            <br />
-            <span style={{ color: '#C5A880' }}>{c.heroTitle2}</span>
+            {c.heroTitle}
           </h1>
         </FadeIn>
 
@@ -344,7 +359,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             className="text-base md:text-lg leading-relaxed max-w-xl mb-10"
             style={{ color: '#6B6B6B' }}
           >
-            {c.heroSub}
+            {c.heroDesc}
           </p>
         </FadeIn>
 
@@ -355,19 +370,19 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
               className="px-6 py-3 rounded-md text-sm font-semibold transition-colors duration-100 hover:bg-[#1A1A1A]"
               style={{ backgroundColor: '#2F2F2F', color: '#FFFFFF' }}
             >
-              {c.ctaPrimary}
+              {c.btnStart}
             </button>
             <button
               onClick={onNavigateToLogin}
               className="px-6 py-3 rounded-md text-sm font-medium border transition-colors duration-100 hover:bg-[#F1F1EF]"
               style={{ borderColor: '#E5E5E5', color: '#2F2F2F', backgroundColor: '#FFFFFF' }}
             >
-              {c.ctaSecondary}
+              {c.btnLearnMore}
             </button>
           </div>
         </FadeIn>
 
-        {/* Soft hero divider */}
+        {/* Mock workspace preview */}
         <FadeIn delay={0.2}>
           <div
             className="mt-16 w-full max-w-2xl rounded-xl border overflow-hidden"
@@ -384,15 +399,11 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
                 className="ml-3 text-[11px] font-medium"
                 style={{ color: '#9B9B9B', fontFamily: 'var(--font-body)' }}
               >
-                cacao.tlms / workspace
+                {c.mockUrl}
               </span>
             </div>
             <div className="p-5 text-left space-y-2.5">
-              {[
-                { icon: '✓', label: locale === 'vi' ? 'Đã xong: TypeScript Fundamentals' : 'Done: TypeScript Fundamentals', color: '#385723', bg: '#E2F0D9' },
-                { icon: '⏳', label: locale === 'vi' ? 'Đang làm: Microservices Architecture' : 'In progress: Microservices Architecture', color: '#7F6000', bg: '#FFF2CC' },
-                { icon: '🔒', label: locale === 'vi' ? 'Chưa mở: Advanced AI Prompting' : 'Locked: Advanced AI Prompting', color: '#6B6B6B', bg: '#F2F2F2' },
-              ].map((row) => (
+              {mockRows.map((row) => (
                 <div key={row.label} className="flex items-center gap-3">
                   <span
                     className="text-[10px] font-semibold px-2 py-0.5 rounded"
@@ -408,7 +419,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
         </FadeIn>
       </section>
 
-      {/* ── Feature Grid ──────────────────────────────────────────────────── */}
+      {/* ── Core Value Divider ─────────────────────────────────────────────── */}
       <section className="py-20 px-6" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="max-w-5xl mx-auto">
           <FadeIn>
@@ -417,23 +428,24 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
                 className="text-2xl md:text-3xl font-semibold mb-3"
                 style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
               >
-                {c.featHeading}
+                {c.section1Title}
               </h2>
               <p className="text-sm max-w-lg mx-auto" style={{ color: '#6B6B6B' }}>
-                {c.featSubheading}
+                {c.section1Desc}
               </p>
             </div>
           </FadeIn>
 
+          {/* 6-Grid Feature Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {features.map((f, i) => (
-              <FeatureCard key={f.title} icon={f.icon} title={f.title} body={f.body} delay={i * 0.07} />
+              <FeatureCard key={f.title} title={f.title} body={f.body} delay={i * 0.07} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Philosophy strip ──────────────────────────────────────────────── */}
+      {/* ── Quote Block ────────────────────────────────────────────────────── */}
       <section
         className="py-16 px-6"
         style={{ backgroundColor: '#FAFAFA', borderTop: '1px solid #E5E5E5', borderBottom: '1px solid #E5E5E5' }}
@@ -444,16 +456,16 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
               className="inline-block text-2xl md:text-3xl font-semibold italic leading-snug mb-4"
               style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
             >
-              {c.philoQuote}
+              {c.quoteText}
             </div>
             <p className="text-xs font-medium" style={{ color: '#9B9B9B' }}>
-              {c.philoAttr}
+              {c.quoteAuthor}
             </p>
           </div>
         </FadeIn>
       </section>
 
-      {/* ── How it works ──────────────────────────────────────────────────── */}
+      {/* ── Three Steps Section ────────────────────────────────────────────── */}
       <section className="py-20 px-6" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="max-w-5xl mx-auto">
           <FadeIn>
@@ -462,10 +474,10 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
                 className="text-2xl md:text-3xl font-semibold mb-2"
                 style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
               >
-                {c.howTitle}
+                {c.section2Title}
               </h2>
               <p className="text-sm" style={{ color: '#6B6B6B' }}>
-                {c.howSub}
+                {c.section2Desc}
               </p>
             </div>
           </FadeIn>
@@ -478,18 +490,18 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
         </div>
       </section>
 
-      {/* ── Final CTA ─────────────────────────────────────────────────────── */}
+      {/* ── Bottom CTA Footer Area ─────────────────────────────────────────── */}
       <section className="py-20 px-6" style={{ backgroundColor: '#FAFAFA', borderTop: '1px solid #E5E5E5' }}>
         <div className="max-w-xl mx-auto text-center">
           <FadeIn>
             <h2
-              className="text-2xl md:text-3xl font-semibold mb-3 whitespace-pre-line leading-snug"
+              className="text-2xl md:text-3xl font-semibold mb-3 leading-snug"
               style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
             >
-              {c.ctaFinalTitle}
+              {c.footerTitle}
             </h2>
             <p className="text-sm mb-8" style={{ color: '#6B6B6B' }}>
-              {c.ctaFinalSub}
+              {c.footerSubtitle}
             </p>
             <div className="flex flex-col items-center gap-3">
               <button
@@ -497,14 +509,14 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
                 className="px-8 py-3 rounded-md text-sm font-semibold transition-colors duration-100 hover:bg-[#1A1A1A] w-full max-w-xs"
                 style={{ backgroundColor: '#2F2F2F', color: '#FFFFFF' }}
               >
-                {c.ctaFinalBtn}
+                {c.footerBtnCreate}
               </button>
               <button
                 onClick={onNavigateToLogin}
                 className="text-[13px] transition-colors duration-100 hover:text-[#2F2F2F]"
                 style={{ color: '#9B9B9B' }}
               >
-                {c.ctaFinalLink}
+                {c.footerHasAccount}
               </button>
             </div>
           </FadeIn>
@@ -524,21 +536,21 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             >
               ☕
             </div>
-            <span className="text-xs" style={{ color: '#9B9B9B' }}>{c.footerTagline}</span>
+            <span className="text-xs" style={{ color: '#9B9B9B' }}>{c.footerClosing}</span>
           </div>
           <div className="flex items-center gap-5">
-            {c.footerLinks.map((link) => (
+            {navLinks.map(({ label, key }) => (
               <button
-                key={link}
+                key={key}
                 className="text-xs transition-colors duration-100 hover:text-[#6B6B6B]"
                 style={{ color: '#9B9B9B' }}
               >
-                {link}
+                {label}
               </button>
             ))}
           </div>
           <p className="text-[11px]" style={{ color: '#9B9B9B' }}>
-            {c.footerRight}
+            Cacao TLMS
           </p>
         </div>
       </footer>
