@@ -200,6 +200,7 @@ export const translations = {
     assignmentFeedbackAvailable:'Có phản hồi mới',
 
     // Auth pages
+    brandSubtitle:       'Học tập thong thả, hiểu thấu vấn đề. Không áp lực, không so kè điểm số.',
     loginTitle:          'Đăng nhập vào không gian học tập',
     loginSubtitle:       'Học tập thong thả, hiểu thấu vấn đề',
     emailLabel:          'Địa chỉ email của bạn',
@@ -233,7 +234,18 @@ export const translations = {
     authError:           'Đăng nhập không thành công. Thử lại nhé.',
     authGoogleError:     'Đăng nhập Google không thành công.',
     authRegisterError:   'Đăng ký không thành công. Thử lại nhé.',
-    masteryTagline:      'Không áp lực, không so kè, chỉ có bạn và kiến thức',
+    masteryTagline:      'Không áp lực, không so kè — chỉ có bạn và kiến thức.',
+
+    // Natural-tone status strings
+    statusCompleted:     'Đã xong',
+    statusProgress:      'Đang làm',
+    statusLocked:        'Chưa mở — Bạn cần hoàn thành bài trước và đạt từ 80% điểm số trở lên',
+
+    // Inline tools
+    addTimestamp:        'Ghi lại mốc thời gian',
+    saveNotes:           'Lưu sổ tay',
+    dragDropFile:        'Nhấp để chọn tệp hoặc kéo thả bài làm vào đây (PDF, ZIP)',
+    viewFeedback:        'Xem nhận xét từ AI hoặc Giảng viên',
   },
 
   en: {
@@ -460,7 +472,21 @@ export const translations = {
     authError:           'Sign in failed. Please try again.',
     authGoogleError:     'Google sign-in failed.',
     authRegisterError:   'Registration failed. Please try again.',
-    masteryTagline:      'No pressure, no competition — just you and the knowledge',
+    masteryTagline:      'No pressure, no competition — just you and the knowledge.',
+
+    // Natural-tone status strings
+    statusCompleted:     'Done',
+    statusProgress:      'In progress',
+    statusLocked:        'Locked — Complete previous lesson with 80% or higher to unlock',
+
+    // Inline tools
+    addTimestamp:        'Add timestamp',
+    saveNotes:           'Save notes',
+    dragDropFile:        'Click to upload or drag your file here (PDF, ZIP)',
+    viewFeedback:        'View AI or Mentor feedback',
+
+    // Brand
+    brandSubtitle:       'Learn at your own pace, master the core. Zero anxiety, no leaderboards.',
   },
 } as const;
 
