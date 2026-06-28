@@ -93,10 +93,12 @@ export default function DashboardPage({
   onNavigateToAdmin,
   onNavigateToFeed,
   onNavigateToAssignments,
+  onNavigateToProgress,
 }: {
   onNavigateToAdmin?: () => void;
   onNavigateToFeed?: () => void;
   onNavigateToAssignments?: () => void;
+  onNavigateToProgress?: () => void;
 }) {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
@@ -308,14 +310,27 @@ export default function DashboardPage({
                       </span>
                     </button>
                   )}
+                  {onNavigateToProgress && (
+                    <button
+                      onClick={onNavigateToProgress}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-colors duration-100"
+                      style={{ fontFamily: 'var(--font-body)' }}
+                    >
+                      <span className="text-neutral-400">
+                        <Layers className="w-3.5 h-3.5" />
+                      </span>
+                      {t('nav_progress')}
+                    </button>
+                  )}
                   {([
                     { icon: <Plus className="w-3.5 h-3.5" />,         key: 'newCourse'     },
                     { icon: <MessageSquare className="w-3.5 h-3.5" />, key: 'askQuestion'   },
                     { icon: <Calendar className="w-3.5 h-3.5" />,      key: 'viewSchedule'  },
+                    { icon: <GraduationCap className="w-3.5 h-3.5" />, key: 'newAssignment' },
                   ] as const).map(({ icon, key }) => (
                     <button
                       key={key}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-all duration-200 ease-in-out"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-colors duration-100"
                       style={{ fontFamily: 'var(--font-body)' }}
                     >
                       <span className="text-neutral-400">{icon}</span>

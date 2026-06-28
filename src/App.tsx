@@ -14,8 +14,9 @@ import DashboardPage from './pages/DashboardPage';
 import AdminPage from './pages/AdminPage';
 import FeedPage from './pages/FeedPage';
 import AssignmentPage from './pages/AssignmentPage';
+import ProgressPage from './pages/ProgressPage';
 
-type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments';
+type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments' | 'progress';
 
 function AppContent() {
   const { user, profile, loading } = useAuth();
@@ -71,12 +72,15 @@ function AppContent() {
       return <FeedPage onBack={() => setCurrentPage(profile?.role === 'ADMIN' ? 'admin' : 'dashboard')} />;
     case 'assignments':
       return <AssignmentPage onBack={() => setCurrentPage('dashboard')} />;
+    case 'progress':
+      return <ProgressPage onBack={() => setCurrentPage('dashboard')} />;
     case 'dashboard':
       return (
         <DashboardPage
           onNavigateToAdmin={profile?.role === 'ADMIN' ? () => setCurrentPage('admin') : undefined}
           onNavigateToFeed={() => setCurrentPage('feed')}
           onNavigateToAssignments={() => setCurrentPage('assignments')}
+          onNavigateToProgress={() => setCurrentPage('progress')}
         />
       );
     default:
