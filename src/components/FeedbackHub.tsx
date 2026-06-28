@@ -41,10 +41,10 @@ export default function FeedbackHub({
         <div className="flex items-center gap-3">
           <span className="text-2xl" aria-hidden>☕</span>
           <div>
-            <h2 className="font-heading text-base font-semibold text-neutral-800">
+            <h2 className="text-base font-semibold text-neutral-800">
               Phản hồi chẩn đoán
             </h2>
-            <p className="font-sans text-xs text-neutral-500">
+            <p className="text-xs text-neutral-500">
               AI Diagnostic · Mastery Learning
             </p>
           </div>
@@ -54,7 +54,7 @@ export default function FeedbackHub({
 
       {/* Greeting */}
       <div className="px-6 py-5 bg-neutral-50/60">
-        <p className="font-sans text-sm leading-relaxed text-neutral-700">
+        <p className="text-sm leading-relaxed text-neutral-700">
           {feedback.greeting}
         </p>
       </div>
@@ -104,10 +104,10 @@ export default function FeedbackHub({
         <div className="flex items-start gap-3">
           <span className="text-xl" aria-hidden>{passed ? '🌱' : '💪'}</span>
           <div>
-            <h4 className="font-sans text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-1">
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-1">
               Lời động viên
             </h4>
-            <p className="font-sans text-sm leading-relaxed text-neutral-700">
+            <p className="text-sm leading-relaxed text-neutral-700">
               {feedback.encouragement}
             </p>
           </div>
@@ -179,13 +179,13 @@ function FeedbackSection({
             <div
               className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${chipBg} ${accent}`}
             >
-              <span className="font-sans text-xs font-semibold">{index + 1}</span>
+              <span className="text-xs font-semibold">{index + 1}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-sans text-sm font-medium text-neutral-800 mb-1">
+              <h4 className="text-sm font-medium text-neutral-800 mb-1">
                 {item.title}
               </h4>
-              <p className="font-sans text-sm leading-relaxed text-neutral-600">
+              <p className="text-sm leading-relaxed text-neutral-600">
                 {item.description}
               </p>
               {item.concept && (
@@ -210,10 +210,10 @@ function LoadingState() {
           transition={{ duration: 1.6, repeat: Infinity, ease: 'linear' }}
           className="w-10 h-10 rounded-full border-[3px] border-neutral-200 border-t-[#C5A880] mb-4"
         />
-        <h3 className="font-sans text-sm font-medium text-neutral-700 mb-1">
+        <h3 className="text-sm font-medium text-neutral-700 mb-1">
           Đang phân tích bài làm...
         </h3>
-        <p className="font-sans text-sm text-center max-w-xs text-neutral-400">
+        <p className="text-sm text-center max-w-xs text-neutral-400">
           AI Cacao đang soạn lời khuyên phù hợp theo phương pháp Mastery Learning
         </p>
       </div>

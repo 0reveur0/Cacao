@@ -234,8 +234,7 @@ function ComposeModal({ onClose, onSubmit, lessons, t, locale }: ComposeModalPro
         <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
           <h3
             className="text-sm font-semibold text-neutral-800"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {t('composeNew')}
           </h3>
           <button
@@ -259,8 +258,7 @@ function ComposeModal({ onClose, onSubmit, lessons, t, locale }: ComposeModalPro
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('composeTitlePh')}
               className="w-full px-3 py-2.5 text-sm rounded-md border border-neutral-200 text-neutral-700 placeholder:text-neutral-400 outline-none focus:border-neutral-400 transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            />
+                          />
           </div>
 
           {/* Lesson selector */}
@@ -272,8 +270,7 @@ function ComposeModal({ onClose, onSubmit, lessons, t, locale }: ComposeModalPro
               value={lessonId}
               onChange={(e) => setLessonId(e.target.value)}
               className="w-full px-3 py-2.5 text-sm rounded-md border border-neutral-200 text-neutral-700 outline-none focus:border-neutral-400 transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               <option value="">{t('selectLesson')}</option>
               {lessons.map((l) => (
                 <option key={l.id} value={l.id}>{l.title}</option>
@@ -309,16 +306,14 @@ function ComposeModal({ onClose, onSubmit, lessons, t, locale }: ComposeModalPro
           <button
             onClick={onClose}
             className="px-3 py-1.5 text-xs font-medium text-neutral-500 hover:text-neutral-700 transition-colors"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {t('composeCancel')}
           </button>
           <button
             onClick={handleSubmit}
             disabled={submitting}
             className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-md text-white bg-neutral-800 hover:bg-neutral-700 transition-colors disabled:opacity-50"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {submitting ? (
               <>
                 <RefreshCw className="w-3 h-3 animate-spin" />
@@ -364,8 +359,7 @@ function QuestionCard({ discussion, onClick, t, locale }: QuestionCardProps) {
             <MessageSquare className="w-4 h-4 text-neutral-400 flex-shrink-0" strokeWidth={1.5} />
             <span
               className="text-[10px] text-neutral-400"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {timeStr}
             </span>
           </div>
@@ -385,16 +379,14 @@ function QuestionCard({ discussion, onClick, t, locale }: QuestionCardProps) {
         {/* Title */}
         <h4
           className="text-sm font-semibold text-neutral-800 leading-snug mb-2"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           {discussion.title}
         </h4>
 
         {/* Snippet */}
         <p
           className="text-xs text-neutral-500 leading-relaxed line-clamp-2"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           {discussion.content.replace(/```[\s\S]*?```/g, '[code]').replace(/\n+/g, ' ').slice(0, 120)}...
         </p>
 
@@ -423,8 +415,7 @@ function ResponseCallout({ type, content, t }: ResponseCalloutProps) {
   return (
     <div
       className="rounded-md border-l-2 bg-[#F1F1EF] border-neutral-400 px-4 py-3"
-      style={{ fontFamily: 'var(--font-body)' }}
-    >
+          >
       <div className="flex items-start gap-3">
         <div
           className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
@@ -472,8 +463,7 @@ function QuestionDetail({ discussion, onBack, t, locale }: QuestionDetailProps) 
       <button
         onClick={onBack}
         className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-800 transition-colors mb-6"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         <ArrowLeft className="w-3.5 h-3.5" />
         {t('backBtn')}
       </button>
@@ -501,8 +491,7 @@ function QuestionDetail({ discussion, onBack, t, locale }: QuestionDetailProps) 
 
           <h2
             className="text-lg font-semibold text-neutral-800 leading-snug mb-2"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {discussion.title}
           </h2>
 
@@ -523,8 +512,7 @@ function QuestionDetail({ discussion, onBack, t, locale }: QuestionDetailProps) 
         <div className="px-6 py-5">
           <div
             className="text-sm text-neutral-700 leading-relaxed whitespace-pre-wrap"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {discussion.content}
           </div>
         </div>
@@ -746,15 +734,13 @@ export default function DiscussionPage({ onBack }: { onBack: () => void }) {
             </div>
             <h1
               className="text-2xl font-semibold text-neutral-900 leading-tight"
-              style={{ fontFamily: 'var(--font-heading)' }}
-            >
+                          >
               {t('pageTitle')}
             </h1>
           </div>
           <p
             className="text-sm text-neutral-500 max-w-lg leading-relaxed"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {t('pageSubtitle')}
           </p>
 

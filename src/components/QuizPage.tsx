@@ -119,7 +119,7 @@ export default function QuizPage({
             </span>
             <h2
               className="text-2xl font-semibold mb-2"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               {result.passed ? 'Hoàn Thành!' : 'Động Viên!'}
             </h2>
@@ -170,7 +170,7 @@ export default function QuizPage({
           <div>
             <h1
               className="text-xl font-semibold"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               {lessonTitle}
             </h1>

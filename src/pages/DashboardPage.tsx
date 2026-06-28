@@ -247,8 +247,7 @@ export default function DashboardPage({
             <div className="pb-1">
               <h1
                 className="text-2xl font-semibold leading-tight text-neutral-800"
-                style={{ fontFamily: 'var(--font-heading)' }}
-              >
+                              >
                 Cacao TLMS
               </h1>
               <p className="text-xs text-neutral-400" style={{ fontFamily: 'var(--font-body)' }}>
@@ -272,8 +271,7 @@ export default function DashboardPage({
                 <div className="px-4 py-3 border-b border-neutral-100">
                   <p
                     className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
+                                      >
                     {t('quickAction')}
                   </p>
                 </div>
@@ -282,8 +280,7 @@ export default function DashboardPage({
                     <button
                       onClick={onNavigateToAdmin}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-[#9A6A2A] bg-[#FEF4E8] hover:bg-[#F5EBE0] transition-all duration-200 ease-in-out"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <span className="text-sm">⚙️</span>
                       {t('adminWorkspace')}
                     </button>
@@ -292,8 +289,7 @@ export default function DashboardPage({
                     <button
                       onClick={onNavigateToFeed}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-200 ease-in-out"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <span className="text-neutral-400">
                         <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
@@ -306,8 +302,7 @@ export default function DashboardPage({
                     <button
                       onClick={onNavigateToAssignments}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-200 ease-in-out"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <span className="text-neutral-400">
                         <ClipboardList className="w-3.5 h-3.5" />
                       </span>
@@ -321,8 +316,7 @@ export default function DashboardPage({
                     <button
                       onClick={onNavigateToProgress}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-colors duration-100"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <span className="text-neutral-400">
                         <Layers className="w-3.5 h-3.5" />
                       </span>
@@ -333,8 +327,7 @@ export default function DashboardPage({
                     <button
                       onClick={onNavigateToDiscussions}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-colors duration-100"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <span className="text-neutral-400">
                         <MessageSquare className="w-3.5 h-3.5" />
                       </span>
@@ -353,8 +346,7 @@ export default function DashboardPage({
                     <button
                       key={key}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700 transition-colors duration-100"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <span className="text-neutral-400">{icon}</span>
                       {t(key)}
                     </button>
@@ -370,8 +362,7 @@ export default function DashboardPage({
                 <div className="px-4 py-3 border-b border-neutral-100">
                   <p
                     className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
+                                      >
                     Navigation
                   </p>
                 </div>
@@ -380,8 +371,7 @@ export default function DashboardPage({
                     <button
                       key={label}
                       className="w-full flex items-center justify-between px-3 py-2 rounded-md text-xs text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 transition-all duration-200 ease-in-out"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <span className="flex items-center gap-2.5 text-neutral-500">
                         {icon}
                         {label}
@@ -401,8 +391,7 @@ export default function DashboardPage({
                 <div className="px-4 py-3 border-b border-neutral-100">
                   <p
                     className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
+                                      >
                     {t('reminders')}
                   </p>
                 </div>
@@ -442,8 +431,7 @@ export default function DashboardPage({
               <section>
                 <h2
                   className="text-2xl font-semibold text-neutral-800 leading-snug mb-1"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
+                                  >
                   {welcomeStr}
                 </h2>
                 <p className="text-sm text-neutral-400 mb-4" style={{ fontFamily: 'var(--font-body)' }}>
@@ -462,8 +450,7 @@ export default function DashboardPage({
                       <div className="flex-1 min-w-0">
                         <p
                           className="text-xs font-semibold text-[#7F6000] mb-0.5"
-                          style={{ fontFamily: 'var(--font-body)' }}
-                        >
+                                                  >
                           {t('goalTitle')}
                         </p>
                         <p className="text-xs text-[#9B7A00]" style={{ fontFamily: 'var(--font-body)' }}>
@@ -526,8 +513,7 @@ export default function DashboardPage({
                   {/* Table header */}
                   <div
                     className="grid grid-cols-12 gap-2 px-4 py-2.5 border-b border-neutral-100 bg-neutral-50/60"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
+                                      >
                     {[
                       t('col_title'),
                       t('col_subject'),
@@ -580,8 +566,7 @@ export default function DashboardPage({
                                 ? 'opacity-50 cursor-default'
                                 : 'cursor-pointer hover:bg-neutral-50'
                             }`}
-                            style={{ fontFamily: 'var(--font-body)' }}
-                          >
+                                                      >
                             <div className="col-span-4 flex items-center gap-2.5 min-w-0">
                               <span className="flex-shrink-0">
                                 {status === 'completed' ? (
@@ -630,8 +615,7 @@ export default function DashboardPage({
                     </p>
                     <button
                       className="text-[11px] text-[#C5A880] hover:text-[#B89A70] flex items-center gap-1 transition-colors"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       {t('viewAll')} <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
@@ -661,14 +645,12 @@ export default function DashboardPage({
                     <div>
                       <p
                         className="text-xs font-semibold text-neutral-600 mb-0.5"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      >
+                                              >
                         {t('footerTitle')}
                       </p>
                       <p
                         className="text-xs text-neutral-500 leading-relaxed"
-                        style={{ fontFamily: 'var(--font-body)' }}
-                      >
+                                              >
                         {t('footerBody')}
                       </p>
                     </div>
@@ -701,8 +683,7 @@ function SectionHeader({
         <span className="text-neutral-500">{icon}</span>
         <h3
           className="text-base font-semibold text-neutral-800"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           {title}
         </h3>
       </div>
@@ -716,8 +697,7 @@ function SectionHeader({
                 ? 'border-neutral-700 text-neutral-700'
                 : 'border-transparent text-neutral-400 hover:text-neutral-600'
             }`}
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {tab}
           </button>
         ))}
@@ -764,16 +744,14 @@ function CourseGalleryCard({
         <div className="absolute top-2 left-2">
           <span
             className="text-[10px] font-semibold px-2 py-0.5 rounded bg-black/40 text-white backdrop-blur-sm"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             Lesson {lesson.order}
           </span>
         </div>
         <div className="absolute top-2 right-2">
           <span
             className={`text-[10px] font-medium px-2 py-0.5 rounded ${statusClassName}`}
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {statusLabel}
           </span>
         </div>
@@ -785,8 +763,7 @@ function CourseGalleryCard({
           </div>
           <h4
             className="text-xs font-semibold text-neutral-800 leading-snug line-clamp-2"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {lesson.title}
           </h4>
         </div>

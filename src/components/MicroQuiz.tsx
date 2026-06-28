@@ -124,10 +124,10 @@ export default function MicroQuiz({
             transition={{ duration: 1.6, repeat: Infinity, ease: 'linear' }}
             className="w-10 h-10 rounded-full border-[3px] border-neutral-200 border-t-[#C5A880] mb-4"
           />
-          <h3 className="font-sans text-sm font-medium text-neutral-700 mb-1">
+          <h3 className="text-sm font-medium text-neutral-700 mb-1">
             Đang phân tích bài làm...
           </h3>
-          <p className="font-sans text-sm text-center max-w-xs text-neutral-400">
+          <p className="text-sm text-center max-w-xs text-neutral-400">
             AI Cacao đang soạn lời khuyên phù hợp theo phương pháp Mastery Learning
           </p>
         </div>
@@ -141,14 +141,14 @@ export default function MicroQuiz({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-heading text-lg font-semibold text-neutral-800">
+          <h3 className="text-lg font-semibold text-neutral-800">
             Micro-quiz · {lessonTitle}
           </h3>
-          <p className="font-sans text-sm text-neutral-400 mt-0.5">
+          <p className="text-sm text-neutral-400 mt-0.5">
             {totalQuestions} câu · Thời gian tự do, không giới hạn
           </p>
         </div>
-        <span className="font-sans text-xs px-3 py-1.5 rounded-md bg-neutral-100 text-neutral-500">
+        <span className="text-xs px-3 py-1.5 rounded-md bg-neutral-100 text-neutral-500">
           Câu {currentIndex + 1}/{totalQuestions}
         </span>
       </div>
@@ -189,9 +189,9 @@ export default function MicroQuiz({
           <div className="px-6 py-5 border-b border-neutral-200">
             <div className="flex items-start gap-3">
               <div className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 bg-[#F5EBE0] text-[#C5A880]">
-                <span className="font-sans text-xs font-semibold">{currentIndex + 1}</span>
+                <span className="text-xs font-semibold">{currentIndex + 1}</span>
               </div>
-              <p className="font-sans text-sm leading-relaxed text-neutral-800 pt-0.5">
+              <p className="text-sm leading-relaxed text-neutral-800 pt-0.5">
                 {currentQuestion.text}
               </p>
             </div>
@@ -220,7 +220,7 @@ export default function MicroQuiz({
                   >
                     {isSelected ? <Check className="w-3 h-3" /> : String.fromCharCode(65 + idx)}
                   </div>
-                  <span className="font-sans text-sm text-neutral-700">{option}</span>
+                  <span className="text-sm text-neutral-700">{option}</span>
                 </button>
               );
             })}
@@ -231,7 +231,7 @@ export default function MicroQuiz({
             <button
               onClick={() => currentIndex > 0 && setCurrentIndex((prev) => prev - 1)}
               disabled={currentIndex === 0}
-              className="font-sans text-sm text-neutral-500 disabled:opacity-40 hover:text-neutral-800 transition-colors"
+              className="text-sm text-neutral-500 disabled:opacity-40 hover:text-neutral-800 transition-colors"
             >
               Câu trước
             </button>
@@ -240,7 +240,7 @@ export default function MicroQuiz({
               <button
                 onClick={() => setCurrentIndex((prev) => prev + 1)}
                 disabled={answers[currentQuestion.id] === undefined}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md font-sans text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-neutral-800 text-white hover:bg-neutral-700"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-neutral-800 text-white hover:bg-neutral-700"
               >
                 Câu tiếp
                 <ChevronRight className="w-4 h-4" />
@@ -249,7 +249,7 @@ export default function MicroQuiz({
               <button
                 onClick={handleSubmit}
                 disabled={!allAnswered}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-md font-sans text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-neutral-800 text-white hover:bg-neutral-700"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-neutral-800 text-white hover:bg-neutral-700"
               >
                 <Send className="w-4 h-4" />
                 Gửi bài
@@ -264,7 +264,7 @@ export default function MicroQuiz({
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="font-sans text-xs text-center text-neutral-400"
+          className="text-xs text-center text-neutral-400"
         >
           Bạn đã trả lời tất cả câu hỏi. Nhấn "Gửi bài" để nhận phản hồi chẩn đoán.
         </motion.p>
@@ -307,13 +307,13 @@ function ResultBanner({
           {passed ? '🌟' : '💪'}
         </motion.div>
 
-        <h3 className="font-heading text-lg font-semibold text-neutral-800 mb-1.5">
+        <h3 className="text-lg font-semibold text-neutral-800 mb-1.5">
           {passed
             ? 'Bạn đã làm chủ được bài học này!'
             : 'Chưa đạt lần này — không sao cả!'}
         </h3>
 
-        <p className="font-sans text-sm text-neutral-500 max-w-md mx-auto leading-relaxed">
+        <p className="text-sm text-neutral-500 max-w-md mx-auto leading-relaxed">
           {passed
             ? 'Bài học tiếp theo đã được mở khóa. Hãy tiếp tục hành trình nhé.'
             : `Lần thử thứ ${attemptCount}. Hãy xem lại gợi ý từ AI bên dưới rồi thử lại nhé.`}
@@ -322,20 +322,20 @@ function ResultBanner({
         {/* Score display */}
         <div className="mt-5 flex items-center justify-center gap-3">
           <div className="px-4 py-2 rounded-lg bg-white border border-neutral-200">
-            <p className="font-heading text-xl font-semibold text-neutral-800">
+            <p className="text-xl font-semibold text-neutral-800">
               {score}/{total}
             </p>
-            <p className="font-sans text-xs text-neutral-400">câu đúng</p>
+            <p className="text-xs text-neutral-400">câu đúng</p>
           </div>
           <div className="px-4 py-2 rounded-lg bg-white border border-neutral-200">
             <p
-              className={`font-heading text-xl font-semibold ${
+              className="text-xl font-semibold ${
                 passed ? 'text-emerald-600' : 'text-amber-600'
-              }`}
+              }"
             >
               {percentage}%
             </p>
-            <p className="font-sans text-xs text-neutral-400">mastery</p>
+            <p className="text-xs text-neutral-400">mastery</p>
           </div>
         </div>
 
@@ -346,7 +346,7 @@ function ResultBanner({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             onClick={onRetry}
-            className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-sans text-sm font-medium text-neutral-700 transition-all hover:shadow-sm"
+            className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-neutral-700 transition-all hover:shadow-sm"
             style={{ backgroundColor: '#F5EBE0' }}
           >
             <RotateCcw className="w-4 h-4" />

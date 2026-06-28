@@ -137,8 +137,7 @@ function RoleDropdown({
                 key={r}
                 onClick={() => pick(r)}
                 className="w-full flex items-center justify-between px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-50 transition-colors"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
+                              >
                 <span
                   className="text-[10px] font-semibold px-1.5 py-0.5 rounded"
                   style={{ backgroundColor: ROLE_STYLE[r].bg, color: ROLE_STYLE[r].text }}
@@ -208,8 +207,7 @@ function SectionHeader({
       <div>
         <h2
           className="text-base font-semibold text-neutral-800 flex items-center gap-2"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           <span>{icon}</span>
           {title}
         </h2>
@@ -239,8 +237,7 @@ function MetricCard({
   return (
     <div
       className="flex-1 min-w-0 rounded-lg border border-neutral-100 bg-white px-4 py-3"
-      style={{ fontFamily: 'var(--font-body)' }}
-    >
+          >
       <div className="flex items-center gap-2 mb-2">
         <span className="text-neutral-400">{icon}</span>
         <span className="text-[11px] font-medium text-neutral-400 truncate">{label}</span>
@@ -284,8 +281,7 @@ function UserBlock({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 text-xs rounded-md border border-neutral-200 text-neutral-700 placeholder:text-neutral-400 outline-none focus:border-neutral-300 transition-colors"
-            style={{ fontFamily: 'var(--font-body)' }}
-          />
+                      />
         </div>
         <div className="flex items-center gap-1.5">
           {(['ADMIN', 'TEACHER', 'STUDENT'] as UserRole[]).map((r) => (
@@ -303,8 +299,7 @@ function UserBlock({
       {/* Column headers */}
       <div
         className="grid grid-cols-12 gap-3 px-4 py-2 border-b border-neutral-100 bg-neutral-50/60"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         {['Name', 'Email', 'Role', 'Status', 'Joined', ''].map((h, i) => (
           <div
             key={i}
@@ -335,8 +330,7 @@ function UserBlock({
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.03, duration: 0.18 }}
               className="grid grid-cols-12 gap-3 px-4 py-3 items-center hover:bg-neutral-50/70 transition-colors group"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {/* Name */}
               <div className="col-span-3 flex items-center gap-2.5 min-w-0">
                 <div
@@ -409,8 +403,7 @@ function UserBlock({
                             className={`w-full text-left px-3 py-2 text-xs transition-colors hover:bg-neutral-50 ${
                               action === 'Delete' ? 'text-red-500' : 'text-neutral-700'
                             }`}
-                            style={{ fontFamily: 'var(--font-body)' }}
-                          >
+                                                      >
                             {action}
                           </button>
                         ))}
@@ -431,8 +424,7 @@ function UserBlock({
         </span>
         <button
           className="text-[11px] text-[#C5A880] hover:text-[#B89A70] flex items-center gap-1 transition-colors"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           Export CSV <ChevronRight className="w-3 h-3" />
         </button>
       </div>
@@ -451,21 +443,18 @@ function CourseOutlineNode({ course }: { course: CourseNode }) {
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2.5 px-4 py-3 text-left hover:bg-neutral-50 transition-colors group"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         <motion.span animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.15 }}>
           <ChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-600 transition-colors flex-shrink-0" />
         </motion.span>
         <span
           className="text-xs font-semibold text-neutral-700 group-hover:text-neutral-900 flex-1 truncate"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           📖 {course.title}
         </span>
         <span
           className="text-[10px] text-neutral-400 flex-shrink-0"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           {course.modules.length} modules · {course.modules.reduce((s, m) => s + m.lessons.length, 0)} lessons
         </span>
       </button>
@@ -488,8 +477,7 @@ function CourseOutlineNode({ course }: { course: CourseNode }) {
                       setModuleOpen((m) => ({ ...m, [mod.id]: !m[mod.id] }))
                     }
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left hover:bg-neutral-50 transition-colors group"
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
+                                      >
                     <motion.span
                       animate={{ rotate: moduleOpen[mod.id] ? 90 : 0 }}
                       transition={{ duration: 0.15 }}
@@ -520,8 +508,7 @@ function CourseOutlineNode({ course }: { course: CourseNode }) {
                           {/* Add lesson row */}
                           <button
                             className="w-full flex items-center gap-2 px-4 py-2 text-left text-[11px] text-neutral-400 hover:text-[#C5A880] hover:bg-[#FFFDF8] transition-colors"
-                            style={{ fontFamily: 'var(--font-body)' }}
-                          >
+                                                      >
                             <Plus className="w-3 h-3" />
                             Add New Lesson
                           </button>
@@ -546,8 +533,7 @@ function LessonOutlineNode({ lesson }: { lesson: LessonItem }) {
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2.5 px-4 py-2 text-left hover:bg-neutral-50 transition-colors group"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         <motion.span animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.15 }}>
           <ChevronRight className="w-3 h-3 text-neutral-300 group-hover:text-neutral-400 flex-shrink-0" />
         </motion.span>
@@ -578,8 +564,7 @@ function LessonOutlineNode({ lesson }: { lesson: LessonItem }) {
                 <div
                   key={q.id}
                   className="flex items-start gap-2 py-1"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
+                                  >
                   <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500 flex-shrink-0 mt-0.5">
                     Q
                   </span>
@@ -614,8 +599,7 @@ function CurriculumBlock({ tree, loading }: { tree: CourseNode[]; loading: boole
         </div>
         <button
           className="flex items-center gap-1.5 text-[11px] font-medium text-neutral-600 hover:text-neutral-800 px-3 py-1.5 rounded-md border border-neutral-200 hover:border-neutral-300 transition-colors"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           <Plus className="w-3 h-3" /> New Course
         </button>
       </div>
@@ -659,8 +643,7 @@ function BillingBlock({ ledger, loading }: { ledger: BillingRow[]; loading: bool
                   ? 'bg-neutral-800 text-white'
                   : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
               }`}
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {f}
               {f !== 'ALL' && (
                 <span className="ml-1 opacity-70">{ledger.filter((r) => r.status === f).length}</span>
@@ -670,8 +653,7 @@ function BillingBlock({ ledger, loading }: { ledger: BillingRow[]; loading: bool
         </div>
         <button
           className="text-[11px] font-medium text-neutral-600 hover:text-neutral-800 px-3 py-1.5 rounded-md border border-neutral-200 hover:border-neutral-300 transition-colors"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           Export Ledger
         </button>
       </div>
@@ -679,8 +661,7 @@ function BillingBlock({ ledger, loading }: { ledger: BillingRow[]; loading: bool
       {/* Column headers */}
       <div
         className="grid grid-cols-12 gap-3 px-4 py-2 border-b border-neutral-100 bg-neutral-50/60"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         {['Student', 'Invoice #', 'Amount', 'Due Date', 'Status', ''].map((h, i) => (
           <div
             key={i}
@@ -713,8 +694,7 @@ function BillingBlock({ ledger, loading }: { ledger: BillingRow[]; loading: bool
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.025, duration: 0.15 }}
                 className="grid grid-cols-12 gap-3 px-4 py-3 items-center hover:bg-neutral-50/70 transition-colors"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
+                              >
                 <div className="col-span-3 flex items-center gap-2 min-w-0">
                   <div
                     className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0"
@@ -931,8 +911,7 @@ export default function AdminPage({
         <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
           <p
             className="px-2.5 mb-2 text-[10px] font-semibold uppercase tracking-widest text-neutral-400"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             Workspace
           </p>
           {NAV.map((n) => (
@@ -953,8 +932,7 @@ export default function AdminPage({
             <button
               onClick={onNavigateToFeed}
               className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-100 transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               <span className="text-[13px]">📢</span>
               {t('adminFeedLink')}
             </button>
@@ -962,8 +940,7 @@ export default function AdminPage({
           <button
             onClick={onExit}
             className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-100 transition-colors"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             <ChevronRight className="w-3.5 h-3.5 rotate-180" />
             {t('adminBackDash')}
           </button>
@@ -1047,8 +1024,7 @@ export default function AdminPage({
                   action={
                     <button
                       className="flex items-center gap-1.5 text-[11px] font-medium text-neutral-600 hover:text-neutral-800 px-3 py-1.5 rounded-md border border-neutral-200 hover:border-neutral-300 transition-colors"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <Plus className="w-3 h-3" /> Invite User
                     </button>
                   }
@@ -1169,8 +1145,7 @@ function SubmissionsBlock() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.03 }}
             className="grid grid-cols-12 gap-3 px-4 py-3 items-center hover:bg-neutral-50/70 transition-colors"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             <div className="col-span-3 text-xs font-medium text-neutral-700 truncate">
               {(sub.profiles as any)?.name ?? 'Unknown'}
             </div>

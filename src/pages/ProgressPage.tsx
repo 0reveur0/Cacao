@@ -90,8 +90,7 @@ function OptionButton({
       </span>
       <span
         className="text-sm text-neutral-700 leading-snug"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         {label}
       </span>
     </button>
@@ -183,8 +182,7 @@ function InlineQuizPanel({
         >
           <p
             className="text-sm font-medium text-neutral-700 mb-1"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {t('progress_failMessage')}
           </p>
           <p className="text-xs text-neutral-400 mt-1.5 mb-4" style={{ fontFamily: 'var(--font-body)' }}>
@@ -238,8 +236,7 @@ function InlineQuizPanel({
         })}
         <span
           className="ml-auto text-[11px] text-neutral-400"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           {currentIndex + 1} / {total}
         </span>
       </div>
@@ -255,8 +252,7 @@ function InlineQuizPanel({
         >
           <p
             className="text-sm font-medium text-neutral-800 mb-3 leading-snug"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {currentIndex + 1}. {currentQ.text}
           </p>
           <div className="space-y-2">
@@ -280,8 +276,7 @@ function InlineQuizPanel({
           onClick={() => onNavigate(currentIndex - 1)}
           disabled={currentIndex === 0}
           className="text-xs text-neutral-400 hover:text-neutral-700 disabled:opacity-30 transition-colors duration-100"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           {t('progress_prevBtn')}
         </button>
 
@@ -414,15 +409,13 @@ function MilestoneRow({
         <div className="flex-1 min-w-0">
           <p
             className="text-sm font-semibold text-neutral-800 truncate"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {item.title}
           </p>
           {item.description && (
             <p
               className="text-xs text-neutral-400 mt-0.5 truncate"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {item.description}
             </p>
           )}
@@ -609,8 +602,7 @@ export default function ProgressPage({ onBack }: { onBack: () => void }) {
           <button
             onClick={onBack}
             className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-800 transition-colors duration-100"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             <ArrowLeft className="w-3.5 h-3.5" />
             {t('progress_backBtn')}
           </button>
@@ -634,14 +626,12 @@ export default function ProgressPage({ onBack }: { onBack: () => void }) {
         >
           <h1
             className="text-2xl font-semibold text-neutral-900 mb-2 leading-tight"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {t('progress_pageTitle')}
           </h1>
           <p
             className="text-sm text-neutral-500 max-w-lg leading-relaxed"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {t('progress_pageSubtitle')}
           </p>
         </motion.div>

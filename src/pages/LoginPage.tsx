@@ -101,7 +101,7 @@ export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: Logi
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ backgroundColor: '#FAFAFA', fontFamily: 'var(--font-body)' }}
+      style={{ backgroundColor: '#FAFAFA' }}
     >
       {/* Top bar */}
       <div
@@ -117,7 +117,7 @@ export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: Logi
           </div>
           <span
             className="text-sm font-semibold"
-            style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+            style={{ color: '#2F2F2F' }}
           >
             Cacao
           </span>
@@ -138,7 +138,7 @@ export default function LoginPage({ onNavigateToRegister, onLoginSuccess }: Logi
           <div className="mb-7">
             <h1
               className="text-[22px] font-semibold mb-1.5 leading-tight"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               {t('loginTitle')}
             </h1>

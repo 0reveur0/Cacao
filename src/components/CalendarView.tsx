@@ -147,12 +147,10 @@ function AddEventModal({ onClose, onSave, userId, defaultDate }: AddEventModalPr
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.96, y: 8 }}
         transition={{ duration: 0.18, ease: 'easeOut' }}
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         <h3
           className="text-sm font-semibold text-neutral-800 mb-4"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           Thêm sự kiện
         </h3>
 
@@ -289,8 +287,7 @@ export default function CalendarView() {
   return (
     <div
       className="rounded-lg border border-neutral-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden"
-      style={{ fontFamily: 'var(--font-body)' }}
-    >
+          >
       {/* Calendar header */}
       <div className="px-4 py-3 border-b border-neutral-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -302,8 +299,7 @@ export default function CalendarView() {
           </button>
           <span
             className="text-sm font-semibold text-neutral-700"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {format(currentMonth, 'MMMM yyyy', { locale: vi })}
           </span>
           <button

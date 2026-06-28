@@ -166,7 +166,7 @@ export default function Sidebar({
           style={{ color: '#9B9B9B' }}
         >
           <span className="text-sm">{locale === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
-          <span className="font-medium" style={{ fontFamily: 'var(--font-body)' }}>
+          <span className="font-medium" >
             {locale === 'vi' ? 'Tiếng Việt' : 'English'}
           </span>
           <span

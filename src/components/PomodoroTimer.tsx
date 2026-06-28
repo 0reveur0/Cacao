@@ -64,8 +64,7 @@ export default function PomodoroTimer({
   return (
     <div
       className="rounded-lg border border-neutral-100 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden"
-      style={{ fontFamily: 'var(--font-body)' }}
-    >
+          >
       {/* Header */}
       <div className="px-4 py-3 border-b border-neutral-100 flex items-center justify-between">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">

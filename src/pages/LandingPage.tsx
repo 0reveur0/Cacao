@@ -194,11 +194,11 @@ function FeatureCard({
         </div>
         <h3
           className="text-sm font-semibold mb-1.5"
-          style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+          style={{ color: '#2F2F2F' }}
         >
           {title}
         </h3>
-        <p className="text-[13px] leading-relaxed" style={{ color: '#6B6B6B', fontFamily: 'var(--font-body)' }}>
+        <p className="text-[13px] leading-relaxed" style={{ color: '#6B6B6B' }}>
           {body}
         </p>
       </div>
@@ -247,20 +247,20 @@ function StepRow({
           <div className="flex items-center gap-2 mb-1">
             <span
               className="text-[11px] font-semibold tabular-nums"
-              style={{ color: '#C5A880', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#C5A880' }}
             >
               {num}
             </span>
             <p
               className="text-sm font-semibold"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               {title}
             </p>
           </div>
           <p
             className="text-[13px] leading-relaxed"
-            style={{ color: '#6B6B6B', fontFamily: 'var(--font-body)' }}
+            style={{ color: '#6B6B6B' }}
           >
             {body}
           </p>
@@ -313,7 +313,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ backgroundColor: '#FAFAFA', fontFamily: 'var(--font-body)' }}
+      style={{ backgroundColor: '#FAFAFA' }}
     >
       {/* ── Sticky Navbar ─────────────────────────────────────────────────── */}
       <header
@@ -336,7 +336,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             </div>
             <span
               className="text-sm font-semibold"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               Cacao
             </span>
@@ -404,7 +404,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
         <FadeIn delay={0.06}>
           <h1
             className="text-[38px] md:text-[54px] font-semibold leading-tight tracking-tight mb-5 max-w-3xl"
-            style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+            style={{ color: '#2F2F2F' }}
           >
             {c.heroTitle}
           </h1>
@@ -496,7 +496,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             <div className="mb-12">
               <h2
                 className="text-2xl md:text-3xl font-semibold mb-3"
-                style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+                style={{ color: '#2F2F2F' }}
               >
                 {c.section1Title}
               </h2>
@@ -533,7 +533,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             />
             <blockquote
               className="text-xl md:text-2xl font-semibold leading-snug mb-5"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               {c.quoteText}
             </blockquote>
@@ -552,7 +552,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
             <div>
               <h2
                 className="text-2xl md:text-3xl font-semibold mb-3"
-                style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+                style={{ color: '#2F2F2F' }}
               >
                 {c.section2Title}
               </h2>
@@ -588,7 +588,7 @@ export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }:
           <FadeIn>
             <h2
               className="text-2xl md:text-3xl font-semibold mb-3 leading-snug"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               {c.footerTitle}
             </h2>

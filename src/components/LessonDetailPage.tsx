@@ -28,8 +28,7 @@ function ToggleBlock({ title, children }: { title: string; children: React.React
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left transition-colors duration-150 hover:bg-[#F5EBE0] group"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         <motion.span
           animate={{ rotate: open ? 90 : 0 }}
           transition={{ duration: 0.18, ease: 'easeOut' }}
@@ -86,14 +85,12 @@ function ConceptsSection({ concepts }: { concepts: string[] }) {
         <span className="text-sm">🗂️</span>
         <h3
           className="text-sm font-semibold text-neutral-800"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           Khái niệm trong bài học
         </h3>
         <span
           className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F5EBE0] text-[#C5A880]"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           {concepts.length} khái niệm
         </span>
       </div>
@@ -128,21 +125,18 @@ export default function LessonDetailPage({
         </div>
         <h2
           className="text-xl font-semibold text-neutral-800 mb-2"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           Bài học chưa mở khóa
         </h2>
         <p
           className="text-sm text-neutral-500 mb-6 max-w-md mx-auto"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           Hãy hoàn thành bài quiz của bài học trước đó với mức làm chủ (Mastery) để mở khóa bài học này.
         </p>
         <button
           onClick={onBack}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 transition-colors"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           <ArrowLeft className="w-4 h-4" /> Quay lại
         </button>
       </div>
@@ -161,8 +155,7 @@ export default function LessonDetailPage({
       <button
         onClick={onBack}
         className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-800 transition-colors mb-6"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         <ArrowLeft className="w-4 h-4" /> Quay lại Bảng làm việc
       </button>
 
@@ -170,20 +163,17 @@ export default function LessonDetailPage({
       <header className="mb-6">
         <p
           className="text-xs font-medium text-[#C5A880] mb-2"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           Bài học {lesson.order}
         </p>
         <h1
           className="text-2xl font-semibold text-neutral-800 mb-2 leading-tight"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           {lesson.title}
         </h1>
         <p
           className="text-sm text-neutral-500 leading-relaxed max-w-2xl"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           {lesson.description}
         </p>
       </header>
@@ -202,8 +192,7 @@ export default function LessonDetailPage({
                   ? 'border-[#C5A880] text-neutral-800'
                   : 'border-transparent text-neutral-400 hover:text-neutral-600'
               }`}
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               <Icon className="w-4 h-4" />
               {tab.label}
             </button>
@@ -221,8 +210,7 @@ export default function LessonDetailPage({
           />
           <p
             className="text-xs text-neutral-400 mt-3 text-center"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             Xem hết video để chuyển sang phần tài liệu đọc, hoặc chọn tab bên trên.
           </p>
         </section>
@@ -236,8 +224,7 @@ export default function LessonDetailPage({
           {/* Lesson markdown content */}
           <div
             className="rounded-lg border border-neutral-100 bg-white p-5 mb-4"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             <LessonContent markdown={lesson.content} />
           </div>
 
@@ -245,8 +232,7 @@ export default function LessonDetailPage({
             <button
               onClick={() => setActiveTab('quiz')}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-white bg-neutral-800 hover:bg-neutral-700 transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               <ListChecks className="w-4 h-4" /> Làm bài kiểm tra
             </button>
           </div>
@@ -267,8 +253,7 @@ export default function LessonDetailPage({
               <span className="text-2xl block mb-3">📝</span>
               <p
                 className="text-sm text-neutral-500"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
+                              >
                 Bài học này chưa có bài kiểm tra.
               </p>
             </div>

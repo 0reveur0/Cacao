@@ -64,7 +64,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
     return (
       <div
         className="min-h-screen flex items-center justify-center px-4"
-        style={{ backgroundColor: '#FAFAFA', fontFamily: 'var(--font-body)' }}
+        style={{ backgroundColor: '#FAFAFA' }}
       >
         <div className="w-full max-w-[400px] text-center">
           <div
@@ -75,7 +75,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
           </div>
           <h1
             className="text-xl font-semibold mb-2"
-            style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+            style={{ color: '#2F2F2F' }}
           >
             {t('registerSuccess')}
           </h1>
@@ -110,7 +110,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ backgroundColor: '#FAFAFA', fontFamily: 'var(--font-body)' }}
+      style={{ backgroundColor: '#FAFAFA' }}
     >
       {/* Top bar */}
       <div
@@ -126,7 +126,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
           </span>
           <span
             className="text-sm font-semibold"
-            style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+            style={{ color: '#2F2F2F' }}
           >
             Cacao
           </span>
@@ -149,7 +149,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
           <div className="mb-7">
             <h1
               className="text-[22px] font-semibold mb-1.5 leading-tight"
-              style={{ color: '#2F2F2F', fontFamily: 'var(--font-heading)' }}
+              style={{ color: '#2F2F2F' }}
             >
               {t('registerTitle')}
             </h1>

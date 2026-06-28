@@ -54,8 +54,7 @@ function MarkdownBody({ content }: { content: string }) {
   return (
     <div
       className="text-sm text-neutral-600 leading-[1.75] space-y-1"
-      style={{ fontFamily: 'var(--font-body)' }}
-    >
+          >
       {blocks.map((block, bi) =>
         bi % 2 === 1 ? (
           <pre
@@ -217,8 +216,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
         <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
           <h3
             className="text-sm font-semibold text-neutral-800"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {isEdit ? t('composeEdit') : t('composeNew')}
           </h3>
           <div className="flex items-center gap-2">
@@ -229,8 +227,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
                   ? 'border-neutral-700 bg-neutral-700 text-white'
                   : 'border-neutral-200 text-neutral-500 hover:border-neutral-300'
               }`}
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {preview ? t('composeEdit2') : t('composePreview')}
             </button>
             <button
@@ -270,8 +267,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
                   ? 'bg-[#FFF2CC] text-[#7F6000] border-transparent'
                   : 'border-neutral-200 text-neutral-400 hover:border-neutral-300'
               }`}
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               <Pin className="w-3 h-3" />
               {pinned ? t('composePinned') : t('composePinThis')}
             </button>
@@ -284,8 +280,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="w-full text-base font-semibold text-neutral-800 placeholder:text-neutral-300 border-0 border-b border-neutral-100 pb-2 outline-none focus:border-neutral-300 transition-colors bg-transparent"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          />
+                      />
 
           {/* Content — editor or preview */}
           {preview ? (
@@ -324,8 +319,7 @@ function ComposeModal({ initial, authorName, onClose, onSaved }: ComposeModalPro
             <button
               onClick={onClose}
               className="text-xs text-neutral-400 hover:text-neutral-600 px-3 py-1.5 rounded-md hover:bg-neutral-100 transition-colors"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {t('composeCancel')}
             </button>
             <button
@@ -443,22 +437,19 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
                     <button
                       onClick={() => { setMenuOpen(false); onEdit(item); }}
                       className="w-full text-left px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-50 transition-colors"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       ✏️ Edit
                     </button>
                     <button
                       onClick={() => { setMenuOpen(false); onTogglePin(item); }}
                       className="w-full text-left px-3 py-2 text-xs text-neutral-700 hover:bg-neutral-50 transition-colors"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       {item.pinned ? '📌 Unpin' : '📌 Pin to top'}
                     </button>
                     <button
                       onClick={() => { setMenuOpen(false); onDelete(item.id); }}
                       className="w-full text-left px-3 py-2 text-xs text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2"
-                      style={{ fontFamily: 'var(--font-body)' }}
-                    >
+                                          >
                       <Trash2 className="w-3 h-3" /> Delete
                     </button>
                   </motion.div>
@@ -471,8 +462,7 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
         {/* Title */}
         <h2
           className="text-base font-semibold text-neutral-800 leading-snug mb-2.5 cursor-pointer hover:text-neutral-900 transition-colors"
-          style={{ fontFamily: 'var(--font-heading)' }}
-          onClick={() => setExpanded((e) => !e)}
+                    onClick={() => setExpanded((e) => !e)}
         >
           {item.title}
         </h2>
@@ -489,15 +479,13 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
             >
               <p
                 className="text-sm text-neutral-500 leading-relaxed line-clamp-2"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
+                              >
                 {preview}
               </p>
               <button
                 onClick={() => setExpanded(true)}
                 className="mt-2 text-xs text-neutral-400 hover:text-neutral-600 transition-colors flex items-center gap-1"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
+                              >
                 {t('readMore')} <ChevronDown className="w-3 h-3" />
               </button>
             </motion.div>
@@ -514,8 +502,7 @@ function FeedCard({ item, isAdmin, onEdit, onDelete, onTogglePin }: FeedCardProp
               <button
                 onClick={() => setExpanded(false)}
                 className="mt-3 text-xs text-neutral-400 hover:text-neutral-600 transition-colors flex items-center gap-1"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
+                              >
                 {t('collapse')} <ChevronDown className="w-3 h-3 rotate-180" />
               </button>
             </motion.div>
@@ -638,8 +625,7 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
           <button
             onClick={onBack}
             className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-800 transition-colors"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             <ArrowLeft className="w-3.5 h-3.5" />
             {t('feedBackBtn')}
           </button>
@@ -654,8 +640,7 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-7 pr-3 py-1.5 text-xs rounded-md border border-neutral-200 text-neutral-700 placeholder:text-neutral-400 outline-none focus:border-neutral-300 transition-colors w-44"
-                style={{ fontFamily: 'var(--font-body)' }}
-              />
+                              />
             </div>
 
             {/* Refresh */}
@@ -688,14 +673,12 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
           <div className="text-4xl mb-4">📢</div>
           <h1
             className="text-3xl font-semibold text-neutral-900 mb-3 leading-tight"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {t('feedTitle')}
           </h1>
           <p
             className="text-sm text-neutral-500 max-w-lg leading-relaxed"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {t('feedSubtitle')}
           </p>
 
@@ -708,8 +691,7 @@ export default function FeedPage({ onBack }: { onBack: () => void }) {
                   ? 'bg-neutral-800 text-white border-transparent'
                   : 'border-neutral-200 text-neutral-500 hover:border-neutral-300 hover:text-neutral-700'
               }`}
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {t('feedAll')}{' '}
               <span className="ml-1 opacity-70">{items.length}</span>
             </button>

@@ -145,8 +145,7 @@ function ToggleBlock({ title, children }: { title: string; children: React.React
       <button
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left transition-colors duration-150 hover:bg-[#F5EBE0] group"
-        style={{ fontFamily: 'var(--font-body)' }}
-      >
+              >
         <motion.span
           animate={{ rotate: open ? 90 : 0 }}
           transition={{ duration: 0.18, ease: 'easeOut' }}
@@ -203,14 +202,12 @@ function ConceptsSection({ concepts }: { concepts: string[] }) {
         <span className="text-sm">🗂️</span>
         <h3
           className="text-sm font-semibold text-neutral-800"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           Khái niệm trong bài học
         </h3>
         <span
           className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F5EBE0] text-[#C5A880]"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           {concepts.length} khái niệm
         </span>
       </div>
@@ -461,21 +458,18 @@ export default function InteractiveLessonPage({
         </div>
         <h2
           className="text-xl font-semibold text-neutral-800 mb-2"
-          style={{ fontFamily: 'var(--font-heading)' }}
-        >
+                  >
           Bài học chưa mở khóa
         </h2>
         <p
           className="text-sm text-neutral-500 mb-6 max-w-md mx-auto"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           Hãy hoàn thành bài quiz của bài học trước đó với mức làm chủ (Mastery) để mở khóa bài học này.
         </p>
         <button
           onClick={onBack}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 transition-colors"
-          style={{ fontFamily: 'var(--font-body)' }}
-        >
+                  >
           <ArrowLeft className="w-4 h-4" /> {t('feedBackBtn')}
         </button>
       </div>
@@ -496,16 +490,14 @@ export default function InteractiveLessonPage({
           <button
             onClick={onBack}
             className="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-neutral-800 transition-colors"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             <ArrowLeft className="w-3.5 h-3.5" />
             {t('feedBackBtn')}
           </button>
           <div className="flex items-center gap-2">
             <span
               className="text-xs font-medium px-2 py-1 rounded bg-[#F5EBE0] text-[#C5A880]"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               Lesson {lesson.order}
             </span>
           </div>
@@ -517,14 +509,12 @@ export default function InteractiveLessonPage({
         <div className="max-w-7xl mx-auto px-6 py-4">
           <h1
             className="text-xl font-semibold text-neutral-800 leading-tight"
-            style={{ fontFamily: 'var(--font-heading)' }}
-          >
+                      >
             {lesson.title}
           </h1>
           <p
             className="text-sm text-neutral-500 mt-1"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
+                      >
             {lesson.description}
           </p>
         </div>
@@ -548,8 +538,7 @@ export default function InteractiveLessonPage({
                         ? 'bg-[#F5EBE0] text-neutral-800'
                         : 'text-neutral-400 hover:text-neutral-600'
                     }`}
-                    style={{ fontFamily: 'var(--font-body)' }}
-                  >
+                                      >
                     <Icon className="w-3.5 h-3.5" />
                     {tab.label}
                   </button>
@@ -566,8 +555,7 @@ export default function InteractiveLessonPage({
                 <Video className="w-4 h-4 text-neutral-400" />
                 <h2
                   className="text-sm font-semibold text-neutral-700"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
+                                  >
                   {t('lesson_videoLecture')}
                 </h2>
               </div>
@@ -627,8 +615,7 @@ export default function InteractiveLessonPage({
                 <BookOpen className="w-4 h-4 text-neutral-400" />
                 <h2
                   className="text-sm font-semibold text-neutral-700"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
+                                  >
                   {t('lesson_readingMaterial')}
                 </h2>
               </div>
@@ -639,8 +626,7 @@ export default function InteractiveLessonPage({
               {/* Lesson content */}
               <div
                 className="rounded-lg border border-neutral-100 bg-white p-5"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
+                              >
                 <LessonContent markdown={lesson.content} />
               </div>
             </section>
@@ -667,8 +653,7 @@ export default function InteractiveLessonPage({
                 <FileText className="w-4 h-4 text-neutral-400" />
                 <h2
                   className="text-sm font-semibold text-neutral-700"
-                  style={{ fontFamily: 'var(--font-heading)' }}
-                >
+                                  >
                   {t('lesson_yourNotes')}
                 </h2>
               </div>
@@ -676,8 +661,7 @@ export default function InteractiveLessonPage({
                 <button
                   onClick={handleAddTimestamp}
                   className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-md border border-neutral-200 text-neutral-600 hover:bg-neutral-50 hover:border-neutral-300 transition-colors"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
+                                  >
                   <Plus className="w-3 h-3" />
                   {t('lesson_addTimestamp').slice(2)}
                 </button>
@@ -694,8 +678,7 @@ export default function InteractiveLessonPage({
             {/* Timestamp hint */}
             <p
               className="text-[10px] text-neutral-400 mb-3"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               {t('lesson_timestampHint')}
             </p>
 
@@ -755,8 +738,7 @@ export default function InteractiveLessonPage({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 8 }}
                   className="mt-2 flex items-center gap-2 text-xs text-red-500"
-                  style={{ fontFamily: 'var(--font-body)' }}
-                >
+                                  >
                   <AlertCircle className="w-3 h-3" />
                   {saveError}
                 </motion.div>
@@ -772,15 +754,13 @@ export default function InteractiveLessonPage({
           <div className="flex items-center justify-between mb-3">
             <h3
               className="text-sm font-semibold text-neutral-700"
-              style={{ fontFamily: 'var(--font-heading)' }}
-            >
+                          >
               {t('lesson_yourNotes')}
             </h3>
             <button
               onClick={handleAddTimestamp}
               className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-md border border-neutral-200 text-neutral-600"
-              style={{ fontFamily: 'var(--font-body)' }}
-            >
+                          >
               <Plus className="w-3 h-3" />
               Timestamp
             </button>
@@ -884,8 +864,7 @@ function TimestampClickLayer({
   return (
     <div
       className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg"
-      style={{ fontFamily: 'var(--font-body)' }}
-    >
+          >
       <div
         className="absolute inset-0 p-4 text-sm whitespace-pre-wrap break-words overflow-hidden opacity-0 select-none"
         style={{ lineHeight: '1.75' }}
