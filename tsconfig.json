@@ -22,5 +22,16 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "src",
+    "server.ts",
+    "vite.config.ts",
+    "index.html",
+    "metadata.json",
+    "data-cacao.json"
+  ]
 }

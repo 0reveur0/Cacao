@@ -234,8 +234,8 @@ export default function DashboardPage({
                 fontFamily: 'var(--font-body)',
               }}
             >
-              <span className="text-sm">{locale === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
-              {locale === 'vi' ? 'VI' : 'EN'}
+              <span className="text-sm">{locale === 'vi' ? 'VI' : 'EN'}</span>
+              {locale === 'vi' ? 'Tiếng Việt' : 'English'}
             </button>
           </div>
         </div>

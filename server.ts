@@ -37,47 +37,8 @@ if (isRealApiKey) {
     console.error("Cacao AI Client: failed to initialize.", err);
   }
 } else {
-  console.log("Cacao AI Client: Running in simulation mode (No valid GEMINI_API_KEY detected). Ready with beautiful pre-baked diagnostics.");
+  console.log("Cacao AI Client: Running in simulation mode (No valid GEMINI_API_KEY detected). Ready with local diagnostics.");
 }
-
-// Initialize local self-hosted data client
-const createLocalSupabaseClient = () => {
-  const tables: Record<string, Array<Record<string, unknown>>> = {
-    profiles: [],
-    submissions: [],
-    assignments: [],
-    discussions: [],
-    announcements: [],
-  };
-
-  const createQueryBuilder = (table: string) => {
-    const query: any = {
-      table,
-      select: () => query,
-      eq: () => query,
-      order: () => query,
-      limit: () => query,
-      maybeSingle: async () => ({ data: tables[table]?.[0] ?? null, error: null }),
-      single: async () => ({ data: tables[table]?.[0] ?? null, error: null }),
-      insert: async (payload: unknown) => {
-        const values = Array.isArray(payload) ? payload : [payload];
-        tables[table] = [...(tables[table] || []), ...values] as Array<Record<string, unknown>>;
-        return { data: values, error: null };
-      },
-      update: async () => ({ data: tables[table] || [], error: null }),
-      delete: async () => ({ data: tables[table] || [], error: null }),
-    };
-
-    return query;
-  };
-
-  return {
-    from: (table: string) => createQueryBuilder(table),
-    removeChannel: () => undefined,
-  };
-};
-
-const supabaseClient = createLocalSupabaseClient();
 
 // ===== AI DIAGNOSTIC SERVICE =====
 // Pedagogical System Prompt for Descriptive Feedback
@@ -1039,72 +1000,9 @@ app.post("/api/submissions", async (req, res) => {
     passed
   );
 
-  // Save to Supabase if available
+  // Save only to local progress state. Self-hosted architecture does not rely on Supabase.
   let submissionId = `sub-${Date.now()}`;
-  if (supabaseClient) {
-    try {
-      const { data: submission, error: subError } = await supabaseClient
-        .from('submissions')
-        .insert({
-          user_id: userId,
-          profile_id: profileId || userId,
-          lesson_id: lessonId,
-          content: content || JSON.stringify(answers),
-          submission_type: 'quiz',
-          status: 'REVIEWED',
-          answers: answers,
-          score: score,
-          passed: passed
-        })
-        .select('id')
-        .single();
 
-      if (!subError && submission) {
-        submissionId = submission.id;
-
-        // Save feedback
-        await supabaseClient
-          .from('feedback')
-          .insert({
-            submission_id: submissionId,
-            user_id: userId,
-            greeting: aiFeedback.greeting,
-            positive_points: aiFeedback.positive_points,
-            gap_analysis: aiFeedback.gap_analysis,
-            action_plan: aiFeedback.action_plan,
-            encouragement: aiFeedback.encouragement,
-            model_used: aiClient ? 'gemini-2.0-flash' : 'local-simulation'
-          });
-
-        // Save quiz attempt for mastery tracking
-        const existingAttempts = await supabaseClient
-          .from('quiz_attempts')
-          .select('id')
-          .eq('user_id', userId)
-          .eq('lesson_id', lessonId);
-
-        const attemptNumber = (existingAttempts.data?.length || 0) + 1;
-
-        await supabaseClient
-          .from('quiz_attempts')
-          .insert({
-            user_id: userId,
-            quiz_id: lessonId,
-            lesson_id: lessonId,
-            answers: answers || {},
-            score: score,
-            total_questions: totalQuestions,
-            percentage: percentage,
-            passed: passed,
-            attempt_number: attemptNumber
-          });
-      }
-    } catch (err) {
-      console.error("Error saving to Supabase:", err);
-    }
-  }
-
-  // Also update local progress
   if (!state.progress.attempts[lessonId]) {
     state.progress.attempts[lessonId] = [];
   }
@@ -1155,23 +1053,7 @@ app.post("/api/submissions", async (req, res) => {
 app.get("/api/submissions/:submissionId/feedback", async (req, res) => {
   const { submissionId } = req.params;
 
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('feedback')
-        .select('*')
-        .eq('submission_id', submissionId)
-        .single();
-
-      if (!error && data) {
-        return res.json({ success: true, feedback: data });
-      }
-    } catch (err) {
-      console.error("Error fetching from Supabase:", err);
-    }
-  }
-
-  // Fallback to local state
+  // Self-hosted fallback: read directly from local state without external storage.
   const state = loadState();
   let foundFeedback = null;
 
@@ -1198,29 +1080,7 @@ app.get("/api/submissions/:submissionId/feedback", async (req, res) => {
 app.get("/api/submissions", async (req, res) => {
   const { userId, lessonId } = req.query;
 
-  if (supabaseClient && userId) {
-    try {
-      let query = supabaseClient
-        .from('submissions')
-        .select('*, feedback(*)')
-        .eq('user_id', userId as string)
-        .order('created_at', { ascending: false });
-
-      if (lessonId) {
-        query = query.eq('lesson_id', lessonId as string);
-      }
-
-      const { data, error } = await query;
-
-      if (!error && data) {
-        return res.json({ success: true, submissions: data });
-      }
-    } catch (err) {
-      console.error("Error fetching submissions:", err);
-    }
-  }
-
-  // Fallback to local state
+  // Self-hosted fallback: return stored attempts from local state.
   const state = loadState();
   const allAttempts: any[] = [];
 
@@ -1256,35 +1116,7 @@ app.get("/api/admin/metrics", requireAdminKey, async (req, res) => {
   const state = loadState();
   const lessonCount = state.lessons.length;
 
-  if (supabaseClient) {
-    try {
-      const [profilesRes, submissionsRes, scheduleRes] = await Promise.all([
-        supabaseClient.from("profiles").select("id, role", { count: "exact" }),
-        supabaseClient
-          .from("submissions")
-          .select("id", { count: "exact" })
-          .eq("status", "PENDING"),
-        supabaseClient
-          .from("schedule_events")
-          .select("id", { count: "exact" }),
-      ]);
-
-      const totalStudents =
-        (profilesRes.data ?? []).filter((p: any) => p.role === "STUDENT").length;
-      const pendingSubmissions = submissionsRes.count ?? 0;
-
-      return res.json({
-        totalStudents,
-        activeCourses: lessonCount,
-        pendingSubmissions,
-        revenueThisMonth: 0,
-      });
-    } catch (err) {
-      console.error("Admin metrics error:", err);
-    }
-  }
-
-  // Fallback
+  // Self-hosted metrics: use local state only.
   res.json({
     totalStudents: 0,
     activeCourses: lessonCount,
@@ -1294,20 +1126,8 @@ app.get("/api/admin/metrics", requireAdminKey, async (req, res) => {
 });
 
 // GET /api/admin/users
-app.get("/api/admin/users", requireAdminKey, async (req, res) => {
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("id, name, role, avatar_url, created_at, updated_at")
-        .order("created_at", { ascending: false });
-      if (!error && data) {
-        return res.json({ success: true, users: data });
-      }
-    } catch (err) {
-      console.error("Admin users error:", err);
-    }
-  }
+app.get("/api/admin/users", requireAdminKey, async (_req, res) => {
+  // Self-hosted admin users endpoint returns a placeholder empty list.
   res.json({ success: true, users: [] });
 });
 
@@ -1319,23 +1139,8 @@ app.patch("/api/admin/users/:id/role", requireAdminKey, async (req, res) => {
   if (!validRoles.includes(role)) {
     return res.status(400).json({ error: "Invalid role" });
   }
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient
-        .from("profiles")
-        .update({ role, updated_at: new Date().toISOString() })
-        .eq("id", id)
-        .select()
-        .maybeSingle();
-      if (!error && data) {
-        return res.json({ success: true, user: data });
-      }
-      if (error) return res.status(500).json({ error: error.message });
-    } catch (err) {
-      console.error("Admin patch role error:", err);
-    }
-  }
-  res.status(404).json({ error: "User not found or Supabase unavailable" });
+  // Self-hosted admin role update not implemented in this demo backend.
+  res.status(404).json({ error: "User not found" });
 });
 
 // PATCH /api/admin/users/:id/status
@@ -1384,34 +1189,8 @@ app.get("/api/admin/courses/tree", requireAdminKey, async (req, res) => {
 });
 
 // GET /api/admin/billing
-app.get("/api/admin/billing", requireAdminKey, async (req, res) => {
-  if (supabaseClient) {
-    try {
-      // Join profiles with a mock billing view from submissions as proxy
-      const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("id, name, created_at, role")
-        .order("created_at", { ascending: false })
-        .limit(50);
-      if (!error && data) {
-        const ledger = data.map((u: any, i: number) => ({
-          id: u.id,
-          studentName: u.name,
-          invoiceRef: `INV-${String(i + 1).padStart(4, "0")}`,
-          amount: 990000,
-          currency: "VND",
-          status: i % 5 === 4 ? "OVERDUE" : i % 3 === 0 ? "PENDING" : "PAID",
-          dueDate: new Date(
-            new Date(u.created_at).getTime() + 30 * 24 * 60 * 60 * 1000
-          ).toISOString(),
-          createdAt: u.created_at,
-        }));
-        return res.json({ success: true, ledger });
-      }
-    } catch (err) {
-      console.error("Admin billing error:", err);
-    }
-  }
+app.get("/api/admin/billing", requireAdminKey, async (_req, res) => {
+  // Self-hosted billing endpoint currently returns empty ledger for the demo.
   res.json({ success: true, ledger: [] });
 });
 
@@ -1421,23 +1200,7 @@ app.get("/api/admin/billing", requireAdminKey, async (req, res) => {
 app.get("/api/assignments", async (req, res) => {
   const { userId } = req.query;
 
-  if (supabaseClient && userId) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('assignments')
-        .select('*')
-        .eq('user_id', userId as string)
-        .order('due_date', { ascending: true });
-
-      if (!error && data) {
-        return res.json({ success: true, assignments: data });
-      }
-    } catch (err) {
-      console.error("Error fetching assignments:", err);
-    }
-  }
-
-  // Return mock assignments if no Supabase data
+  // Self-hosted fallback: return demo assignments directly.
   res.json({ success: true, assignments: [] });
 });
 
@@ -1445,22 +1208,7 @@ app.get("/api/assignments", async (req, res) => {
 app.get("/api/assignments/:id", async (req, res) => {
   const { id } = req.params;
 
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('assignments')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (!error && data) {
-        return res.json({ success: true, assignment: data });
-      }
-    } catch (err) {
-      console.error("Error fetching assignment:", err);
-    }
-  }
-
+  // Self-hosted fallback: no external assignments storage.
   res.status(404).json({ error: "Assignment not found" });
 });
 
@@ -1469,30 +1217,7 @@ app.post("/api/assignments/:id/submit", async (req, res) => {
   const { id } = req.params;
   const { userId, content, files } = req.body;
 
-  if (supabaseClient && userId) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('assignments')
-        .update({
-          status: 'UNDER_REVIEW',
-          content: content,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', id)
-        .eq('user_id', userId)
-        .select()
-        .single();
-
-      if (!error && data) {
-        // Optionally trigger AI feedback generation here
-        return res.json({ success: true, assignment: data });
-      }
-    } catch (err) {
-      console.error("Error submitting assignment:", err);
-    }
-  }
-
-  // Fallback: return success for demo
+  // Self-hosted fallback: return success for demo.
   res.json({
     success: true,
     assignment: {
@@ -1513,24 +1238,7 @@ app.patch("/api/assignments/:id/status", async (req, res) => {
     return res.status(400).json({ error: "Invalid status" });
   }
 
-  if (supabaseClient && userId) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('assignments')
-        .update({ status, updated_at: new Date().toISOString() })
-        .eq('id', id)
-        .eq('user_id', userId)
-        .select()
-        .single();
-
-      if (!error && data) {
-        return res.json({ success: true, assignment: data });
-      }
-    } catch (err) {
-      console.error("Error updating assignment status:", err);
-    }
-  }
-
+  // Self-hosted fallback: return success for status update.
   res.json({ success: true, id, status });
 });
 
@@ -1565,29 +1273,6 @@ app.post("/api/assignments", async (req, res) => {
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
-
-  if (supabaseClient) {
-    try {
-      // If target_users provided, create assignments for each
-      const users = target_users && target_users.length > 0 ? target_users : [userId];
-
-      const assignments = users.map((uid: string) => ({
-        ...assignmentData,
-        user_id: uid,
-      }));
-
-      const { data, error } = await supabaseClient
-        .from('assignments')
-        .insert(assignments)
-        .select();
-
-      if (!error && data) {
-        return res.json({ success: true, assignments: data });
-      }
-    } catch (err) {
-      console.error("Error creating assignments:", err);
-    }
-  }
 
   res.json({ success: true, assignment: assignmentData });
 });

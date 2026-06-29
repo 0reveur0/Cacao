@@ -73,7 +73,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const authUser = { id: data.user?.id ?? email, email, name, role } as AuthUser;
-      persistSession(data.token ?? 'local-session', authUser, data.profile ?? { id: authUser.id, email, name, role, locale: 'vi' } as Profile);
+      persistSession(data.token ?? 'local-session', authUser, data.profile ?? {
+        id: authUser.id,
+        email,
+        name,
+        role,
+        locale: 'vi',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as Profile);
       return { error: null };
     } catch (err) {
       return { error: err as Error };
@@ -94,7 +102,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const authUser = { id: data.user?.id ?? email, email, name: data.user?.name ?? email, role: data.user?.role ?? 'STUDENT' } as AuthUser;
-      persistSession(data.token ?? 'local-session', authUser, data.profile ?? { id: authUser.id, email, name: authUser.name, role: authUser.role, locale: 'vi' } as Profile);
+      persistSession(data.token ?? 'local-session', authUser, data.profile ?? {
+        id: authUser.id,
+        email,
+        name: authUser.name,
+        role: authUser.role,
+        locale: 'vi',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as Profile);
       return { error: null };
     } catch (err) {
       return { error: err as Error };

@@ -55,9 +55,12 @@ samp,
 .font-heading,
 .font-body,
 .font-title,
-.font-sans-grotesk,
 ::placeholder {
   font-family: var(--font-elms-sans);
+}
+
+.font-sans {
+  font-family: var(--font-elms-sans) !important;
 }
 
 /* Notion-style minimal scrollbar */
