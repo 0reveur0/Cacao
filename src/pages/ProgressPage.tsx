@@ -610,7 +610,7 @@ export default function ProgressPage({ onBack }: { onBack: () => void }) {
             className="text-[11px] font-medium px-2 py-1 rounded"
             style={{ backgroundColor: '#F5EBE0', color: '#C5A880', fontFamily: 'var(--font-body)' }}
           >
-            ☕ Cacao
+            <span className="text-sm font-medium">Cacao</span>
           </span>
         </div>
       </header>

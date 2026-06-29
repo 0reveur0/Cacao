@@ -7,7 +7,7 @@ import { useState, type FormEvent, type CSSProperties, type ReactNode } from 're
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { UserRole } from '../types';
-import { Mail, Lock, Eye, EyeOff, User, GraduationCap, BookOpen, Shield } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, GraduationCap, BookOpen, Shield, Coffee, CheckCircle2 } from 'lucide-react';
 
 interface RegisterPageProps {
   onNavigateToLogin: () => void;
@@ -71,7 +71,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             className="inline-flex items-center justify-center w-12 h-12 rounded-lg mb-5"
             style={{ backgroundColor: '#E2F0D9' }}
           >
-            <span className="text-2xl">✓</span>
+            <CheckCircle2 className="h-6 w-6" strokeWidth={1.5} />
           </div>
           <h1
             className="text-xl font-semibold mb-2"
@@ -122,7 +122,7 @@ export default function RegisterPage({ onNavigateToLogin }: RegisterPageProps) {
             className="w-7 h-7 rounded flex items-center justify-center text-base"
             style={{ backgroundColor: '#F5EBE0' }}
           >
-            ☕
+            <Coffee className="h-4 w-4" strokeWidth={1.5} />
           </span>
           <span
             className="text-sm font-semibold"

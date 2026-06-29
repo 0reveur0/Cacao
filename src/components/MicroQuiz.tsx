@@ -304,7 +304,7 @@ function ResultBanner({
           transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
           className="text-4xl mb-3"
         >
-          {passed ? '🌟' : '💪'}
+          {passed ? '✓' : '•'}
         </motion.div>
 
         <h3 className="text-lg font-semibold text-neutral-800 mb-1.5">

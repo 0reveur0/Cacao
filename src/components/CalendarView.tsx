@@ -20,9 +20,23 @@ import {
 import { vi } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { ScheduleEvent, ScheduleEventType } from '../types';
+
+function readStoredEvents(userId: string): ScheduleEvent[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = window.localStorage.getItem(`cacao:events:${userId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeStoredEvents(userId: string, events: ScheduleEvent[]) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(`cacao:events:${userId}`, JSON.stringify(events));
+}
 
 // ─── Seed mock events relative to today so the calendar is never empty ────────
 function buildSeedEvents(userId: string): Omit<ScheduleEvent, 'id' | 'created_at'>[] {
@@ -231,27 +245,26 @@ export default function CalendarView() {
     if (!user) return;
     const monthStart = startOfMonth(currentMonth).toISOString();
     const monthEnd = endOfMonth(currentMonth).toISOString();
-    const { data, error } = await supabase
-      .from('schedule_events')
-      .select('*')
-      .eq('user_id', user.id)
-      .gte('start_date', monthStart)
-      .lte('start_date', monthEnd)
-      .order('start_date', { ascending: true });
-    if (!error && data) setEvents(data as ScheduleEvent[]);
+    const stored = readStoredEvents(user.id);
+    const monthEvents = stored
+      .filter((event) => event.user_id === user.id)
+      .filter((event) => event.start_date >= monthStart && event.start_date <= monthEnd)
+      .sort((a, b) => a.start_date.localeCompare(b.start_date));
+    setEvents(monthEvents);
     setLoading(false);
   }, [user, currentMonth]);
 
   // Seed events on first load if none exist
   const seedIfEmpty = useCallback(async () => {
     if (!user) return;
-    const { count } = await supabase
-      .from('schedule_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', user.id);
-    if ((count ?? 0) === 0) {
-      const seeds = buildSeedEvents(user.id);
-      await supabase.from('schedule_events').insert(seeds);
+    const stored = readStoredEvents(user.id);
+    if (stored.length === 0) {
+      const seeds = buildSeedEvents(user.id).map((event, index) => ({
+        ...event,
+        id: `seed-${index + 1}`,
+        created_at: new Date().toISOString(),
+      })) as ScheduleEvent[];
+      writeStoredEvents(user.id, seeds);
     }
   }, [user]);
 
@@ -262,14 +275,15 @@ export default function CalendarView() {
   const handleSaveEvent = async (
     ev: Omit<ScheduleEvent, 'id' | 'created_at'>
   ) => {
-    const { data, error } = await supabase
-      .from('schedule_events')
-      .insert(ev)
-      .select()
-      .single();
-    if (!error && data) {
-      setEvents((prev) => [...prev, data as ScheduleEvent]);
-    }
+    if (!user) return;
+    const created: ScheduleEvent = {
+      id: `event-${Date.now()}`,
+      created_at: new Date().toISOString(),
+      ...ev,
+    };
+    const next = [...readStoredEvents(user.id), created];
+    writeStoredEvents(user.id, next);
+    setEvents((prev) => [...prev, created]);
   };
 
   // Build calendar grid

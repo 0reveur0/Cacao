@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, BookOpen, Video, ListChecks, ChevronRight } from 'lucide-react';
+import { ArrowLeft, BookOpen, Video, ListChecks, ChevronRight, FolderOpenDot, LockKeyhole, NotebookPen } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import CustomVideoPlayer from './CustomVideoPlayer';
 import MicroQuiz from './MicroQuiz';
@@ -82,7 +82,7 @@ function ConceptsSection({ concepts }: { concepts: string[] }) {
   return (
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-sm">🗂️</span>
+        <FolderOpenDot className="h-4 w-4" strokeWidth={1.5} />
         <h3
           className="text-sm font-semibold text-neutral-800"
                   >
@@ -121,7 +121,7 @@ export default function LessonDetailPage({
     return (
       <div className="max-w-3xl mx-auto px-6 py-16 text-center">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-neutral-100 mb-4">
-          <span className="text-2xl">🔒</span>
+          <LockKeyhole className="h-7 w-7" strokeWidth={1.5} />
         </div>
         <h2
           className="text-xl font-semibold text-neutral-800 mb-2"
@@ -250,7 +250,7 @@ export default function LessonDetailPage({
             />
           ) : (
             <div className="rounded-xl border border-neutral-200 bg-white p-10 text-center">
-              <span className="text-2xl block mb-3">📝</span>
+              <NotebookPen className="mx-auto mb-3 h-7 w-7" strokeWidth={1.5} />
               <p
                 className="text-sm text-neutral-500"
                               >

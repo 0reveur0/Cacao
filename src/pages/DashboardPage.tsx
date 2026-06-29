@@ -100,12 +100,14 @@ export default function DashboardPage({
   onNavigateToAssignments,
   onNavigateToProgress,
   onNavigateToDiscussions,
+  onNavigateToSettings,
 }: {
   onNavigateToAdmin?: () => void;
   onNavigateToFeed?: () => void;
   onNavigateToAssignments?: () => void;
   onNavigateToProgress?: () => void;
   onNavigateToDiscussions?: () => void;
+  onNavigateToSettings?: () => void;
 }) {
   const { profile } = useAuth();
   const { lessons, quizzes, roadmap, progress, loading, onQuizComplete } = useProgress();
@@ -281,7 +283,7 @@ export default function DashboardPage({
                       onClick={onNavigateToAdmin}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-[#9A6A2A] bg-[#FEF4E8] hover:bg-[#F5EBE0] transition-all duration-200 ease-in-out"
                                           >
-                      <span className="text-sm">⚙️</span>
+                      <span className="text-sm">•</span>
                       {t('adminWorkspace')}
                     </button>
                   )}
@@ -296,6 +298,17 @@ export default function DashboardPage({
                         </svg>
                       </span>
                       {t('feedLink')}
+                    </button>
+                  )}
+                  {onNavigateToSettings && (
+                    <button
+                      onClick={onNavigateToSettings}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-neutral-600 hover:bg-[#F1F1EF] hover:text-neutral-800 transition-colors duration-100"
+                    >
+                      <span className="text-neutral-400">
+                        <Settings className="w-3.5 h-3.5" />
+                      </span>
+                      {t('nav_settings')}
                     </button>
                   )}
                   {onNavigateToAssignments && (
@@ -461,7 +474,7 @@ export default function DashboardPage({
                         onClick={() => setGoalDismissed(true)}
                         className="text-[#C5A254] hover:text-[#9B7A00] text-xs ml-1 flex-shrink-0 transition-colors"
                       >
-                        ✕
+                        ×
                       </button>
                     </motion.div>
                   )}
@@ -641,7 +654,7 @@ export default function DashboardPage({
                   style={{ backgroundColor: '#FFFDF8' }}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="text-lg">☕</span>
+                    <span className="text-lg">•</span>
                     <div>
                       <p
                         className="text-xs font-semibold text-neutral-600 mb-0.5"

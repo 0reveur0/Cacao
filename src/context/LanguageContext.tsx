@@ -11,11 +11,11 @@ export type Locale = 'vi' | 'en';
 export const translations = {
   vi: {
     // Welcome block
-    welcome:            '👋 Chào {name}! Thong thả học nhé.',
-    welcomeGuest:       '👋 Chào bạn! Thong thả học nhé.',
+    welcome:            'Chào {name}! Thong thả học nhé.',
+    welcomeGuest:       'Chào bạn! Thong thả học nhé.',
     subWelcome:         'Hôm nay có {count} bài học đang chờ bạn.',
     subWelcomeSingle:   'Hôm nay bạn có một bài học mới và một bài tập cần hoàn thiện.',
-    goalTitle:          '💡 Mục tiêu: Học thấu, không học vẹt',
+    goalTitle:          'Mục tiêu: Học thấu, không học vẹt',
     goalBody:           'Không áp lực điểm số, không so kè. Bạn học cho đến khi thực sự hiểu — rồi mới tiến bước tiếp.',
 
     // Status labels
@@ -138,7 +138,7 @@ export const translations = {
     progress_pageTitle:    'Lộ trình học tập của bạn',
     progress_pageSubtitle: 'Học sâu, hiểu thấu. Hoàn thành bài trắc nghiệm ngắn với kết quả từ 80% trở lên để mở khóa chủ đề tiếp theo.',
     progress_scoreLabel:   'Kết quả của bạn:',
-    progress_passMessage:  '🎉 Tuyệt vời! Bạn đã nắm chắc kiến thức và có thể tiếp tục.',
+    progress_passMessage:  'Tuyệt vời! Bạn đã nắm chắc kiến thức và có thể tiếp tục.',
     progress_failMessage:  'Chúng mình cùng xem lại sổ tay và thử lại khi bạn đã sẵn sàng nhé.',
     progress_btnSubmit:    'Gửi bài làm',
     progress_statusLocked: 'Chưa mở khóa',
@@ -189,7 +189,7 @@ export const translations = {
     assignmentSubmit:       'Nộp bài tập',
     assignmentDragDrop:     'Kéo thả file vào đây hoặc nhấn để tải lên',
     assignmentUploadHint:   'Hỗ trợ PDF, TXT, ZIP (tối đa 10MB)',
-    assignmentUploadBtn:    '📎 Tải lên tệp bài làm',
+    assignmentUploadBtn:    'Tải lên tệp bài làm',
     assignmentViewFeedback: 'Xem nhận xét từ AI/Mentor',
     assignmentNoFeedback:   'Chưa có phản hồi',
     assignmentPendingReview:'Đang chờ chấm...',
@@ -272,11 +272,11 @@ export const translations = {
 
   en: {
     // Welcome block
-    welcome:            '👋 Hi, {name}! Take your time.',
-    welcomeGuest:       '👋 Hi there! Take your time.',
+    welcome:            'Hi, {name}! Take your time.',
+    welcomeGuest:       'Hi there! Take your time.',
     subWelcome:         'You have {count} lesson(s) waiting for you.',
     subWelcomeSingle:   'You have 1 new lesson and 1 assignment to complete today.',
-    goalTitle:          '💡 Core Goal: Master it, don\'t just memorize',
+    goalTitle:          'Core Goal: Master it, don\'t just memorize',
     goalBody:           'No grade pressure, no competition. Learn until you truly understand — then move on.',
 
     // Status labels
@@ -399,7 +399,7 @@ export const translations = {
     progress_pageTitle:    'Your Learning Roadmap',
     progress_pageSubtitle: 'Master the core. Complete the short quiz with a score of 80% or higher to unlock the next topic.',
     progress_scoreLabel:   'Your score:',
-    progress_passMessage:  '🎉 Great job! You have mastered this topic and can move forward.',
+    progress_passMessage:  'Great job! You have mastered this topic and can move forward.',
     progress_failMessage:  "Let's review the notes and try again when you are ready.",
     progress_btnSubmit:    'Submit answers',
     progress_statusLocked: 'Locked',
@@ -450,7 +450,7 @@ export const translations = {
     assignmentSubmit:       'Submit Assignment',
     assignmentDragDrop:     'Drag & drop file here or click to upload',
     assignmentUploadHint:   'Supports PDF, TXT, ZIP (max 10MB)',
-    assignmentUploadBtn:    '📎 Upload Assignment File',
+    assignmentUploadBtn:    'Upload Assignment File',
     assignmentViewFeedback: 'View AI/Mentor Feedback',
     assignmentNoFeedback:   'No feedback yet',
     assignmentPendingReview:'Pending review...',
@@ -541,6 +541,7 @@ interface LanguageContextType {
   locale: Locale;
   t: (key: TranslationKey, vars?: Record<string, string | number>) => string;
   toggle: () => void;
+  setLocale: (nextLocale: Locale) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | null>(null);
@@ -561,9 +562,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const toggle = () => setLocale((l) => (l === 'vi' ? 'en' : 'vi'));
+  const setLocaleValue = (nextLocale: Locale) => setLocale(nextLocale);
 
   return (
-    <LanguageContext.Provider value={{ locale, t, toggle }}>
+    <LanguageContext.Provider value={{ locale, t, toggle, setLocale: setLocaleValue }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -90,7 +90,7 @@ export default function PomodoroTimer({
                   : 'text-neutral-400 hover:text-neutral-600'
               }`}
             >
-              {m === 'focus' ? '☕ Focus' : '🌿 Break'}
+              {m === 'focus' ? 'Focus' : 'Break'}
             </button>
           ))}
         </div>

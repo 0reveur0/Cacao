@@ -3,15 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../lib/supabase';
-import { Profile, UserRole } from '../types';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { type Profile, type UserRole } from '../types';
+
+interface AuthUser {
+  id: string;
+  email: string;
+  name?: string;
+  role?: UserRole;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: AuthUser | null;
   profile: Profile | null;
-  session: Session | null;
+  session: { token: string } | null;
   loading: boolean;
   signUp: (email: string, password: string, name: string, role: UserRole) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -22,69 +27,53 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<{ token: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
-
-    if (error) {
-      console.error('Error fetching profile:', error);
-      return null;
+  const persistSession = (token: string, authUser: AuthUser, profileData: Profile | null) => {
+    localStorage.setItem('cacao-auth-token', token);
+    localStorage.setItem('cacao-auth-user', JSON.stringify(authUser));
+    if (profileData) {
+      localStorage.setItem('cacao-auth-profile', JSON.stringify(profileData));
     }
-    return data as Profile | null;
+    setSession({ token });
+    setUser(authUser);
+    setProfile(profileData);
   };
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session: initialSession } }) => {
-      setSession(initialSession);
-      setUser(initialSession?.user ?? null);
-      if (initialSession?.user) {
-        const profileData = await fetchProfile(initialSession.user.id);
-        setProfile(profileData);
-      }
-      setLoading(false);
-    });
+    const storedToken = localStorage.getItem('cacao-auth-token');
+    const storedUser = localStorage.getItem('cacao-auth-user');
+    const storedProfile = localStorage.getItem('cacao-auth-profile');
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-      setSession(newSession);
-      setUser(newSession?.user ?? null);
-      if (newSession?.user) {
-        const profileData = await fetchProfile(newSession.user.id);
-        setProfile(profileData);
-      } else {
-        setProfile(null);
-      }
-      setLoading(false);
-    });
+    if (storedToken && storedUser) {
+      const parsedUser = JSON.parse(storedUser) as AuthUser;
+      const parsedProfile = storedProfile ? (JSON.parse(storedProfile) as Profile) : null;
+      setSession({ token: storedToken });
+      setUser(parsedUser);
+      setProfile(parsedProfile);
+    }
 
-    return () => subscription.unsubscribe();
+    setLoading(false);
   }, []);
 
   const signUp = async (email: string, password: string, name: string, role: UserRole) => {
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name,
-            role,
-          },
-        },
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name, role }),
       });
 
-      if (error) {
-        return { error: new Error(error.message) };
+      const data = await response.json();
+      if (!response.ok) {
+        return { error: new Error(data.message ?? 'Registration failed') };
       }
+
+      const authUser = { id: data.user?.id ?? email, email, name, role } as AuthUser;
+      persistSession(data.token ?? 'local-session', authUser, data.profile ?? { id: authUser.id, email, name, role, locale: 'vi' } as Profile);
       return { error: null };
     } catch (err) {
       return { error: err as Error };
@@ -93,14 +82,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) {
-        return { error: new Error(error.message) };
+      const data = await response.json();
+      if (!response.ok) {
+        return { error: new Error(data.message ?? 'Login failed') };
       }
+
+      const authUser = { id: data.user?.id ?? email, email, name: data.user?.name ?? email, role: data.user?.role ?? 'STUDENT' } as AuthUser;
+      persistSession(data.token ?? 'local-session', authUser, data.profile ?? { id: authUser.id, email, name: authUser.name, role: authUser.role, locale: 'vi' } as Profile);
       return { error: null };
     } catch (err) {
       return { error: err as Error };
@@ -108,25 +102,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin + '/dashboard',
-        },
-      });
-
-      if (error) {
-        return { error: new Error(error.message) };
-      }
-      return { error: null };
-    } catch (err) {
-      return { error: err as Error };
-    }
+    return { error: null };
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('cacao-auth-token');
+    localStorage.removeItem('cacao-auth-user');
+    localStorage.removeItem('cacao-auth-profile');
+    setSession(null);
+    setUser(null);
+    setProfile(null);
   };
 
   return (

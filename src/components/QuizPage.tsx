@@ -115,7 +115,7 @@ export default function QuizPage({
             style={{ backgroundColor: result.passed ? '#F0FDF4' : '#FFFFFF', borderColor: '#E5E5E5' }}
           >
             <span className="text-5xl mb-4 block">
-              {result.passed ? '🎉' : '💪'}
+              {result.passed ? '✓' : '•'}
             </span>
             <h2
               className="text-2xl font-semibold mb-2"

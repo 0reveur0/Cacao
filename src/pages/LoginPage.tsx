@@ -10,16 +10,16 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, Coffee, RefreshCw } from 'lucide-r
 // ─── Exact Translation Dictionary (No Modification) ─────────────────────────────
 const authI18n = {
   vi: {
-    loginTitle: 'Dang nhap vao khong gian hoc tap',
-    loginSubtitle: 'Nhap tai khoan Cacao cua ban de tiep tuc.',
-    emailLabel: 'Dia chi email',
-    emailPlaceholder: 'Nhap email cua ban...',
-    passwordLabel: 'Mat khau',
-    passwordPlaceholder: 'Nhap mat khau...',
-    btnSubmit: 'Tiep tuc bang email',
-    noAccount: 'Chua co tai khoan?',
-    btnRegister: 'Dang ky ngay',
-    errorInvalid: 'Email hoac mat khau khong chinh xac, vui long thu lai.',
+    loginTitle: 'Đăng nhập vào không gian học tập',
+    loginSubtitle: 'Nhập tài khoản Cacao của bạn để tiếp tục.',
+    emailLabel: 'Địa chỉ email',
+    emailPlaceholder: 'Nhập email của bạn...',
+    passwordLabel: 'Mật khẩu',
+    passwordPlaceholder: 'Nhập mật khẩu...',
+    btnSubmit: 'Tiếp tục bằng email',
+    noAccount: 'Chưa có tài khoản?',
+    btnRegister: 'Đăng ký ngay',
+    errorInvalid: 'Email hoặc mật khẩu không chính xác, vui lòng thử lại.',
     langSwitch: 'EN',
   },
   en: {

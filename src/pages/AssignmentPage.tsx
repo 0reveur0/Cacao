@@ -8,7 +8,6 @@ import { motion, AnimatePresence, Reorder } from 'motion/react';
 import { ArrowLeft, LayoutDashboard, List, Calendar, Clock, Upload, FileText, Check, CircleAlert as AlertCircle, MoveHorizontal as MoreHorizontal, Plus, Search, ListFilter as Filter, ChevronDown, ChevronRight, Trash2, CreditCard as Edit3, Send, X, Download, MessageSquare, Star, BookOpen, Code, PenTool, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { supabase } from '../lib/supabase';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type AssignmentStatus = 'TODO' | 'IN_PROGRESS' | 'UNDER_REVIEW' | 'COMPLETED';
@@ -57,9 +56,9 @@ interface AssignmentFeedback {
 
 // ─── Status & Priority Config ──────────────────────────────────────────────────
 const STATUS_CONFIG: Record<AssignmentStatus, { emoji: string; bg: string; text: string; dot: string; col: string }> = {
-  TODO:         { emoji: '📥', bg: '#F2F2F2', text: '#595959', dot: '#ADADAD', col: 'bg-neutral-100' },
-  IN_PROGRESS:  { emoji: '⏳', bg: '#FFF2CC', text: '#7F6000', dot: '#E6AC00', col: 'bg-amber-50' },
-  UNDER_REVIEW: { emoji: '🔍', bg: '#E0F2FE', text: '#0369A1', dot: '#0284C7', col: 'bg-sky-50' },
+  TODO:         { emoji: '•', bg: '#F2F2F2', text: '#595959', dot: '#ADADAD', col: 'bg-neutral-100' },
+  IN_PROGRESS:  { emoji: '•', bg: '#FFF2CC', text: '#7F6000', dot: '#E6AC00', col: 'bg-amber-50' },
+  UNDER_REVIEW: { emoji: '•', bg: '#E0F2FE', text: '#0369A1', dot: '#0284C7', col: 'bg-sky-50' },
   COMPLETED:    { emoji: '✓', bg: '#E2F0D9', text: '#385723', dot: '#385723', col: 'bg-emerald-50' },
 };
 
@@ -70,11 +69,11 @@ const PRIORITY_CONFIG: Record<AssignmentPriority, { bg: string; text: string }> 
 };
 
 const TYPE_CONFIG: Record<AssignmentType, { emoji: string; label_vi: string; label_en: string }> = {
-  ESSAY:    { emoji: '📝', label_vi: 'Luận văn', label_en: 'Essay' },
-  CODE:     { emoji: '💻', label_vi: 'Lập trình', label_en: 'Coding' },
-  PROJECT:  { emoji: '🚀', label_vi: 'Dự án', label_en: 'Project' },
-  QUIZ:     { emoji: '❓', label_vi: 'Trắc nghiệm', label_en: 'Quiz' },
-  RESEARCH: { emoji: '🔬', label_vi: 'Nghiên cứu', label_en: 'Research' },
+  ESSAY:    { emoji: '•', label_vi: 'Luận văn', label_en: 'Essay' },
+  CODE:     { emoji: '•', label_vi: 'Lập trình', label_en: 'Coding' },
+  PROJECT:  { emoji: '•', label_vi: 'Dự án', label_en: 'Project' },
+  QUIZ:     { emoji: '•', label_vi: 'Trắc nghiệm', label_en: 'Quiz' },
+  RESEARCH: { emoji: '•', label_vi: 'Nghiên cứu', label_en: 'Research' },
 };
 
 // ─── Mock Data Seeds ───────────────────────────────────────────────────────────
@@ -83,7 +82,7 @@ const MOCK_ASSIGNMENTS: Assignment[] = [
     id: 'asn-001',
     title: 'Phân tích Kiến trúc Microservices cho Hệ Thống Thương Mại Điện Tử',
     description: 'Thiết kế sơ đồ kiến trúc và viết báo cáo phân tích về cách chia nhỏ hệ thống monolithic thành microservices.',
-    instructions: `### 📋 Yêu cầu bài tập
+    instructions: `### Yêu cầu bài tập
 
 Bạn cần hoàn thành các phần sau:
 
@@ -101,10 +100,10 @@ Bạn cần hoàn thành các phần sau:
    - Viết một mini-producer/consumer demo sử dụng Kafka hoặc RabbitMQ
    - Ngôn ngữ: TypeScript hoặc Go
 
-### 📅 Hạn nộp
+### Hạn nộp
 Nộp trước 23:59 ngày hôm nay.
 
-### 📎 Định dạng
+### Định dạng
 - PDF cho báo cáo
 - ZIP cho source code (nếu có)`,
     subject: 'TypeScript Architecture',
@@ -122,7 +121,7 @@ Nộp trước 23:59 ngày hôm nay.
     id: 'asn-002',
     title: 'Bài Tập Thực Hành: Type Guards & Generics trong TypeScript',
     description: 'Viết các utility types và type guards để xử lý an toàn dữ liệu từ API không xác định.',
-    instructions: `### 🎯 Mục tiêu
+    instructions: `### Mục tiêu
 
 Hoàn thành 3 bài tập sau:
 
@@ -159,7 +158,7 @@ Viết mapped type \`DeepPartial<T>\` biến mọi thuộc tính (kể cả nest
     id: 'asn-003',
     title: 'Luận Văn: Tác động của AI đến Giáo dục Phi Điểm Số',
     description: 'Phân tích vai trò của Descriptive Feedback và Mastery Learning trong bối cảnh AI hiện đại.',
-    instructions: `### 📚 Chủ đề nghiên cứu
+    instructions: `### Chủ đề nghiên cứu
 
 Viết một bài luận (1500-2000 từ) về chủ đề:
 
@@ -174,7 +173,7 @@ Nội dung cần bao gồm:
 5. **Thách thức và Triển vọng**
 6. **Kết luận**
 
-### 📝 Yêu cầu định dạng
+### Yêu cầu định dạng
 - Font: Times New Roman, 12pt
 - Line spacing: 1.5
 - Định dạng: PDF`,
@@ -211,7 +210,7 @@ Nội dung cần bao gồm:
     id: 'asn-004',
     title: 'Nghiên Cứu: So Sánh Gemma vs. Gemini cho Ứng Dụng Giáo Dục',
     description: 'Phân tích so sánh hai mô hình ngôn ngữ lớn và đề xuất case sử dụng phù hợp.',
-    instructions: `### 🔬 Nhiệm vụ
+    instructions: `### Nhiệm vụ
 
 Thực hiện nghiên cứu so sánh giữa Gemma và Gemini:
 
@@ -963,22 +962,21 @@ export default function AssignmentPage({ onBack }: { onBack: () => void }) {
     const load = async () => {
       setLoading(true);
 
-      // Try Supabase first
-      if (user) {
-        const { data, error } = await supabase
-          .from('assignments')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('due_date', { ascending: true });
-
-        if (!error && data && data.length > 0) {
-          setAssignments(data as Assignment[]);
-          setLoading(false);
-          return;
+      try {
+        const res = await fetch(`/api/assignments?userId=${encodeURIComponent(user?.id ?? 'demo-user')}`);
+        if (res.ok) {
+          const payload = await res.json();
+          const data = payload.assignments ?? [];
+          if (Array.isArray(data) && data.length > 0) {
+            setAssignments(data as Assignment[]);
+            setLoading(false);
+            return;
+          }
         }
+      } catch {
+        // fall through to mock data
       }
 
-      // Fallback to mock data
       await new Promise((r) => setTimeout(r, 400));
       setAssignments(MOCK_ASSIGNMENTS);
       setLoading(false);
@@ -994,12 +992,12 @@ export default function AssignmentPage({ onBack }: { onBack: () => void }) {
     );
     setSelected(null);
 
-    // Sync to Supabase if available
     if (user) {
-      await supabase
-        .from('assignments')
-        .update({ status, updated_at: new Date().toISOString() })
-        .eq('id', id);
+      await fetch(`/api/assignments/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, status }),
+      });
     }
   };
 
@@ -1107,7 +1105,7 @@ export default function AssignmentPage({ onBack }: { onBack: () => void }) {
       {/* Page Hero */}
       <div className="max-w-[1400px] mx-auto px-6 py-8">
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-3xl">📋</span>
+          <FileText className="h-8 w-8" strokeWidth={1.5} />
           <h1
             className="text-2xl font-semibold text-neutral-800"
                       >
@@ -1152,7 +1150,7 @@ export default function AssignmentPage({ onBack }: { onBack: () => void }) {
           </div>
         ) : filtered.length === 0 ? (
           <div className="py-20 text-center">
-            <div className="text-4xl mb-4">📭</div>
+            <div className="mb-4"><FileText className="h-8 w-8" strokeWidth={1.5} /></div>
             <p className="text-sm font-medium text-neutral-500 mb-1">{t('assignmentEmpty')}</p>
             <p className="text-xs text-neutral-400">{t('assignmentEmptyHint')}</p>
           </div>

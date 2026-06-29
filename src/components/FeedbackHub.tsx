@@ -4,7 +4,8 @@
  */
 
 import { motion } from 'motion/react';
-import { FeedbackPoint, AIFeedbackResponse } from '../types';
+import { BrainCircuit, Compass, Sparkles, CheckCircle2, BookOpenCheck, MessageSquareText, LoaderCircle } from 'lucide-react';
+import { type FeedbackPoint, type AIFeedbackResponse } from '../types';
 
 interface FeedbackHubProps {
   feedback: AIFeedbackResponse | null;
@@ -39,7 +40,9 @@ export default function FeedbackHub({
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-5 border-b border-neutral-200">
         <div className="flex items-center gap-3">
-          <span className="text-2xl" aria-hidden>☕</span>
+          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 bg-neutral-50">
+            <BrainCircuit className="h-5 w-5" strokeWidth={1.5} />
+          </div>
           <div>
             <h2 className="text-base font-semibold text-neutral-800">
               Phản hồi chẩn đoán
@@ -63,7 +66,7 @@ export default function FeedbackHub({
       {feedback.positive_points.length > 0 && (
         <FeedbackSection
           title="Điểm tốt"
-          emoji="💡"
+          icon={Sparkles}
           items={feedback.positive_points}
           tint="bg-emerald-50"
           accent="text-emerald-700"
@@ -75,7 +78,7 @@ export default function FeedbackHub({
       {feedback.gap_analysis.length > 0 && (
         <FeedbackSection
           title="Điểm cần lưu ý"
-          emoji="🔍"
+          icon={Compass}
           items={feedback.gap_analysis}
           tint="bg-amber-50"
           accent="text-amber-700"
@@ -87,7 +90,7 @@ export default function FeedbackHub({
       {feedback.action_plan.length > 0 && (
         <FeedbackSection
           title="Gợi ý hành động"
-          emoji="🧭"
+          icon={BookOpenCheck}
           items={feedback.action_plan}
           tint="bg-sky-50"
           accent="text-sky-700"
@@ -102,7 +105,7 @@ export default function FeedbackHub({
         }`}
       >
         <div className="flex items-start gap-3">
-          <span className="text-xl" aria-hidden>{passed ? '🌱' : '💪'}</span>
+          {passed ? <CheckCircle2 className="h-5 w-5" strokeWidth={1.5} /> : <MessageSquareText className="h-5 w-5" strokeWidth={1.5} />}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wide text-neutral-400 mb-1">
               Lời động viên
@@ -138,21 +141,21 @@ function ScoreBadge({ score, total, passed }: { score: number; total: number; pa
         </p>
         <p className={`font-sans text-xs ${palette.label}`}>{percentage}%</p>
       </div>
-      <span className="text-xl" aria-hidden>{passed ? '✅' : '📖'}</span>
+      {passed ? <CheckCircle2 className="h-5 w-5" strokeWidth={1.5} /> : <BookOpenCheck className="h-5 w-5" strokeWidth={1.5} />}
     </div>
   );
 }
 
 function FeedbackSection({
   title,
-  emoji,
+  icon: Icon,
   items,
   tint,
   accent,
   chipBg,
 }: {
   title: string;
-  emoji: string;
+  icon: typeof Sparkles;
   items: FeedbackPoint[];
   tint: string;
   accent: string;
@@ -161,7 +164,9 @@ function FeedbackSection({
   return (
     <section className="px-6 py-5 border-t border-neutral-200">
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-lg" aria-hidden>{emoji}</span>
+        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/70">
+          <Icon className="h-4 w-4" strokeWidth={1.5} />
+        </div>
         <h3 className="font-sans text-xs font-semibold uppercase tracking-wide text-neutral-400">
           {title}
         </h3>
@@ -205,11 +210,7 @@ function LoadingState() {
   return (
     <div className="rounded-xl border border-neutral-200 bg-white p-10">
       <div className="flex flex-col items-center justify-center py-8">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1.6, repeat: Infinity, ease: 'linear' }}
-          className="w-10 h-10 rounded-full border-[3px] border-neutral-200 border-t-[#C5A880] mb-4"
-        />
+        <LoaderCircle className="h-10 w-10 mb-4 text-[#C5A880]" strokeWidth={1.5} />
         <h3 className="text-sm font-medium text-neutral-700 mb-1">
           Đang phân tích bài làm...
         </h3>

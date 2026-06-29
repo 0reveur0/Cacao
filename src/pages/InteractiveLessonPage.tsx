@@ -5,11 +5,25 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Plus, Clock, Save, Check, CircleAlert as AlertCircle, Download, ChevronDown, ChevronRight, BookOpen, Video, FileText } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { ArrowLeft, Plus, Clock, Save, Check, CircleAlert as AlertCircle, Download, ChevronDown, ChevronRight, BookOpen, Video, FileText, FolderOpenDot, LockKeyhole, NotebookPen } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Lesson, Quiz, AIFeedbackResponse, LessonNote } from '../types';
+
+function getStoredNotes(userId: string, lessonId: string) {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.localStorage.getItem(`cacao:notes:${userId}:${lessonId}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveStoredNotes(userId: string, lessonId: string, content: string) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(`cacao:notes:${userId}:${lessonId}`, JSON.stringify({ content }));
+}
 
 // ─── Utility: parse timestamp (MM:SS or HH:MM:SS) to seconds ─────────────────────
 function parseTimestampToSeconds(ts: string): number {
@@ -199,7 +213,7 @@ function ConceptsSection({ concepts }: { concepts: string[] }) {
   return (
     <div className="mb-6">
       <div className="flex items-center gap-2 mb-3">
-        <span className="text-sm">🗂️</span>
+        <FolderOpenDot className="h-4 w-4" strokeWidth={1.5} />
         <h3
           className="text-sm font-semibold text-neutral-800"
                   >
@@ -346,18 +360,11 @@ export default function InteractiveLessonPage({
   // Load existing note
   useEffect(() => {
     if (!user || !lesson.id) return;
-    supabase
-      .from('lesson_notes')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('lesson_id', lesson.id)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (!error && data) {
-          setNoteContent(data.content);
-          setNoteId(data.id);
-        }
-      });
+    const saved = getStoredNotes(user.id, lesson.id);
+    if (saved?.content) {
+      setNoteContent(saved.content);
+      setNoteId(`local-${lesson.id}`);
+    }
   }, [user, lesson.id]);
 
   // Scroll to top on lesson change
@@ -372,23 +379,8 @@ export default function InteractiveLessonPage({
     setSaveError(null);
 
     try {
-      if (noteId) {
-        // Update existing
-        const { error } = await supabase
-          .from('lesson_notes')
-          .update({ content, updated_at: new Date().toISOString() })
-          .eq('id', noteId);
-        if (error) throw error;
-      } else {
-        // Create new
-        const { data, error } = await supabase
-          .from('lesson_notes')
-          .insert({ user_id: user.id, lesson_id: lesson.id, content })
-          .select()
-          .maybeSingle();
-        if (error) throw error;
-        if (data) setNoteId(data.id);
-      }
+      saveStoredNotes(user.id, lesson.id, content);
+      setNoteId((prev) => prev ?? `local-${lesson.id}`);
       setLastSaved(new Date());
       setShowSavedConfirm(true);
       setTimeout(() => setShowSavedConfirm(false), 2000);
@@ -454,7 +446,7 @@ export default function InteractiveLessonPage({
     return (
       <div className="max-w-3xl mx-auto px-6 py-16 text-center">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-neutral-100 mb-4">
-          <span className="text-2xl">🔒</span>
+          <LockKeyhole className="h-7 w-7" strokeWidth={1.5} />
         </div>
         <h2
           className="text-xl font-semibold text-neutral-800 mb-2"

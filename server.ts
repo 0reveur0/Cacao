@@ -8,7 +8,6 @@ import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
-import { createClient } from "@supabase/supabase-js";
 import dotenv from "dotenv";
 import { TLMSState, Lesson, Quiz, QuizAttempt, StudentProgress, AIFeedbackRequest, AIFeedbackResponse, FeedbackPoint } from "./src/types";
 
@@ -41,20 +40,44 @@ if (isRealApiKey) {
   console.log("Cacao AI Client: Running in simulation mode (No valid GEMINI_API_KEY detected). Ready with beautiful pre-baked diagnostics.");
 }
 
-// Initialize Supabase Client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Initialize local self-hosted data client
+const createLocalSupabaseClient = () => {
+  const tables: Record<string, Array<Record<string, unknown>>> = {
+    profiles: [],
+    submissions: [],
+    assignments: [],
+    discussions: [],
+    announcements: [],
+  };
 
-let supabaseClient: ReturnType<typeof createClient> | null = null;
-if (supabaseUrl && supabaseServiceKey) {
-  supabaseClient = createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
-  console.log("Cacao Supabase Client: initialized successfully.");
-}
+  const createQueryBuilder = (table: string) => {
+    const query: any = {
+      table,
+      select: () => query,
+      eq: () => query,
+      order: () => query,
+      limit: () => query,
+      maybeSingle: async () => ({ data: tables[table]?.[0] ?? null, error: null }),
+      single: async () => ({ data: tables[table]?.[0] ?? null, error: null }),
+      insert: async (payload: unknown) => {
+        const values = Array.isArray(payload) ? payload : [payload];
+        tables[table] = [...(tables[table] || []), ...values] as Array<Record<string, unknown>>;
+        return { data: values, error: null };
+      },
+      update: async () => ({ data: tables[table] || [], error: null }),
+      delete: async () => ({ data: tables[table] || [], error: null }),
+    };
+
+    return query;
+  };
+
+  return {
+    from: (table: string) => createQueryBuilder(table),
+    removeChannel: () => undefined,
+  };
+};
+
+const supabaseClient = createLocalSupabaseClient();
 
 // ===== AI DIAGNOSTIC SERVICE =====
 // Pedagogical System Prompt for Descriptive Feedback
@@ -247,6 +270,120 @@ function generateLocalStructuredFeedback(
 }
 
 app.use(express.json());
+
+const localUsers: Array<Record<string, unknown>> = [];
+const localFeedItems = [
+  {
+    id: 'feed-1',
+    title: 'Lịch học tuần mới đã được cập nhật',
+    body: 'Bạn có thể xem lại lịch học và các mốc quan trọng cho tuần này.',
+    createdAt: '2026-06-29T08:15:00.000Z',
+    kind: 'announcement',
+    read: false,
+  },
+  {
+    id: 'feed-2',
+    title: 'Tài liệu học tập mới đã sẵn sàng',
+    body: 'Các ghi chú và bài đọc mới đã được đóng gói rõ ràng cho bạn.',
+    createdAt: '2026-06-28T16:40:00.000Z',
+    kind: 'update',
+    read: true,
+  },
+];
+
+app.post("/api/auth/register", (req, res) => {
+  const { email, password, name, role } = req.body ?? {};
+  if (!email || !password || !name) {
+    return res.status(400).json({ message: 'Email, password, and name are required.' });
+  }
+
+  const existingUser = localUsers.find((user) => user.email === email);
+  if (existingUser) {
+    return res.status(409).json({ message: 'This account already exists.' });
+  }
+
+  const user = {
+    id: `user-${Date.now()}`,
+    email,
+    name,
+    role: role ?? 'STUDENT',
+    password,
+  };
+  localUsers.push(user);
+
+  res.json({
+    token: `token-${user.id}`,
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    },
+    profile: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      locale: 'vi',
+    },
+  });
+});
+
+app.post("/api/auth/login", (req, res) => {
+  const { email, password } = req.body ?? {};
+  const user = localUsers.find((entry) => entry.email === email && entry.password === password);
+
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid credentials.' });
+  }
+
+  res.json({
+    token: `token-${user.id}`,
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    },
+    profile: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      locale: 'vi',
+    },
+  });
+});
+
+app.post("/api/auth/logout", (_req, res) => {
+  res.json({ success: true });
+});
+
+app.get("/api/users/me", (_req, res) => {
+  const fallbackProfile = {
+    id: 'demo-user',
+    email: 'student@cacao.local',
+    name: 'Nguyễn Minh',
+    role: 'STUDENT',
+    locale: 'vi',
+  };
+  res.json(fallbackProfile);
+});
+
+app.put("/api/users/profile", (req, res) => {
+  res.json({ success: true, profile: req.body });
+});
+
+app.get("/api/feed", (_req, res) => {
+  res.json({ items: localFeedItems });
+});
+
+app.post("/api/feed/read-all", (_req, res) => {
+  localFeedItems.forEach((item) => {
+    item.read = true;
+  });
+  res.json({ success: true });
+});
 
 // Initialize default Cacao syllabus
 const defaultLessons: Lesson[] = [

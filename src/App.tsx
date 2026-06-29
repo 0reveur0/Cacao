@@ -17,8 +17,9 @@ import FeedPage from './pages/FeedPage';
 import AssignmentPage from './pages/AssignmentPage';
 import ProgressPage from './pages/ProgressPage';
 import DiscussionPage from './pages/DiscussionPage';
+import SettingsPage from './pages/SettingsPage';
 
-type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments' | 'progress' | 'discussions';
+type Page = 'landing' | 'login' | 'register' | 'dashboard' | 'admin' | 'feed' | 'assignments' | 'progress' | 'discussions' | 'settings';
 
 function AppContent() {
   const { user, profile, loading } = useAuth();
@@ -78,6 +79,8 @@ function AppContent() {
       return <ProgressPage onBack={() => setCurrentPage('dashboard')} />;
     case 'discussions':
       return <DiscussionPage onBack={() => setCurrentPage('dashboard')} />;
+    case 'settings':
+      return <SettingsPage onBack={() => setCurrentPage('dashboard')} />;
     case 'dashboard':
       return (
         <DashboardPage
@@ -86,6 +89,7 @@ function AppContent() {
           onNavigateToAssignments={() => setCurrentPage('assignments')}
           onNavigateToProgress={() => setCurrentPage('progress')}
           onNavigateToDiscussions={() => setCurrentPage('discussions')}
+          onNavigateToSettings={() => setCurrentPage('settings')}
         />
       );
     default:

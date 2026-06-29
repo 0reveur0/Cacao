@@ -6,7 +6,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, MessageSquare, Circle as HelpCircle, Search, Plus, Send, X, Cpu, User, CircleCheck as CheckCircle2, Clock, BookOpen, ChevronRight, RefreshCw } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -573,15 +572,15 @@ export default function DiscussionPage({ onBack }: { onBack: () => void }) {
     else setRefreshing(true);
 
     try {
-      const { data, error } = await supabase
-        .from('discussions')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (!error && data && data.length > 0) {
-        setDiscussions(data as Discussion[]);
+      const res = await fetch('/api/discussions');
+      if (res.ok) {
+        const payload = await res.json();
+        if (Array.isArray(payload.discussions) && payload.discussions.length > 0) {
+          setDiscussions(payload.discussions as Discussion[]);
+        } else {
+          setDiscussions(MOCK_DISCUSSIONS);
+        }
       } else {
-        // Use mock data if no data in DB
         setDiscussions(MOCK_DISCUSSIONS);
       }
     } catch {
@@ -596,15 +595,12 @@ export default function DiscussionPage({ onBack }: { onBack: () => void }) {
     loadDiscussions();
   }, [loadDiscussions]);
 
-  // Real-time subscription
   useEffect(() => {
-    const channel = supabase
-      .channel('discussions-feed')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'discussions' }, () => {
-        loadDiscussions(true);
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    const timer = window.setInterval(() => {
+      loadDiscussions(true);
+    }, 30000);
+
+    return () => window.clearInterval(timer);
   }, [loadDiscussions]);
 
   const handleSubmitQuestion = async (title: string, content: string, lessonId: string | null) => {
@@ -623,24 +619,24 @@ export default function DiscussionPage({ onBack }: { onBack: () => void }) {
       author_name: user?.email?.split('@')[0] || 'User',
     };
 
-    // Insert into Supabase if user exists
     if (user) {
-      const { error } = await supabase
-        .from('discussions')
-        .insert({
-          user_id: user.id,
+      const res = await fetch('/api/discussions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
           title,
           content,
-          lesson_id: lessonId,
-          status: 'PENDING',
-        });
-      if (!error) {
+          lessonId,
+        }),
+      });
+
+      if (res.ok) {
         loadDiscussions(true);
         return;
       }
     }
 
-    // Fallback: add to local state
     setDiscussions((prev) => [newDiscussion, ...prev]);
   };
 

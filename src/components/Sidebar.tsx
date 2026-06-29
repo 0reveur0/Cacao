@@ -5,7 +5,7 @@
 
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { LogOut, ChevronDown, Plus } from 'lucide-react';
+import { LogOut, ChevronDown, Plus, LayoutGrid, BookOpen, FileText, MessageSquareText, CreditCard, CheckCircle2, Coffee, Languages, BookMarked, LockKeyhole } from 'lucide-react';
 
 interface SidebarLesson {
   id: string;
@@ -30,11 +30,11 @@ export default function Sidebar({
   const { locale, t, toggle } = useLanguage();
 
   const mainMenuItems = [
-    { id: 'workspace',   emoji: '🏠', label: t('nav_workspace') },
-    { id: 'courses',     emoji: '📚', label: t('nav_courses')   },
-    { id: 'assignments', emoji: '📝', label: locale === 'vi' ? 'Hộp bài tập & Thi cử' : 'Assignments & Exams' },
-    { id: 'discussions', emoji: '💬', label: locale === 'vi' ? 'Góc thảo luận' : 'Discussion'          },
-    { id: 'billing',     emoji: '💳', label: locale === 'vi' ? 'Lịch sử học phí' : 'Billing History'    },
+    { id: 'workspace',   icon: LayoutGrid, label: t('nav_workspace') },
+    { id: 'courses',     icon: BookOpen, label: t('nav_courses') },
+    { id: 'assignments', icon: FileText, label: locale === 'vi' ? 'Hộp bài tập & Thi cử' : 'Assignments & Exams' },
+    { id: 'discussions', icon: MessageSquareText, label: locale === 'vi' ? 'Góc thảo luận' : 'Discussion' },
+    { id: 'billing',     icon: CreditCard, label: locale === 'vi' ? 'Lịch sử học phí' : 'Billing History' },
   ];
 
   const getInitials = () => profile?.name?.charAt(0).toUpperCase() || 'U';
@@ -66,7 +66,7 @@ export default function Sidebar({
             className="w-6 h-6 rounded flex items-center justify-center text-sm flex-shrink-0"
             style={{ backgroundColor: '#F5EBE0' }}
           >
-            ☕
+            <Coffee className="h-3.5 w-3.5" strokeWidth={1.5} />
           </div>
           <div className="flex-1 text-left min-w-0">
             <span
@@ -101,7 +101,7 @@ export default function Sidebar({
                   if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
                 }}
               >
-                <span className="text-base leading-none w-5 text-center flex-shrink-0">{item.emoji}</span>
+                <item.icon className="h-4 w-4 flex-shrink-0" strokeWidth={1.5} />
                 <span className="text-[13px] font-medium truncate">{item.label}</span>
               </button>
             );
@@ -127,8 +127,8 @@ export default function Sidebar({
               <LessonNavItem
                 key={lesson.id}
                 icon={
-                  lesson.status === 'completed' ? '✓' :
-                  lesson.status === 'active'    ? '📖' : '🔒'
+                  lesson.status === 'completed' ? <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.5} /> :
+                  lesson.status === 'active' ? <BookMarked className="h-3.5 w-3.5" strokeWidth={1.5} /> : <LockKeyhole className="h-3.5 w-3.5" strokeWidth={1.5} />
                 }
                 title={lesson.title}
                 status={lesson.status}
@@ -165,7 +165,7 @@ export default function Sidebar({
           className="w-full flex items-center gap-2 px-2 py-2 mt-2 mb-1 rounded-md text-xs transition-colors hover:bg-black/[0.03]"
           style={{ color: '#9B9B9B' }}
         >
-          <span className="text-sm">{locale === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
+          <Languages className="h-3.5 w-3.5" strokeWidth={1.5} />
           <span className="font-medium" >
             {locale === 'vi' ? 'Tiếng Việt' : 'English'}
           </span>
@@ -217,7 +217,7 @@ function LessonNavItem({
   status,
   onClick,
 }: {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   status: 'completed' | 'active' | 'locked';
   onClick?: () => void;
@@ -249,10 +249,10 @@ function LessonNavItem({
       <span className="truncate flex-1 text-left">{title}</span>
       {status === 'completed' && (
         <span
-          className="text-[9px] px-1.5 py-0.5 rounded flex-shrink-0"
-          style={{ backgroundColor: '#DCFCE7', color: '#166534' }}
+          className="rounded flex-shrink-0 p-0.5"
+          style={{ color: '#166534' }}
         >
-          ✓
+          <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.5} />
         </span>
       )}
     </button>

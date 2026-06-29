@@ -23,7 +23,7 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 
 // ─── i18n dictionary ───────────────────────────────────────────────────────────
-const copy = {
+const landingTranslations = {
   vi: {
     navIntro:   'Giới thiệu',
     navDocs:    'Tài liệu',
@@ -131,7 +131,7 @@ const copy = {
   },
 } as const;
 
-type Copy = typeof copy.vi;
+type Copy = typeof landingTranslations.vi;
 
 // ─── Interfaces ────────────────────────────────────────────────────────────────
 interface LandingPageProps {
@@ -281,7 +281,7 @@ const MOCK_ROW_STYLES = [
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function LandingPage({ onNavigateToLogin, onNavigateToRegister }: LandingPageProps) {
   const { locale, toggle } = useLanguage();
-  const c: Copy = copy[locale] as Copy;
+  const c: Copy = landingTranslations[locale] as Copy;
 
   const navLinks = [
     { label: c.navIntro,   key: 'intro'   },

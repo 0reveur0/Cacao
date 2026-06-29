@@ -1,8 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Elms+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap&subset=vietnamese,latin");
 @import "tailwindcss";
 
 :root {
-  /* Single Font Variable — Elms Sans for all text */
-  --font-elms-sans: 'Elms Sans', 'Segoe UI', sans-serif;
+  --font-elms-sans: "Elms Sans", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --font-body: var(--font-elms-sans);
+  --font-heading: var(--font-elms-sans);
 
   /* Notion-style Cacao Palette */
   --bg-primary:    #FAFAFA;
@@ -18,20 +20,44 @@
   --accent-hover:  #B89A70;
 }
 
-* {
+html,
+body,
+#root {
   font-family: var(--font-elms-sans);
-  /* Ensure correct text rendering for Vietnamese diacritics */
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+*,
+*::before,
+*::after {
+  font-family: inherit;
   -webkit-font-feature-settings: "kern" 1;
   font-feature-settings: "kern" 1;
   text-rendering: optimizeLegibility;
 }
 
 body {
-  font-family: var(--font-elms-sans);
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+input,
+textarea,
+select,
+button,
+code,
+pre,
+kbd,
+samp,
+.font-sans,
+.font-mono,
+.font-heading,
+.font-body,
+.font-title,
+.font-sans-grotesk,
+::placeholder {
+  font-family: var(--font-elms-sans);
 }
 
 /* Notion-style minimal scrollbar */

@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Users, BookOpen, FileText, DollarSign, ChevronRight, ChevronDown, Plus, MoveHorizontal as MoreHorizontal, Search, RefreshCw, LogOut, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
-import { supabase } from '../lib/supabase';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN';
@@ -450,7 +449,7 @@ function CourseOutlineNode({ course }: { course: CourseNode }) {
         <span
           className="text-xs font-semibold text-neutral-700 group-hover:text-neutral-900 flex-1 truncate"
                   >
-          📖 {course.title}
+          {course.title}
         </span>
         <span
           className="text-[10px] text-neutral-400 flex-shrink-0"
@@ -485,7 +484,7 @@ function CourseOutlineNode({ course }: { course: CourseNode }) {
                       <ChevronRight className="w-3 h-3 text-neutral-400 group-hover:text-neutral-600 flex-shrink-0" />
                     </motion.span>
                     <span className="text-xs font-medium text-neutral-600 group-hover:text-neutral-800 flex-1 truncate">
-                      🗂 {mod.title}
+                      {mod.title}
                     </span>
                     <span className="text-[10px] text-neutral-400 flex-shrink-0">
                       {mod.lessons.length} lessons
@@ -538,7 +537,7 @@ function LessonOutlineNode({ lesson }: { lesson: LessonItem }) {
           <ChevronRight className="w-3 h-3 text-neutral-300 group-hover:text-neutral-400 flex-shrink-0" />
         </motion.span>
         <span className="text-xs text-neutral-600 group-hover:text-neutral-800 flex-1 truncate">
-          📄 {lesson.title}
+          {lesson.title}
         </span>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#F5EBE0] text-[#C5A880]">
@@ -813,7 +812,7 @@ export default function AdminPage({
           status: 'ACTIVE' as UserStatus,
         }));
 
-        // Enrich with emails from supabase if possible
+        // Enrich with local profile data when available
         if (serverUsers.length > 0) {
           setUsers(serverUsers);
         } else {
@@ -894,7 +893,7 @@ export default function AdminPage({
               className="w-7 h-7 rounded flex items-center justify-center text-base flex-shrink-0"
               style={{ backgroundColor: '#F5EBE0' }}
             >
-              ☕
+              •
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-neutral-800 leading-none truncate" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -933,7 +932,7 @@ export default function AdminPage({
               onClick={onNavigateToFeed}
               className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-xs text-neutral-500 hover:bg-neutral-100 transition-colors"
                           >
-              <span className="text-[13px]">📢</span>
+              <span className="text-[13px]">•</span>
               {t('adminFeedLink')}
             </button>
           )}
@@ -1018,7 +1017,7 @@ export default function AdminPage({
                 transition={{ duration: 0.18 }}
               >
                 <SectionHeader
-                  icon="📁"
+                  icon="•"
                   title="User Directory"
                   subtitle="Manage student roles, access, and account status"
                   action={
@@ -1042,7 +1041,7 @@ export default function AdminPage({
                 transition={{ duration: 0.18 }}
               >
                 <SectionHeader
-                  icon="🧠"
+                  icon="•"
                   title="Curriculum Manager"
                   subtitle="Manage courses, modules, lessons, and micro-quizzes in a nested outline view"
                 />
@@ -1059,7 +1058,7 @@ export default function AdminPage({
                 transition={{ duration: 0.18 }}
               >
                 <SectionHeader
-                  icon="💳"
+                  icon="•"
                   title="Billing Ledger"
                   subtitle="Track student payments, invoices, and financial status"
                 />
@@ -1076,7 +1075,7 @@ export default function AdminPage({
                 transition={{ duration: 0.18 }}
               >
                 <SectionHeader
-                  icon="📝"
+                  icon="•"
                   title="AI Submissions Queue"
                   subtitle="Review pending student quiz submissions awaiting AI or mentor analysis"
                 />
@@ -1096,15 +1095,19 @@ function SubmissionsBlock() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from('submissions')
-      .select('id, lesson_id, submission_type, status, score, passed, created_at, profiles(name)')
-      .order('created_at', { ascending: false })
-      .limit(50)
-      .then(({ data }) => {
-        setSubmissions(data ?? []);
+    const loadSubmissions = async () => {
+      try {
+        const res = await fetch('/api/admin/submissions');
+        if (res.ok) {
+          const payload = await res.json();
+          setSubmissions(payload.submissions ?? []);
+        }
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    loadSubmissions();
   }, []);
 
   if (loading) {
